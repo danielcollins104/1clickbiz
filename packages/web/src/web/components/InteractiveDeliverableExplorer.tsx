@@ -422,7 +422,7 @@ export function InteractiveDeliverableExplorer() {
       `Top Funding Lead: ${biz.plan.topGrant.name} (${biz.plan.topGrant.amount})`,
       `Brand Palette: ${biz.brand.colors.map((c) => `${c.name} (${c.hex})`).join(", ")}`,
       `Website Headline: ${biz.market.heroHeadline}`,
-      `Live Hosted URL: https://1clickbiz.com/sites/${activeSlug}`,
+      `Live Hosted URL: https://1clickbiz.run.place/sites/${activeSlug}`,
     ].join("\n");
 
     navigator.clipboard.writeText(summaryText).then(() => {

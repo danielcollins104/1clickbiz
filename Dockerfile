@@ -12,7 +12,7 @@ RUN cd packages/web && bun run build
 
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV WEBSITE_URL=https://1clickbiz.com
+ENV WEBSITE_URL=https://1clickbiz.run.place
 
 EXPOSE 3000
 

@@ -14,7 +14,7 @@ export function SocialShare({ product, className = "" }: SocialShareProps) {
   const currentUrl =
     typeof window !== "undefined"
       ? window.location.href
-      : `https://1clickbiz.com/product/${product.slug}`;
+      : `https://1clickbiz.run.place/product/${product.slug}`;
 
   const shareText = `Check out ${product.name} on 1 Click Business — ${product.tagline}`;
 

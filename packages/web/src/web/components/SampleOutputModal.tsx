@@ -57,7 +57,7 @@ export const SAMPLE_OUTPUTS: Record<string, SampleData> = {
     badge: "Tool 07 Output",
     subtitle: "Instant conversion-optimized web page with lead capture form directly connected to your CRM.",
     deliverables: [
-      { label: "Published Address", value: "1clickbiz.com/sites/yourbusiness (Free SSL + hosting included)" },
+      { label: "Published Address", value: "1clickbiz.run.place/sites/yourbusiness (Free SSL + hosting included)" },
       { label: "Conversion Architecture", value: "Hero proposition, social proof strip, pricing tiers, and direct checkout form." },
       { label: "SEO Structured Data", value: "Pre-configured Schema.org metadata and Google Search description." },
       { label: "CRM Automation", value: "Every customer submission flows immediately into your Phase 1 CRM." },

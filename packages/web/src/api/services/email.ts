@@ -5,7 +5,7 @@ import { notifications } from "../database/schema";
 import { emailTemplate } from "./email-templates";
 export const emailEnabled = () => !!(process.env.RESEND_API_KEY && process.env.EMAIL_FROM);
 export const appUrl = (path = "/dashboard") =>
-  `${(process.env.WEBSITE_URL ?? "https://1clickbiz.com").replace(/\/$/, "")}${path}`;
+  `${(process.env.WEBSITE_URL ?? "https://1clickbiz.run.place").replace(/\/$/, "")}${path}`;
 /** No provider configuration means no send. Never jeopardize a signup, purchase or lead. */
 export async function notify(opts: {
   to: string;

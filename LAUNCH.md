@@ -2,7 +2,7 @@
 
 ## Current state
 
-Launch polish is implemented. On October 6, 2026, the owner approved switching the root configuration to the live Autumn key and setting `WEBSITE_URL=https://1clickbiz.com`. Production prices and allowances match the catalog, with no configuration diff.
+Launch polish is implemented. On October 6, 2026, the owner approved switching the root configuration to the live Autumn key and setting `WEBSITE_URL=https://1clickbiz.run.place`. Production prices and allowances match the catalog, with no configuration diff.
 
 **Live checkout verified:** after replacing the Autumn key and fixing the connected Stripe restricted-key permissions, the Stripe-hosted bundle checkout displays **$99.00 per month** with no test-mode banner. The app now uses that verified replacement key; its checkout API returns 200 and a hosted Stripe checkout URL. No card was entered or payment submitted; QA customers/logins were removed. Purchase completion, unlock after a real payment and live cancellation have not been exercised.
 
@@ -23,7 +23,7 @@ MRR reflects active subscriptions of registered app users, includes subscription
 3. Preview configuration with `bunx atmn push -p`. Inspect every live plan and the diff before applying it. The bundle must produce **$99/month** at checkout; individual prices must match the storefront. This installed Autumn API uses whole-dollar price amounts, verified in sandbox checkout; do not multiply by 100 based on older examples.
 4. After approving the pricing diff, apply with `bunx atmn push -p --yes`.
 5. **Explicitly approve live charging before replacing `AUTUMN_SECRET_KEY` with the live key.** Preview and local app share the root `.env`; changing that value makes their checkouts live too. No live purchase has been submitted by testing.
-6. At the launch switch, set `WEBSITE_URL=https://1clickbiz.com`. Restart/redeploy the application so it uses the new configuration.
+6. At the launch switch, set `WEBSITE_URL=https://1clickbiz.run.place`. Restart/redeploy the application so it uses the new configuration.
 
 Never put credentials in chat, source control, or another env file. The root `.env` is the only deployment configuration source.
 
@@ -37,7 +37,7 @@ Reference: https://docs.stripe.com/receipts
 
 1. Verify a sending domain in Resend. The Runable hosting URL is not a domain you own for sending email.
 2. Add `RESEND_API_KEY` and a verified `EMAIL_FROM` sender securely to the root `.env`. Both are required. `SUPPORT_EMAIL` is currently `mr.danielbjorke@gmail.com`.
-3. In Autumn, add a webhook endpoint for `billing.updated` at `https://1clickbiz.com/api/webhooks/autumn`. Add its Svix signing secret as `AUTUMN_WEBHOOK_SECRET`. Use the matching sandbox/live environment.
+3. In Autumn, add a webhook endpoint for `billing.updated` at `https://1clickbiz.run.place/api/webhooks/autumn`. Add its Svix signing secret as `AUTUMN_WEBHOOK_SECRET`. Use the matching sandbox/live environment.
 4. Restart/redeploy and test delivery with accounts you own: welcome, password reset, tools unlocked, first complete business build, new website lead, cancellation/end of access. Test signed webhook delivery/retries in Autumn.
 
 Email templates are implemented but real delivery and email-based password reset still need credentialed testing. Without credentials no app email is sent; contact submissions remain available in the admin console. Google sign-in remains available. Billing access does not depend on email delivery. Failed sends are logged; billing webhook failures ask Autumn to retry. Other transactional failures are best-effort and have no background retry queue. Resend idempotency and DB claims limit duplicates; abandoned sending claims can be reclaimed after ten minutes on a subsequent attempt.
