@@ -1,7 +1,7 @@
 import { Redirect, useLocation } from "wouter";
 import { Loader2 } from "lucide-react";
-import { authClient } from "../lib/auth";
 import { useFirebase } from "../context/FirebaseContext";
+import { useSession } from "../queries/business";
 
 export function PageLoader({ label = "Loading" }: { label?: string }) {
   return (
@@ -14,11 +14,11 @@ export function PageLoader({ label = "Loading" }: { label?: string }) {
 }
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { data: session, isPending: sessionPending } = authClient.useSession();
+  const { data: session, isPending: sessionPending } = useSession();
   const { user: firebaseUser, loading: firebaseLoading } = useFirebase();
   const [location] = useLocation();
 
-  if (sessionPending || firebaseLoading) return <PageLoader />;
+  if (sessionPending && firebaseLoading && !session) return <PageLoader />;
   if (!session && !firebaseUser) {
     return <Redirect to={`/login?next=${encodeURIComponent(location + window.location.search)}`} />;
   }
