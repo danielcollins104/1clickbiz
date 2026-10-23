@@ -18,8 +18,8 @@ const NEXT_WAVE: Record<string, string> = {
 
 const TOOL_USER_TIPS: Record<string, { whatItDoes: string; howToUse: string }> = {
   "idea-wizard": {
-    whatItDoes: "Turns your skills, budget, and location into 3 tailored business models.",
-    howToUse: "Review the concepts below and click 'Choose this idea' on the one you want to build—or use 'Change it' to ask for a different direction.",
+    whatItDoes: "Don't know what kind of business you want to start? No problem! Let us generate proven business ideas that we know can be successful!",
+    howToUse: "Just enter your interests and a few possibilities below and we will build 3 complete business idea cards you can choose from.",
   },
   "name-generator": {
     whatItDoes: "Generates memorable brand names, taglines, and domain ideas matched to your business.",
@@ -113,6 +113,7 @@ export default function ToolPage({ slug }: { slug: string }) {
   const content = asset?.content as Record<string, unknown> | null | undefined;
   const isChat = slug === "ai-advisor";
   const isCrm = slug === "customer-crm";
+  const hasCustomStudio = slug === "idea-wizard" || slug === "logo-generation";
 
   const run = (text?: string) => {
     if (!data) return;
@@ -181,7 +182,7 @@ export default function ToolPage({ slug }: { slug: string }) {
               {data && <> · {data.business.name}</>}
             </p>
             <h1 className="display mt-1 text-4xl md:text-6xl">{tool.name}</h1>
-            <p className="mt-2 max-w-2xl font-bold">{tool.tagline}</p>
+            <p className="mt-2 max-w-3xl text-base md:text-lg font-extrabold text-ink">{tool.tagline}</p>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -211,7 +212,7 @@ export default function ToolPage({ slug }: { slug: string }) {
               </p>
               <p className="mt-1 text-sm font-extrabold text-ink">{tip.whatItDoes}</p>
               <p className="mt-1 text-xs sm:text-sm font-semibold text-ink/85">
-                <strong>Your action on this page:</strong> {tip.howToUse}
+                <strong>Instruction:</strong> {tip.howToUse}
               </p>
             </div>
             {slug === "website-generator" && data && (
@@ -315,7 +316,7 @@ export default function ToolPage({ slug }: { slug: string }) {
         ) : (
           <>
             {/* describe a change */}
-            {!isChat && !isCrm && (
+            {!isChat && !isCrm && !hasCustomStudio && (
               <form
                 className="card mb-8 flex flex-col gap-3 bg-cream p-4 md:flex-row md:items-center"
                 onSubmit={(e) => {

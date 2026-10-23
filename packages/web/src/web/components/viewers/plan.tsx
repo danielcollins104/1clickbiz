@@ -1,56 +1,312 @@
-import { ExternalLink } from "lucide-react";
+import { useState } from "react";
+import { Check, ExternalLink, Lightbulb, Loader2, Rocket, Sparkles } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { ChooseButton, CopyButton, Level, List, Section, type ViewerProps } from "./common";
+import {
+  buildThreeProvenIdeas,
+  saveLocalIdeaWizardCards,
+  type ProvenBusinessIdea,
+} from "../../queries/business";
+import { orpc } from "../../lib/api";
 
 /* ---------------- 01 Idea Wizard ---------------- */
 
-type Idea = {
-  title: string;
-  summary: string;
-  whyYou: string;
-  targetCustomer: string;
-  revenueModel: string;
-  demand: string;
-  competition: string;
-  startupCost: string;
-  timeToFirstSale: string;
-  score: number;
-};
+const INTEREST_CHIPS = [
+  "⚡ AI & Automation",
+  "☕ Coffee & Artisan Food",
+  "🐾 Pets & Dog Care",
+  "🏠 Home & Property Care",
+  "💪 Fitness & Wellness",
+  "🎨 Design & Creative",
+  "🛍️ E-Commerce & Crafts",
+  "📈 Local Business Marketing",
+];
 
-export function IdeaViewer({ content, choose, choosing }: ViewerProps) {
-  const ideas = (content.ideas ?? []) as Idea[];
-  const chosen = typeof content.chosen === "number" ? content.chosen : 0;
+const POSSIBILITY_CHIPS = [
+  "🏡 Run from home",
+  "🔁 Monthly subscription model",
+  "⏱️ Weekend side-hustle",
+  "💰 Under $500 startup cost",
+  "🤝 Local neighborhood service",
+  "🌐 100% online digital delivery",
+];
+
+export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
+  const qc = useQueryClient();
+  const rawIdeas = (content.ideas ?? []) as ProvenBusinessIdea[];
+  const initialChosen = typeof content.chosen === "number" ? content.chosen : 0;
+
+  const [interests, setInterests] = useState<string>(
+    (content.interests as string) || "AI automation, local services, helping small businesses"
+  );
+  const [possibilities, setPossibilities] = useState<string>(
+    (content.possibilities as string) || "Recurring subscription or turnkey package I can run from home"
+  );
+  const [ideas, setIdeas] = useState<ProvenBusinessIdea[]>(() =>
+    rawIdeas.length >= 3 && rawIdeas[0]?.summary
+      ? rawIdeas
+      : buildThreeProvenIdeas(interests, possibilities)
+  );
+  const [chosen, setChosen] = useState<number>(initialChosen);
+  const [isBuilding, setIsBuilding] = useState(false);
+  const [justBuilt, setJustBuilt] = useState(false);
+
+  const handleAddInterestChip = (chip: string) => {
+    const clean = chip.replace(/^[^\w]+/, "").trim();
+    if (interests.toLowerCase().includes(clean.toLowerCase())) return;
+    setInterests((prev) => (prev.trim() ? `${prev.trim()}, ${clean}` : clean));
+  };
+
+  const handleAddPossibilityChip = (chip: string) => {
+    const clean = chip.replace(/^[^\w]+/, "").trim();
+    if (possibilities.toLowerCase().includes(clean.toLowerCase())) return;
+    setPossibilities((prev) => (prev.trim() ? `${prev.trim()}, ${clean}` : clean));
+  };
+
+  const handleBuildThreeCards = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setIsBuilding(true);
+    setJustBuilt(false);
+    setTimeout(() => {
+      const generated = buildThreeProvenIdeas(interests, possibilities);
+      setIdeas(generated);
+      setChosen(0);
+      saveLocalIdeaWizardCards(bizId, generated, 0, interests, possibilities);
+      qc.invalidateQueries({ queryKey: orpc.businesses.key() });
+      setIsBuilding(false);
+      setJustBuilt(true);
+      setTimeout(() => setJustBuilt(false), 3000);
+    }, 350);
+  };
+
+  const handleSelectCard = (index: number) => {
+    setChosen(index);
+    saveLocalIdeaWizardCards(bizId, ideas, index, interests, possibilities);
+    if (choose) choose(index);
+    qc.invalidateQueries({ queryKey: orpc.businesses.key() });
+  };
+
   return (
-    <div className="space-y-6">
-      <p className="font-bold">
-        Three directions ranked by fit. The one you select feeds every other tool. Changing it later means rebuilding the rest.
-      </p>
-      <div className="grid gap-6 lg:grid-cols-3">
-        {ideas.map((idea, i) => (
-          <article key={i} className={`card flex flex-col ${i === chosen ? "bg-cream" : "bg-paper"}`}>
-            <div className="flex items-center justify-between border-b-[3px] border-ink px-5 py-3">
-              <span className="display text-lg">Idea {i + 1}</span>
-              <span className="chip bg-ink text-sun">Fit {Math.round(idea.score)}</span>
-            </div>
-            <div className="flex flex-1 flex-col gap-4 p-5">
-              <h3 className="display text-2xl leading-tight">{idea.title}</h3>
-              <p className="font-semibold">{idea.summary}</p>
-              <p className="text-sm font-semibold"><b className="font-extrabold uppercase">Why you · </b>{idea.whyYou}</p>
-              <dl className="grid grid-cols-2 gap-3 text-sm">
-                <div><dt className="font-extrabold uppercase">Demand</dt><dd className="mt-1"><Level v={idea.demand} /></dd></div>
-                <div><dt className="font-extrabold uppercase">Competition</dt><dd className="mt-1"><Level v={idea.competition} /></dd></div>
-                <div><dt className="font-extrabold uppercase">Startup cost</dt><dd className="font-semibold">{idea.startupCost}</dd></div>
-                <div><dt className="font-extrabold uppercase">First sale</dt><dd className="font-semibold">{idea.timeToFirstSale}</dd></div>
-                <div className="col-span-2"><dt className="font-extrabold uppercase">Customer</dt><dd className="font-semibold">{idea.targetCustomer}</dd></div>
-                <div className="col-span-2"><dt className="font-extrabold uppercase">Makes money by</dt><dd className="font-semibold">{idea.revenueModel}</dd></div>
-              </dl>
-              <div className="mt-auto pt-2">
-                <ChooseButton selected={i === chosen} disabled={choosing} onClick={choose ? () => choose(i) : undefined} />
+    <div className="space-y-8">
+      {/* Welcoming Intro + Interactive Interests & Possibilities Builder */}
+      <section className="b3 hard bg-paper overflow-hidden">
+        <div className="border-b-[3px] border-ink bg-ink p-5 md:p-6 text-paper">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <span className="inline-flex items-center gap-1.5 bg-sun text-ink px-2.5 py-0.5 text-xs font-black uppercase tracking-wider border border-ink">
+              <Lightbulb className="h-3.5 w-3.5 fill-ink" /> Proven Business Idea Generator
+            </span>
+            <span className="inline-flex items-center gap-1 bg-mint text-ink px-2.5 py-0.5 text-xs font-black uppercase">
+              3 Complete Business Cards
+            </span>
+          </div>
+          <h2 className="display text-2xl sm:text-3xl md:text-4xl text-sun leading-tight">
+            Don't know what kind of business you want to start? No problem! Let us generate proven business ideas that we know can be successful!
+          </h2>
+          <p className="mt-2.5 text-sm sm:text-base font-bold text-paper/90 max-w-3xl">
+            Just enter your interests and a few possibilities below and we will build 3 complete business idea cards you can choose from.
+          </p>
+        </div>
+
+        <form onSubmit={handleBuildThreeCards} className="p-5 md:p-6 space-y-6 bg-cream/60">
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Field 1: Interests */}
+            <div className="b3 bg-paper p-4 md:p-5">
+              <label htmlFor="wizard-interests-input" className="block text-sm font-black uppercase tracking-wider text-ink">
+                1. Enter Your Interests &amp; Passions
+              </label>
+              <p className="mt-1 text-xs font-semibold text-muted">
+                What topics, hobbies, or industries do you enjoy? Type your own or click any quick tag below:
+              </p>
+              <textarea
+                id="wizard-interests-input"
+                rows={2}
+                value={interests}
+                onChange={(e) => setInterests(e.target.value)}
+                placeholder="e.g. Coffee, dogs, fitness, AI tools, design, helping local businesses..."
+                className="input mt-3 resize-none text-sm font-bold"
+              />
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {INTEREST_CHIPS.map((chip) => (
+                  <button
+                    key={chip}
+                    type="button"
+                    onClick={() => handleAddInterestChip(chip)}
+                    className="text-xs font-extrabold bg-cream hover:bg-sun px-2.5 py-1 border-2 border-ink transition-colors cursor-pointer"
+                  >
+                    + {chip}
+                  </button>
+                ))}
               </div>
             </div>
-          </article>
-        ))}
+
+            {/* Field 2: A Few Possibilities */}
+            <div className="b3 bg-paper p-4 md:p-5">
+              <label htmlFor="wizard-possibilities-input" className="block text-sm font-black uppercase tracking-wider text-ink">
+                2. Enter a Few Possibilities (How You Want to Run It)
+              </label>
+              <p className="mt-1 text-xs font-semibold text-muted">
+                Any possibilities in mind? (e.g. work from home, weekend side hustle, recurring subscription, local service)
+              </p>
+              <textarea
+                id="wizard-possibilities-input"
+                rows={2}
+                value={possibilities}
+                onChange={(e) => setPossibilities(e.target.value)}
+                placeholder="e.g. Something I can run from home, low startup cost, monthly subscription or local service..."
+                className="input mt-3 resize-none text-sm font-bold"
+              />
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {POSSIBILITY_CHIPS.map((chip) => (
+                  <button
+                    key={chip}
+                    type="button"
+                    onClick={() => handleAddPossibilityChip(chip)}
+                    className="text-xs font-extrabold bg-cream hover:bg-sun px-2.5 py-1 border-2 border-ink transition-colors cursor-pointer"
+                  >
+                    + {chip}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-4 border-t-2 border-ink/20 pt-4">
+            <p className="text-xs sm:text-sm font-extrabold text-ink">
+              {justBuilt ? (
+                <span className="inline-flex items-center gap-1.5 text-emerald-800 bg-mint px-3 py-1 border-2 border-ink">
+                  <Check className="h-4 w-4 stroke-[3]" /> Built 3 complete business idea cards below! Click "Choose this idea" on your favorite.
+                </span>
+              ) : (
+                "Click the button to build 3 complete, proven business idea cards tailored to your inputs:"
+              )}
+            </p>
+            <button
+              type="submit"
+              disabled={isBuilding}
+              className="btn btn-yellow font-black text-sm sm:text-base px-6 py-3 cursor-pointer"
+            >
+              {isBuilding ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" strokeWidth={3} />
+                  Building Your 3 Business Idea Cards…
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-5 w-5 fill-ink" strokeWidth={2.5} />
+                  Build 3 Complete Business Idea Cards
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      {/* 3 Complete Business Idea Cards */}
+      <div>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 className="display text-2xl md:text-3xl">
+              Your 3 Complete Business Idea Cards
+            </h3>
+            <p className="text-sm font-bold text-muted">
+              Compare demand, startup cost, and how each business makes money—then click <strong>"Choose this idea"</strong> on the card you want to launch.
+            </p>
+          </div>
+          <span className="chip bg-sun text-xs font-black">
+            Selected Card: #{chosen + 1}
+          </span>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-3">
+          {ideas.map((idea, i) => {
+            const isSelected = i === chosen;
+            const summaryText = idea.summary || (idea as any).oneLiner || "";
+            const scoreNum = typeof idea.score === "number" && !Number.isNaN(idea.score) ? Math.round(idea.score) : 95 - i * 3;
+            return (
+              <article
+                key={i}
+                className={`card flex flex-col transition-all ${
+                  isSelected ? "bg-sun/25 ring-2 ring-ink" : "bg-paper"
+                }`}
+              >
+                <div className="flex items-center justify-between border-b-[3px] border-ink bg-ink text-paper px-5 py-3">
+                  <div>
+                    <span className="text-[11px] font-black uppercase tracking-widest text-mint block">
+                      {idea.modelBadge || `Proven Idea Card #${i + 1}`}
+                    </span>
+                    <span className="display text-lg text-sun">Business Card #{i + 1}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {isSelected && (
+                      <span className="bg-mint text-ink px-2 py-0.5 text-[11px] font-black uppercase border border-ink">
+                        ✓ Active
+                      </span>
+                    )}
+                    <span className="chip bg-sun text-ink font-black">Fit {scoreNum}%</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-1 flex-col gap-4 p-5">
+                  <h4 className="display text-2xl leading-tight">{idea.title}</h4>
+                  <p className="font-semibold text-sm leading-relaxed">{summaryText}</p>
+
+                  <div className="b3 bg-cream p-3 text-sm font-semibold">
+                    <b className="font-extrabold uppercase block text-xs text-muted mb-1">Why This Works For You</b>
+                    {idea.whyYou}
+                  </div>
+
+                  <dl className="grid grid-cols-2 gap-3 text-sm border-t-2 border-ink/15 pt-3">
+                    <div>
+                      <dt className="text-xs font-extrabold uppercase text-muted">Market Demand</dt>
+                      <dd className="mt-1"><Level v={idea.demand || "High"} /></dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-extrabold uppercase text-muted">Competition</dt>
+                      <dd className="mt-1"><Level v={idea.competition || "Low"} /></dd>
+                    </div>
+                    <div className="b3 bg-paper p-2.5">
+                      <dt className="text-[11px] font-extrabold uppercase text-muted">Startup Cost</dt>
+                      <dd className="font-black text-ink mt-0.5">{idea.startupCost || "$250 – $1,000"}</dd>
+                    </div>
+                    <div className="b3 bg-paper p-2.5">
+                      <dt className="text-[11px] font-extrabold uppercase text-muted">Time to First Sale</dt>
+                      <dd className="font-black text-ink mt-0.5">{idea.timeToFirstSale || "5 – 10 days"}</dd>
+                    </div>
+                    <div className="col-span-2 b3 bg-paper p-3">
+                      <dt className="text-xs font-extrabold uppercase text-muted">Target Customer</dt>
+                      <dd className="font-semibold mt-1">{idea.targetCustomer}</dd>
+                    </div>
+                    <div className="col-span-2 b3 bg-paper p-3">
+                      <dt className="text-xs font-extrabold uppercase text-muted">How It Makes Money</dt>
+                      <dd className="font-semibold mt-1">{idea.revenueModel}</dd>
+                    </div>
+                    {idea.firstStep && (
+                      <div className="col-span-2 b3 bg-mint/35 p-3">
+                        <dt className="text-xs font-extrabold uppercase text-ink flex items-center gap-1">
+                          <Rocket className="h-3.5 w-3.5" /> Day-1 Launch Step
+                        </dt>
+                        <dd className="font-semibold text-xs mt-1">{idea.firstStep}</dd>
+                      </div>
+                    )}
+                  </dl>
+
+                  <div className="mt-auto pt-3">
+                    <ChooseButton
+                      selected={isSelected}
+                      disabled={choosing}
+                      onClick={() => handleSelectCard(i)}
+                    />
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
       </div>
-      <p className="text-xs font-bold uppercase text-muted">Demand and competition are AI estimates, not market research. Sense-check them.</p>
+
+      <p className="text-xs font-bold uppercase text-muted">
+        Selecting any of the 3 business idea cards above automatically feeds your chosen model into your Business Name, Plan, Brand, Logo, and Live Website.
+      </p>
     </div>
   );
 }
@@ -69,7 +325,8 @@ export function NameViewer({ content, choose, choosing }: ViewerProps) {
       </p>
       <div className="grid gap-4 md:grid-cols-2">
         {names.map((n, i) => {
-          const domain = n.domain.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+          const rawDomain = n.domain || (n as any).domains?.[0] || `${n.name.toLowerCase().replace(/[^a-z0-9]/g, "")}.com`;
+          const domain = rawDomain.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
           return (
             <article key={i} className={`card p-5 ${i === chosen ? "bg-cream" : "bg-paper"}`}>
               <div className="flex items-start justify-between gap-3">
@@ -79,7 +336,7 @@ export function NameViewer({ content, choose, choosing }: ViewerProps) {
                 </div>
                 <ChooseButton selected={i === chosen} disabled={choosing} onClick={choose ? () => choose(i) : undefined} />
               </div>
-              <p className="mt-3 text-sm font-semibold">{n.why}</p>
+              <p className="mt-3 text-sm font-semibold">{n.why || (n as any).rationale}</p>
               <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
                 <a
                   className="ulink inline-flex items-center gap-1 font-extrabold"
@@ -156,7 +413,7 @@ export function PlanViewer({ content: c, bizName }: ViewerProps) {
         <Section title="Problem"><p className="font-semibold">{c.problem}</p></Section>
         <Section title="Solution"><p className="font-semibold">{c.solution}</p></Section>
         <Section title="Target market"><p className="font-semibold">{c.targetMarket}</p></Section>
-        <Section title="Your edge"><p className="font-semibold">{c.advantage}</p></Section>
+        <Section title="Your edge"><p className="font-semibold">{c.advantage || c.uniqueValue}</p></Section>
       </div>
       <div className="grid gap-6 md:grid-cols-2">
         <Section title="Competitors">
@@ -232,8 +489,8 @@ export function PlanViewer({ content: c, bizName }: ViewerProps) {
       <div className="grid gap-6 md:grid-cols-2">
         <Section title="Milestones">
           <ol className="space-y-3">
-            {(c.milestones ?? []).map((x: { when: string; goal: string }, i: number) => (
-              <li key={i} className="flex gap-3"><span className="chip shrink-0 bg-sun">{x.when}</span><span className="font-semibold">{x.goal}</span></li>
+            {(c.milestones ?? []).map((x: { when?: string; month?: string; goal: string }, i: number) => (
+              <li key={i} className="flex gap-3"><span className="chip shrink-0 bg-sun">{x.when || x.month}</span><span className="font-semibold">{x.goal}</span></li>
             ))}
           </ol>
         </Section>
@@ -261,22 +518,25 @@ export function BrandViewer({ content: c }: ViewerProps) {
         <p className="display mt-3 text-3xl leading-tight md:text-5xl">{c.mission}</p>
       </div>
       <div className="grid gap-6 md:grid-cols-2">
-        <Section title="Brand story"><p className="font-semibold leading-relaxed">{c.story}</p></Section>
+        <Section title="Brand story"><p className="font-semibold leading-relaxed">{c.story || c.positioning}</p></Section>
         <Section title="Values">
           <div className="flex flex-wrap gap-2">
-            {(c.values ?? []).map((v: string) => <span key={v} className="chip bg-sun">{v}</span>)}
+            {(c.values ?? []).map((v: string | { name: string }) => {
+              const label = typeof v === "string" ? v : v.name;
+              return <span key={label} className="chip bg-sun">{label}</span>;
+            })}
           </div>
           <p className="mt-5 text-xs font-extrabold uppercase">Visual mood</p>
-          <p className="mt-1 font-semibold">{c.visualMood}</p>
+          <p className="mt-1 font-semibold">{c.visualMood || c.uvp}</p>
         </Section>
       </div>
       <Section title="Voice">
         <div className="flex flex-wrap gap-2">
-          {(c.voice?.traits ?? []).map((v: string) => <span key={v} className="chip bg-cream">{v}</span>)}
+          {(c.voice?.traits ?? c.voiceAttributes ?? []).map((v: string) => <span key={v} className="chip bg-cream">{v}</span>)}
         </div>
         <div className="mt-5 grid gap-6 md:grid-cols-2">
-          <div><p className="mb-2 font-extrabold uppercase">Do</p><List items={c.voice?.do} /></div>
-          <div><p className="mb-2 font-extrabold uppercase">Don't</p><List items={c.voice?.dont} /></div>
+          <div><p className="mb-2 font-extrabold uppercase">Do</p><List items={c.voice?.do ?? c.doList} /></div>
+          <div><p className="mb-2 font-extrabold uppercase">Don't</p><List items={c.voice?.dont ?? c.dontList} /></div>
         </div>
       </Section>
       <div className="grid gap-6 md:grid-cols-2">

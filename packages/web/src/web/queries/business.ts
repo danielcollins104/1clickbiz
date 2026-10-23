@@ -3,10 +3,33 @@ import { orpc } from "../lib/api";
 import { authClient, useLocalSession } from "../lib/auth";
 import { useFirebase } from "../context/FirebaseContext";
 import { TOOLS } from "../lib/tools";
+import {
+  CURATED_LOGO_PALETTES,
+  LOGO_STYLE_DIRECTIONS,
+  buildCuttingEdgeVectorSvg,
+  buildDiffusionLogoUrl,
+  generateCuttingEdgeLogoSuite,
+  type GeneratedLogoConcept,
+} from "../lib/ai-logo-engine";
 import type { Intake } from "../../api/database/schema";
 
 const LOCAL_BIZ_KEY = "1cb_local_businesses";
 const LOCAL_LEADS_KEY = "1cb_local_leads";
+
+export interface ProvenBusinessIdea {
+  title: string;
+  summary: string;
+  whyYou: string;
+  targetCustomer: string;
+  revenueModel: string;
+  demand: string;
+  competition: string;
+  startupCost: string;
+  timeToFirstSale: string;
+  firstStep?: string;
+  modelBadge?: string;
+  score: number;
+}
 
 interface StoredLocalBusiness {
   id: number;
@@ -30,32 +53,131 @@ interface StoredLocalLead {
   createdAt: string;
 }
 
+export function buildThreeProvenIdeas(
+  interestsInput: string,
+  possibilitiesInput: string,
+  intake?: Partial<Intake>
+): ProvenBusinessIdea[] {
+  const interests = (interestsInput || intake?.interests || intake?.skills || "Entrepreneurship, modern digital services, helping customers").trim();
+  const possibilities = (possibilitiesInput || intake?.idea || "Low-overhead recurring business that can launch fast").trim();
+  const location = intake?.location || "Your local area & online";
+  const budget = intake?.budget || "$500–$2,000";
+
+  // Extract a clean core theme from user's interests & possibilities
+  const cleanTopic = interests
+    .split(/[,;&/]+/)[0]
+    ?.trim()
+    .replace(/\.$/, "") || "Modern Specialist";
+  const topicTitle =
+    cleanTopic.length > 32
+      ? cleanTopic.slice(0, 32).trim()
+      : cleanTopic.charAt(0).toUpperCase() + cleanTopic.slice(1);
+
+  return [
+    {
+      title: `${topicTitle} Subscription & Retainer Studio`,
+      modelBadge: "Proven Model #1 · Recurring Retainer",
+      summary: `A high-margin, recurring subscription and membership business built around ${interests.toLowerCase()} (${possibilities}). Customers pay a predictable monthly fee for ongoing delivery, priority turnarounds, and VIP support.`,
+      whyYou: `Directly combines your interest in ${interests} with a proven recurring revenue model so every customer you win compounds your monthly income.`,
+      targetCustomer: `Busy customers and local businesses in ${location} looking for reliable, done-for-you ${cleanTopic.toLowerCase()} without hiring full-time.`,
+      revenueModel: "$149–$499/mo recurring membership tiers + $99 starter onboarding package (80%+ gross margin).",
+      demand: "High",
+      competition: "Low",
+      startupCost: budget === "Under $500" ? "$150 – $450" : "$350 – $1,200",
+      timeToFirstSale: "5 – 10 days",
+      firstStep: "Launch your hosted 1-Click website and offer a Founding Member rate to your first 5 customers.",
+      score: 96,
+    },
+    {
+      title: `Turnkey ${topicTitle} Productized Package`,
+      modelBadge: "Proven Model #2 · Fixed-Scope Package",
+      summary: `Instead of custom quotes or hourly billing, offer a crystal-clear, fixed-price ${cleanTopic.toLowerCase()} package (${possibilities}) delivered in 48–72 hours with transparent flat pricing and instant online checkout.`,
+      whyYou: `Easy to explain, zero scope creep, and tailored to your strengths in ${interests}. Customers love knowing the exact price and deliverable up front.`,
+      targetCustomer: `High-intent buyers in ${location} who want fast, guaranteed results around ${cleanTopic.toLowerCase()} without slow back-and-forth quotes.`,
+      revenueModel: "$199 Standard Package, $399 Pro Bundle, and $79/mo optional maintenance add-on.",
+      demand: "High",
+      competition: "Medium",
+      startupCost: "$200 – $800",
+      timeToFirstSale: "3 – 7 days",
+      firstStep: "Publish your 3-tier pricing on your live website and share the link in 3 local or niche communities.",
+      score: 92,
+    },
+    {
+      title: `Boutique ${topicTitle} Concierge & Guided Hub`,
+      modelBadge: "Proven Model #3 · Premium Concierge",
+      summary: `A premium white-glove concierge and specialty curations brand focused on ${interests.toLowerCase()} (${possibilities}). Combines high-ticket personalized service with digital guides, kits, or curated drops.`,
+      whyYou: `Positions you as the go-to specialist in ${cleanTopic.toLowerCase()} from day one, letting you earn higher profit per customer with minimal overhead.`,
+      targetCustomer: `Quality-focused clients and enthusiasts in ${location} willing to pay a premium for expert curation and personal care.`,
+      revenueModel: "$299–$750 flagship concierge package + $49 digital starter kit / trial experience.",
+      demand: "High",
+      competition: "Low",
+      startupCost: "$250 – $1,000",
+      timeToFirstSale: "7 – 14 days",
+      firstStep: "Reach out to 15 warm contacts or local partners with your Founding Client VIP invite.",
+      score: 89,
+    },
+  ];
+}
+
+function buildInitialLogoConcepts(name: string, idea: string): GeneratedLogoConcept[] {
+  const pal = CURATED_LOGO_PALETTES[0]!;
+  return LOGO_STYLE_DIRECTIONS.map((st, idx) => {
+    const svgCode = buildCuttingEdgeVectorSvg({
+      businessName: name,
+      tagline: "EST. 2026 · OFFICIAL",
+      prompt: idea,
+      styleId: st.id,
+      palette: pal,
+      seed: 100 + idx,
+    });
+    const svgDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svgCode)}`;
+    const diffusionUrl = buildDiffusionLogoUrl({
+      businessName: name,
+      prompt: idea,
+      styleLabel: st.label,
+      palette: pal,
+      seed: 700 + idx * 113,
+    });
+    return {
+      id: `logo-${st.id}-${idx}`,
+      name: `${name} — ${st.label}`,
+      styleId: st.id,
+      styleLabel: st.label,
+      engineBadge: "GenAI Neural Vector SVG",
+      rationale: st.description,
+      promptUsed: idea,
+      svgCode,
+      svgDataUrl,
+      diffusionUrl,
+      activeMode: "vector" as const,
+      image: {
+        key: `genai-logo-${st.id}-${idx}`,
+        url: svgDataUrl,
+      },
+    };
+  });
+}
+
 function buildDefaultAssets(name: string, slug: string, intake: Intake) {
   const now = new Date().toISOString();
   const location = intake.location || "Austin, Texas, USA";
   const customer = intake.customer || "High-intent local and online customers";
   const idea = intake.idea || `${name} — Modern AI-Powered Business`;
+  const initialIdeas = buildThreeProvenIdeas(intake.interests || intake.skills || name, idea, intake);
 
   const contents: Record<string, Record<string, any>> = {
     "idea-wizard": {
       chosen: 0,
-      ideas: [
-        {
-          title: name,
-          oneLiner: idea,
-          whyYou: `Built directly around your strengths (${intake.skills || "operations, execution, and customer care"}).`,
-          targetCustomer: customer,
-          revenueModel: "Recurring monthly memberships + high-margin starter packages",
-          startupCost: intake.budget || "$500–$2,000",
-          firstStep: "Launch your hosted storefront and onboard your first 5 founding customers this week.",
-        },
-      ],
+      interests: intake.interests || intake.skills || "AI automation, local services, digital products",
+      possibilities: intake.idea || "Recurring subscription or turnkey service I can run from home",
+      ideas: initialIdeas,
     },
     "name-generator": {
       chosen: 0,
       names: [
-        { name, tagline: "Built for speed, clarity, and results.", rationale: "Memorable, direct, and easy to refer.", domains: [`${slug}.com`, `get${slug}.co`] },
-        { name: `${name} Studio`, tagline: "Crafted for modern customers.", rationale: "Positions your brand as a premium specialist.", domains: [`${slug}studio.com`] },
+        { name, tagline: "Built for speed, clarity, and results.", why: "Memorable, direct, and easy to refer.", domain: `${slug}.com` },
+        { name: `${name} Studio`, tagline: "Crafted for modern customers.", why: "Positions your brand as a premium specialist.", domain: `${slug}studio.com` },
+        { name: `${name} Collective`, tagline: "Proven quality, delivered effortlessly.", why: "Warm, trustworthy, and scalable as you grow.", domain: `get${slug}.com` },
       ],
     },
     "business-plan": {
@@ -63,44 +185,88 @@ function buildDefaultAssets(name: string, slug: string, intake: Intake) {
       problem: "Customers face fragmented, slow, or overpriced alternatives with inconsistent quality.",
       solution: `${name} delivers a fast, transparent, turnkey product experience with predictable pricing.`,
       targetMarket: customer,
-      uniqueValue: "Speed to value, transparent pricing, and personal founder-led quality.",
-      revenueStreams: ["Core package ($149)", "Monthly membership ($49/mo)", "Premium concierge tier ($299)"],
-      pricingStrategy: "Three-tier value pricing anchored on the middle recurring plan.",
-      costStructure: ["Tools & hosting ($49/mo)", "Marketing & outreach ($150/mo)", "Fulfillment & supplies ($200/mo)"],
-      breakEven: "4 recurring customers cover baseline monthly operating expenses.",
+      advantage: "Speed to value, transparent pricing, and personal founder-led quality.",
+      competitors: [
+        { name: "Traditional Local Providers", note: "Slow quotes, outdated websites, and unpredictable pricing." },
+        { name: "Generic DIY Platforms", note: "Overwhelming for busy customers who want a done-for-you result." },
+      ],
+      pricing: [
+        { item: "Starter Package", price: "$99", note: "Fast entry point for first-time buyers" },
+        { item: "Growth Membership", price: "$199/mo", note: "Core recurring revenue engine" },
+        { item: "VIP Concierge Tier", price: "$499", note: "Full white-glove execution" },
+      ],
+      marketing: [
+        `Share your live /sites/${slug} landing page in local community groups and social bios`,
+        "Offer a Founding Member bonus to your first 10 customers",
+        "Run targeted local Meta & Google Search ads using Tool #06",
+      ],
+      operations: [
+        "Capture all customer inquiries automatically through your hosted website CRM",
+        "Deliver standardized packages using repeatable checklists",
+        "Follow up with leads within 15 minutes for 3x higher conversion",
+      ],
+      startupCosts: [
+        { item: "1-Click Website, Brand & CRM Suite", cost: 99 },
+        { item: "Initial supplies & launch toolkit", cost: 250 },
+        { item: "First-month local launch promotion", cost: 150 },
+      ],
+      projection: [
+        { month: 1, revenue: 1200, costs: 500 },
+        { month: 2, revenue: 2400, costs: 600 },
+        { month: 3, revenue: 3800, costs: 750 },
+        { month: 4, revenue: 5200, costs: 900 },
+        { month: 5, revenue: 6500, costs: 1050 },
+        { month: 6, revenue: 7800, costs: 1200 },
+        { month: 7, revenue: 9100, costs: 1350 },
+        { month: 8, revenue: 10400, costs: 1500 },
+        { month: 9, revenue: 11800, costs: 1650 },
+        { month: 10, revenue: 13200, costs: 1800 },
+        { month: 11, revenue: 14600, costs: 1950 },
+        { month: 12, revenue: 16200, costs: 2100 },
+      ],
       milestones: [
-        { month: "Month 1", goal: "Launch live site at /sites/" + slug + " and close first 5 paying customers." },
-        { month: "Month 2", goal: "Reach $2,500/mo revenue through referral loops and targeted local ads." },
-        { month: "Month 3", goal: "Automate onboarding and scale to $5,000+/mo recurring revenue." },
+        { when: "Month 1", goal: `Launch live site at /sites/${slug} and close first 5 paying customers.` },
+        { when: "Month 2", goal: "Reach $2,500+/mo revenue through referral loops and targeted local outreach." },
+        { when: "Month 3", goal: "Automate onboarding and scale to $5,000+/mo recurring revenue." },
       ],
       risks: [{ risk: "Slow initial awareness", mitigation: "Direct outreach to 25 warm leads and local community partnerships." }],
     },
     "brand-generator": {
       mission: `To bring effortless, high-craft solutions to ${customer}.`,
-      vision: `Become the most trusted name for ${customer} in ${location}.`,
-      positioning: `For ${customer}, ${name} is the modern choice that delivers results without the friction.`,
-      uvp: "Fast, reliable, and transparently priced.",
-      values: [
-        { name: "Clarity", meaning: "No jargon, hidden fees, or confusing steps." },
-        { name: "Speed", meaning: "Deliver value on day one." },
-        { name: "Craft", meaning: "Every detail feels intentional." },
+      story: `We started ${name} in ${location} after seeing how hard it was for ${customer} to get reliable, transparently priced results. Our mission is to make the entire experience fast, clear, and enjoyable from day one.`,
+      values: ["Clarity", "Speed", "Craftsmanship", "Reliability"],
+      visualMood: "Bold Neo-Brutalist clarity with warm, approachable confidence.",
+      voice: {
+        traits: ["Confident", "Warm", "Direct", "Jargon-Free"],
+        do: ["Lead with concrete customer outcomes", "Show transparent pricing and clear next steps"],
+        dont: ["Never hide pricing behind a long sales call", "Avoid vague corporate buzzwords"],
+      },
+      personas: [
+        {
+          name: "The Busy Action-Taker",
+          snapshot: `A customer in ${location} who values speed, quality, and transparent pricing.`,
+          pains: ["Tired of waiting days for quotes", "Frustrated by inconsistent quality"],
+          goals: ["Get a reliable solution this week", "Work with a responsive specialist"],
+          whereTheyHangOut: "Instagram, local community groups, Google Search, and word-of-mouth referrals",
+        },
       ],
-      voiceAttributes: ["Confident", "Warm", "Direct"],
-      messagingPillars: [
-        { pillar: "Effortless Experience", proof: "Simple online booking and instant turnaround." },
-        { pillar: "Proven Quality", proof: "Backed by a 100% satisfaction guarantee." },
+      taglines: [
+        `${name}: Built for results, priced for clarity.`,
+        `The modern way to get ${idea.slice(0, 40).toLowerCase()}.`,
+        `Fast. Proven. Effortless.`,
       ],
-      elevatorPitch: `${name} helps ${customer} get ${idea.toLowerCase()} without the usual hassle or markup.`,
-      doList: ["Lead with concrete customer outcomes", "Use clear, everyday language"],
-      dontList: ["Never hide pricing behind a call", "Avoid generic corporate buzzwords"],
+      keyMessages: [
+        "Book online in under 2 minutes with transparent flat pricing.",
+        "Backed by our 100% Founder Satisfaction Guarantee.",
+      ],
     },
     "color-font-system": {
       colors: [
-        { role: "Primary", name: "Ink Black", hex: "#131313", usage: "Headlines, borders, primary CTAs" },
-        { role: "Secondary", name: "Sun Yellow", hex: "#FDE047", usage: "Highlights, badges, hero accents" },
-        { role: "Accent", name: "Mint Fresh", hex: "#6EE7B7", usage: "Success states, conversion callouts" },
-        { role: "Background", name: "Warm Paper", hex: "#FAF7F0", usage: "Page canvas and cards" },
-        { role: "Text", name: "Deep Charcoal", hex: "#1F1F1F", usage: "Body copy and UI labels" },
+        { role: "Primary", name: "Ink Black", hex: "#131313", usage: "Headlines, borders, primary CTAs", onColor: "#FFFFFF" },
+        { role: "Secondary", name: "Sun Yellow", hex: "#FDE047", usage: "Highlights, badges, hero accents", onColor: "#131313" },
+        { role: "Accent", name: "Mint Fresh", hex: "#6EE7B7", usage: "Success states, conversion callouts", onColor: "#131313" },
+        { role: "Background", name: "Warm Paper", hex: "#FAF7F0", usage: "Page canvas and cards", onColor: "#131313" },
+        { role: "Text", name: "Deep Charcoal", hex: "#1F1F1F", usage: "Body copy and UI labels", onColor: "#FFFFFF" },
       ],
       headingFont: "Space Grotesk",
       bodyFont: "Plus Jakarta Sans",
@@ -108,14 +274,7 @@ function buildDefaultAssets(name: string, slug: string, intake: Intake) {
     },
     "logo-generation": {
       chosen: 0,
-      concepts: [
-        {
-          name: "Bold Monogram Emblem",
-          style: "Modern Geometric",
-          description: `High-contrast emblem mark for ${name}.`,
-          image: { key: "default-logo", url: "/images/spot-login.webp" },
-        },
-      ],
+      concepts: buildInitialLogoConcepts(name, idea),
     },
     "website-generator": {
       seo: { title: `${name} — Official Site`, description: idea },
@@ -212,7 +371,43 @@ function getLocalBusinesses(): StoredLocalBusiness[] {
     const raw = localStorage.getItem(LOCAL_BIZ_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as StoredLocalBusiness[];
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        let mutated = false;
+        for (const b of parsed) {
+          const ideaContent = b.assets?.["idea-wizard"]?.content;
+          const existingIdeas = ideaContent?.ideas as ProvenBusinessIdea[] | undefined;
+          if (!existingIdeas || existingIdeas.length < 3 || typeof existingIdeas[0]?.score !== "number" || !existingIdeas[0]?.summary) {
+            const upgraded = buildThreeProvenIdeas(
+              ideaContent?.interests || b.intake?.interests || b.intake?.skills || b.name,
+              ideaContent?.possibilities || b.intake?.idea || "",
+              b.intake
+            );
+            if (!b.assets) b.assets = {};
+            b.assets["idea-wizard"] = {
+              tool: "idea-wizard",
+              status: "done",
+              error: null,
+              version: (b.assets["idea-wizard"]?.version ?? 1) + 1,
+              updatedAt: new Date().toISOString(),
+              content: {
+                chosen: typeof ideaContent?.chosen === "number" ? ideaContent.chosen : 0,
+                interests: ideaContent?.interests || b.intake?.interests || b.intake?.skills || "AI automation, digital services, local business",
+                possibilities: ideaContent?.possibilities || b.intake?.idea || "Low-overhead recurring business I can run from home",
+                ideas: upgraded,
+              },
+            };
+            mutated = true;
+          }
+        }
+        if (mutated) {
+          try {
+            localStorage.setItem(LOCAL_BIZ_KEY, JSON.stringify(parsed));
+          } catch {
+            // ignore
+          }
+        }
+        return parsed;
+      }
     }
   } catch {
     // Ignore
@@ -248,6 +443,61 @@ function getLocalBusinesses(): StoredLocalBusiness[] {
 function saveLocalBusinesses(list: StoredLocalBusiness[]) {
   if (typeof window === "undefined") return;
   localStorage.setItem(LOCAL_BIZ_KEY, JSON.stringify(list));
+}
+
+export function saveLocalIdeaWizardCards(
+  businessId: number,
+  ideas: ProvenBusinessIdea[],
+  chosen: number,
+  interests: string,
+  possibilities: string
+) {
+  const list = getLocalBusinesses();
+  const b = list.find((x) => x.id === businessId) || list[0];
+  if (!b) return;
+  b.assets["idea-wizard"] = {
+    tool: "idea-wizard",
+    status: "done",
+    error: null,
+    version: (b.assets["idea-wizard"]?.version ?? 1) + 1,
+    updatedAt: new Date().toISOString(),
+    content: {
+      chosen,
+      interests,
+      possibilities,
+      ideas,
+    },
+  };
+  if (interests.trim()) b.intake.interests = interests.trim();
+  const chosenCard = ideas[chosen] || ideas[0];
+  if (chosenCard) {
+    b.intake.idea = `${chosenCard.title}: ${chosenCard.summary}`;
+  }
+  b.updatedAt = new Date().toISOString();
+  saveLocalBusinesses(list);
+}
+
+export function saveLocalLogoConcepts(
+  businessId: number,
+  concepts: GeneratedLogoConcept[],
+  chosen: number
+) {
+  const list = getLocalBusinesses();
+  const b = list.find((x) => x.id === businessId) || list[0];
+  if (!b) return;
+  b.assets["logo-generation"] = {
+    tool: "logo-generation",
+    status: "done",
+    error: null,
+    version: (b.assets["logo-generation"]?.version ?? 1) + 1,
+    updatedAt: new Date().toISOString(),
+    content: {
+      chosen,
+      concepts,
+    },
+  };
+  b.updatedAt = new Date().toISOString();
+  saveLocalBusinesses(list);
 }
 
 function getLocalLeads(businessId?: number): StoredLocalLead[] {
@@ -453,11 +703,31 @@ export function useRegenerate() {
   const baseOpts = orpc.businesses.regenerate.mutationOptions({ onSettled: done });
   return useMutation({
     ...baseOpts,
-    mutationFn: async (input: { id: number; tool: string }, ctx) => {
+    mutationFn: async (input: { id: number; tool: string; instruction?: string }, ctx) => {
       try {
-        if (baseOpts.mutationFn) return await baseOpts.mutationFn(input, ctx);
+        if (baseOpts.mutationFn) return await baseOpts.mutationFn(input as any, ctx);
       } catch {
         // Local fallback
+      }
+      const list = getLocalBusinesses();
+      const b = list.find((x) => x.id === input.id) || list[0];
+      if (b) {
+        if (input.tool === "idea-wizard") {
+          const curContent = b.assets["idea-wizard"]?.content;
+          const interests = input.instruction || curContent?.interests || b.intake.interests || b.intake.skills;
+          const possibilities = curContent?.possibilities || b.intake.idea;
+          const nextIdeas = buildThreeProvenIdeas(interests, possibilities, b.intake);
+          saveLocalIdeaWizardCards(b.id, nextIdeas, 0, interests, possibilities);
+        } else if (input.tool === "logo-generation") {
+          const nextConcepts = await generateCuttingEdgeLogoSuite({
+            businessName: b.name,
+            tagline: "OFFICIAL BRAND",
+            prompt: input.instruction || b.intake.idea,
+            palette: CURATED_LOGO_PALETTES[Math.floor(Math.random() * CURATED_LOGO_PALETTES.length)]!,
+            renderMode: "hybrid",
+          });
+          saveLocalLogoConcepts(b.id, nextConcepts, 0);
+        }
       }
       done();
       return { ok: true };
@@ -502,10 +772,15 @@ export function useChoose() {
         // Local fallback
       }
       const list = getLocalBusinesses();
-      const b = list.find((x) => x.id === input.id);
+      const b = list.find((x) => x.id === input.id) || list[0];
       if (b && b.assets[input.tool]?.content) {
         b.assets[input.tool]!.content!.chosen = input.index;
-        if (input.tool === "name-generator") {
+        if (input.tool === "idea-wizard") {
+          const pickedIdea = b.assets["idea-wizard"]!.content!.ideas?.[input.index];
+          if (pickedIdea) {
+            b.intake.idea = `${pickedIdea.title}: ${pickedIdea.summary}`;
+          }
+        } else if (input.tool === "name-generator") {
           const picked = b.assets[input.tool]!.content!.names?.[input.index]?.name;
           if (picked) b.name = picked;
         }
@@ -753,11 +1028,14 @@ export function useSite(slug: string) {
       if (!found) return null;
       const colors = (found.assets["color-font-system"]?.content?.colors ?? []) as { role: string; hex: string }[];
       const getHex = (role: string, fallback: string) => colors.find((c) => c.role.toLowerCase() === role.toLowerCase())?.hex || fallback;
+      const logoContent = found.assets["logo-generation"]?.content;
+      const chosenIdx = typeof logoContent?.chosen === "number" ? logoContent.chosen : 0;
+      const chosenLogo = logoContent?.concepts?.[chosenIdx]?.image ?? logoContent?.concepts?.[0]?.image ?? null;
       return {
         name: found.name,
         slug: found.slug,
         site: found.assets["website-generator"]?.content ?? {},
-        logo: found.assets["logo-generation"]?.content?.concepts?.[0]?.image ?? null,
+        logo: chosenLogo,
         theme: {
           primary: getHex("Primary", "#131313"),
           secondary: getHex("Secondary", "#FDE047"),
