@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useSearch } from "wouter";
-import { ArrowUpRight, Check, ExternalLink, Globe, Loader2, Lock, Pencil, Plus, RefreshCw, Sparkles, X, Zap } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, Compass, ExternalLink, Globe, Layers, LayoutGrid, Loader2, Lock, MessageSquare, Pencil, Plus, RefreshCw, Sparkles, X, Zap } from "lucide-react";
 import { Onboarding } from "../components/onboarding";
 import { useUpdateOnboarding } from "../queries/launch";
 import { PageLoader } from "../components/protected-route";
@@ -20,6 +20,92 @@ import {
 } from "../queries/business";
 
 type Asset = { status: string; content: Record<string, unknown> | null; error: string | null };
+
+const TOOL_ACTION_GUIDE: Record<string, { action: string; cta: string }> = {
+  "idea-wizard": {
+    action: "Review 3 tailored business concepts and lock in your winning model.",
+    cta: "1. Pick Idea",
+  },
+  "name-generator": {
+    action: "Choose your official business name, tagline, and domain ideas.",
+    cta: "2. Pick Name",
+  },
+  "business-plan": {
+    action: "Read or customize your executive summary, pricing tiers, and 90-day milestones.",
+    cta: "3. Review Plan",
+  },
+  "brand-generator": {
+    action: "Get your mission statement, elevator pitch, and brand voice rules.",
+    cta: "4. View Brand Voice",
+  },
+  "color-font-system": {
+    action: "Inspect your 5-color brand palette and Google Font pairing.",
+    cta: "5. View Colors & Fonts",
+  },
+  "logo-generation": {
+    action: "Select your primary brand mark that appears on your live website.",
+    cta: "6. Pick Logo",
+  },
+  "website-generator": {
+    action: "Edit your live website copy, pricing packages, FAQ, and lead form.",
+    cta: "7. Customize Website",
+  },
+  "ad-generator": {
+    action: "Copy ready-to-run Facebook, Instagram, and Google Search ads.",
+    cta: "8. Copy Ad Campaigns",
+  },
+  "social-generator": {
+    action: "Grab 30 days of launch posts, hooks, and hashtags to attract customers.",
+    cta: "9. Copy Social Posts",
+  },
+  "launch-checklist": {
+    action: "Check off your LLC registration, free IRS EIN, bank account, and permits.",
+    cta: "10. Complete Legal Steps",
+  },
+  "funding-finder": {
+    action: "Explore matched small-business grants, SBA microloans, and pitch angles.",
+    cta: "11. View Funding Leads",
+  },
+  "customer-crm": {
+    action: "Track leads from your live website contact form and log follow-ups.",
+    cta: "12. Manage Customers",
+  },
+  "ai-advisor": {
+    action: "Chat 24/7 with your AI Co-Founder for pricing, marketing, and next steps.",
+    cta: "13. Ask AI Co-Founder",
+  },
+};
+
+const LAUNCH_PHASES = [
+  {
+    step: "PHASE 1",
+    title: "Validate Your Idea, Name & Business Plan",
+    subtitle: "Start here: confirm your business model, pick your company name, and review your financial & pricing roadmap.",
+    bg: "bg-sun",
+    slugs: ["idea-wizard", "name-generator", "business-plan"],
+  },
+  {
+    step: "PHASE 2",
+    title: "Build Your Brand Identity, Colors & Logo",
+    subtitle: "Establish how your business looks and sounds—these choices automatically style your live website.",
+    bg: "bg-mint",
+    slugs: ["brand-generator", "color-font-system", "logo-generation"],
+  },
+  {
+    step: "PHASE 3",
+    title: "Publish Your Free Website & Launch Marketing",
+    subtitle: "Your live website is hosted free at /sites/your-name. Copy your ads and social posts to bring in traffic.",
+    bg: "bg-cream",
+    slugs: ["website-generator", "ad-generator", "social-generator"],
+  },
+  {
+    step: "PHASE 4",
+    title: "Make It Legal, Get Funded & Close Customers",
+    subtitle: "Check off your legal setup, apply for grants, manage incoming customer inquiries in your CRM, and ask your AI Advisor.",
+    bg: "bg-paper",
+    slugs: ["launch-checklist", "funding-finder", "customer-crm", "ai-advisor"],
+  },
+];
 
 /** A one-line preview of each tool's output for the dashboard card. */
 function Preview({ tool, a, leads = 0 }: { tool: string; a: Asset; leads?: number }) {
@@ -91,13 +177,14 @@ export default function DashboardPage() {
   const [customSlugInput, setCustomSlugInput] = useState("");
   const [slugError, setSlugError] = useState<string | null>(null);
   const [slugSuccess, setSlugSuccess] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"phases" | "grid">("phases");
+  const [copiedUrl, setCopiedUrl] = useState(false);
   const justPaid = params.get("checkout") === "success";
   const tried = useRef(0);
 
   const bizId = Number(params.get("b")) || list?.[0]?.id;
   const { data, isLoading: bizLoading } = useBusiness(bizId);
 
-  // After Stripe redirects back, the subscription can take a moment to land. Re-check a few times.
   useEffect(() => {
     if (!justPaid || refresh.isPending) return;
     if (tried.current >= 4) return;
@@ -124,23 +211,99 @@ export default function DashboardPage() {
   const redundantSingles =
     activePlans.some((p) => p.planId === "phase_1_launch") && activePlans.some((p) => p.planId.startsWith("tool_") && !p.canceling);
 
+  const renderToolCard = (t: (typeof TOOLS)[number]) => {
+    const locked = !owned.has(t.slug);
+    const a = assets[t.slug];
+    const status = locked ? "locked" : a?.status ?? "idle";
+    const st = STATUS[status] ?? STATUS.idle!;
+    const guide = TOOL_ACTION_GUIDE[t.slug];
+
+    const body = (
+      <>
+        <div className="flex items-center justify-between border-b-[3px] border-ink px-4 py-3">
+          <span className="flex items-center gap-2">
+            <span className={`grid h-9 w-9 place-items-center b3 ${locked ? "bg-cream" : "bg-sun"}`}>
+              <ProductIcon name={t.icon} className="h-5 w-5" />
+            </span>
+            <span className="display text-lg">#{t.num}</span>
+          </span>
+          <span className={`chip ${st.cls}`}>
+            {status === "running" && <Loader2 className="h-3 w-3 animate-spin" strokeWidth={3} />}
+            {status === "locked" && <Lock className="h-3 w-3" strokeWidth={3} />}
+            {st.label}
+          </span>
+        </div>
+        <div className="flex flex-1 flex-col p-4">
+          <h3 className="display text-xl leading-tight">{t.name}</h3>
+          {guide && (
+            <p className="mt-1.5 text-xs font-bold text-ink/75 bg-cream/70 border border-ink/20 px-2.5 py-1.5">
+              <strong className="uppercase text-[10px] tracking-wider text-ink block">What to do here:</strong>
+              {guide.action}
+            </p>
+          )}
+          <div className="mt-3 flex-1">
+            {locked ? (
+              <p className="text-sm font-semibold text-muted">{t.tagline}</p>
+            ) : status === "running" ? (
+              <div className="space-y-2">
+                <div className="h-3 w-5/6 animate-pulse bg-cream" />
+                <div className="h-3 w-2/3 animate-pulse bg-cream" />
+              </div>
+            ) : status === "error" ? (
+              <p className="line-clamp-2 text-sm font-bold">{a?.error ?? "Generation failed."}</p>
+            ) : a ? (
+              <div className="border-l-[3px] border-ink pl-2.5 py-0.5">
+                <p className="text-[10px] font-black uppercase text-muted mb-0.5">Generated Output Preview:</p>
+                <Preview tool={t.slug} a={a} leads={data?.leadCount ?? 0} />
+              </div>
+            ) : (
+              <p className="text-sm font-semibold text-muted">Click to generate output.</p>
+            )}
+          </div>
+          <div className="mt-4 pt-3 border-t-2 border-dashed border-ink/20 flex items-center justify-between text-xs font-black uppercase">
+            {locked ? (
+              <>
+                <span>{money(t.price)}/mo</span>
+                <span className="flex items-center gap-1">Unlock <ArrowUpRight className="h-4 w-4" strokeWidth={3} /></span>
+              </>
+            ) : (
+              <span className="ml-auto inline-flex items-center gap-1 bg-sun px-2.5 py-1 border border-ink shadow-[2px_2px_0px_#000]">
+                {guide?.cta ?? "Open Tool"} <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={3} />
+              </span>
+            )}
+          </div>
+        </div>
+      </>
+    );
+    const cls = `card card-lift flex flex-col no-underline ${locked ? "bg-paper opacity-80" : "bg-paper"}`;
+    return locked ? (
+      <Link key={t.slug} to={`/product/${t.slug}`} className={cls} onClick={() => add(t, { open: false })}>
+        {body}
+      </Link>
+    ) : (
+      <Link key={t.slug} to={`/dashboard/${t.slug}?b=${bizId}`} className={cls}>
+        {body}
+      </Link>
+    );
+  };
+
   return (
     <div>
       {/* banner */}
       <section className="relative border-b-[3px] border-ink bg-ink">
         <img src="/images/dashboard-banner.webp" alt="Three founders in black and yellow" className="h-56 w-full object-cover object-[center_20%] opacity-90 md:h-72" />
-        <div className="absolute inset-0 mx-auto flex max-w-[1400px] items-end px-4 pb-6 md:px-8">
+        <div className="absolute inset-0 mx-auto flex max-w-[1400px] items-end justify-between gap-4 px-4 pb-6 md:px-8">
           <div className="b3 hard max-w-2xl bg-paper p-5">
             <p className="text-xs font-extrabold uppercase tracking-[0.2em]">
-              {data ? "Your business" : `Welcome${firstName ? `, ${firstName}` : ""}`}
+              {data ? `Your Active Business Workspace${firstName ? ` · ${firstName}` : ""}` : `Welcome${firstName ? `, ${firstName}` : ""}`}
             </p>
-            <h1 className="display mt-1 text-4xl md:text-6xl">{data?.business.name ?? "Dashboard"}</h1>
+            <h1 className="display mt-1 text-3xl sm:text-4xl md:text-6xl">{data?.business.name ?? "Dashboard"}</h1>
             {data && (
-              <p className="mt-2 text-sm font-extrabold uppercase">
+              <p className="mt-2 text-xs sm:text-sm font-extrabold uppercase">
                 {building ? (
-                  <span className="inline-flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" strokeWidth={3} /> Building · {doneCount}/{ownedTools.length} ready</span>
+                  <span className="inline-flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" strokeWidth={3} /> Building · {doneCount}/{ownedTools.length} AI tools ready</span>
                 ) : (
-                  <span>{doneCount}/{ownedTools.length} tools ready</span>
+                  <span className="text-emerald-800">✓ {doneCount}/{ownedTools.length} AI tools built &amp; ready to use below</span>
                 )}
               </p>
             )}
@@ -168,42 +331,83 @@ export default function DashboardPage() {
           </div>
         )}
 
+        {/* Quick Action Command Bar: Clear 4-Button Workflow for the User */}
+        {data && (
+          <div className="b3 hard mb-8 bg-cream p-5">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div>
+                <span className="inline-flex items-center gap-1.5 bg-ink text-sun px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider">
+                  <Compass className="h-3.5 w-3.5 text-mint" /> Quick Action Bar · How to Get Your Business Going
+                </span>
+                <h2 className="display mt-2 text-2xl md:text-3xl">
+                  What would you like to do with <span className="underline decoration-sun decoration-4">{data.business.name}</span> right now?
+                </h2>
+              </div>
+              <div className="flex flex-wrap gap-2.5">
+                <Link to={`/dashboard/idea-wizard?b=${bizId}`} className="btn btn-sm bg-paper text-xs font-black">
+                  1. Review Idea &amp; Plan (#01–#03)
+                </Link>
+                <Link to={`/dashboard/logo-generation?b=${bizId}`} className="btn btn-sm bg-paper text-xs font-black">
+                  2. Pick Name &amp; Logo (#04–#06)
+                </Link>
+                {siteReady && (
+                  <a
+                    href={`/sites/${data.business.slug}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => onboarding.mutate({ openedSite: true })}
+                    className="btn btn-sm btn-yellow text-xs font-black"
+                  >
+                    <Globe className="h-4 w-4" /> 3. View Live Website ↗
+                  </a>
+                )}
+                <Link to={`/dashboard/ai-advisor?b=${bizId}`} className="btn btn-sm bg-mint text-ink text-xs font-black">
+                  <MessageSquare className="h-4 w-4" /> 4. Ask AI Co-Founder
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         <Onboarding tools={owned.size} bizId={bizId} slug={data?.business.slug} building={!!building} complete={!!data && ownedTools.length > 0 && doneCount === ownedTools.length} siteReady={siteReady} leadCount={data?.leadCount ?? 0} />
 
         {/* top bar */}
         <div className="flex flex-col gap-4 border-b-[3px] border-ink pb-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-3">
             {list && list.length > 1 && (
-              <select
-                aria-label="Switch business"
-                className="input !w-auto !py-2 text-sm"
-                value={bizId}
-                onChange={(e) => navigate(`/dashboard?b=${e.target.value}`)}
-              >
-                {list.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black uppercase">Active Business:</span>
+                <select
+                  aria-label="Switch business"
+                  className="input !w-auto !py-2 text-sm font-bold"
+                  value={bizId}
+                  onChange={(e) => navigate(`/dashboard?b=${e.target.value}`)}
+                >
+                  {list.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             )}
             <span className="chip bg-paper">{owned.size} of 13 tools unlocked</span>
             {gens && (
               <span className="chip bg-cream">
-                <Sparkles className="h-3.5 w-3.5" strokeWidth={3} /> {gens.remaining} / {gens.granted} generations left
+                <Sparkles className="h-3.5 w-3.5" strokeWidth={3} /> {gens.remaining} / {gens.granted} AI generations left
               </span>
             )}
           </div>
           <div className="flex flex-wrap gap-3">
             {siteReady && data && (
               <a href={`/sites/${data.business.slug}`} onClick={() => onboarding.mutate({ openedSite: true })} target="_blank" rel="noreferrer" className="btn btn-sm btn-yellow">
-                <ExternalLink className="h-4 w-4" strokeWidth={3} /> View live site
+                <ExternalLink className="h-4 w-4" strokeWidth={3} /> Open Your Live Website
               </a>
             )}
             {data && (
               <>
                 <Link to={`/start?edit=${data.business.id}`} className="btn btn-sm btn-quiet">
-                  <Pencil className="h-4 w-4" strokeWidth={3} /> Edit answers
+                  <Pencil className="h-4 w-4" strokeWidth={3} /> Edit 8 Answers
                 </Link>
                 <button
                   type="button"
@@ -215,13 +419,13 @@ export default function DashboardPage() {
                     rebuild.mutate({ id: data.business.id }, { onError: (e) => setRebuildError(errorMessage(e)) });
                   }}
                 >
-                  <RefreshCw className={`h-4 w-4 ${rebuild.isPending ? "animate-spin" : ""}`} strokeWidth={3} /> Rebuild all
+                  <RefreshCw className={`h-4 w-4 ${rebuild.isPending ? "animate-spin" : ""}`} strokeWidth={3} /> Regenerate All 13
                 </button>
               </>
             )}
             {owned.size > 0 && (
               <Link to="/start" className="btn btn-sm">
-                <Plus className="h-4 w-4" strokeWidth={3} /> New business
+                <Plus className="h-4 w-4" strokeWidth={3} /> Create Another Business
               </Link>
             )}
           </div>
@@ -236,17 +440,37 @@ export default function DashboardPage() {
                 <Globe className="h-5 w-5" strokeWidth={2.5} />
               </span>
               <div>
-                <div className="flex items-center gap-2">
-                  <p className="text-xs font-black uppercase tracking-wider text-muted">Your Free Live Website URL</p>
-                  <span className="chip bg-mint text-ink text-[10px] font-black px-1.5 py-0.2">100% FREE</span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-xs font-black uppercase tracking-wider text-muted">Your Public Customer Website Link</p>
+                  <span className="chip bg-mint text-ink text-[10px] font-black px-1.5 py-0.2">LIVE &amp; FREE</span>
                 </div>
                 <p className="font-mono text-sm font-black text-ink break-all mt-0.5">
                   {typeof window !== "undefined" ? window.location.origin : ""}/sites/<span className="text-blue-700 bg-sun/40 px-1 border border-ink/40 font-bold">{data.business.slug}</span>
+                </p>
+                <p className="text-xs font-semibold text-muted mt-0.5">
+                  Share this link on social media or with clients—every contact form inquiry goes straight into Tool #12 (Customer CRM).
                 </p>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(`${window.location.origin}/sites/${data.business.slug}`);
+                    setCopiedUrl(true);
+                    onboarding.mutate({ sharedSite: true });
+                    setTimeout(() => setCopiedUrl(false), 2500);
+                  } catch {
+                    // ignore
+                  }
+                }}
+                className="btn btn-sm btn-quiet flex items-center gap-1.5 text-xs font-black border-2 border-ink cursor-pointer"
+              >
+                <Check className="h-3.5 w-3.5" />
+                <span>{copiedUrl ? "Copied Link!" : "Copy Website Link"}</span>
+              </button>
               <button
                 type="button"
                 onClick={() => {
@@ -255,11 +479,11 @@ export default function DashboardPage() {
                   setSlugSuccess(null);
                   setEditingSlug(true);
                 }}
-                className="btn btn-sm btn-quiet flex items-center gap-1.5 text-xs font-black border-2 border-ink"
+                className="btn btn-sm btn-quiet flex items-center gap-1.5 text-xs font-black border-2 border-ink cursor-pointer"
                 title="Choose your own free custom URL name"
               >
                 <Pencil className="h-3.5 w-3.5" />
-                <span>Choose Free URL Name</span>
+                <span>Change URL Name</span>
               </button>
               {siteReady && (
                 <a
@@ -422,73 +646,70 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* tool grid */}
+        {/* View Toggle + Guided Phase Sections or Full Grid */}
         {(list?.length ?? 0) > 0 && (
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {TOOLS.map((t) => {
-              const locked = !owned.has(t.slug);
-              const a = assets[t.slug];
-              const status = locked ? "locked" : a?.status ?? "idle";
-              const st = STATUS[status] ?? STATUS.idle!;
-              const body = (
-                <>
-                  <div className="flex items-center justify-between border-b-[3px] border-ink px-4 py-3">
-                    <span className="flex items-center gap-2">
-                      <span className={`grid h-9 w-9 place-items-center b3 ${locked ? "bg-cream" : "bg-sun"}`}>
-                        <ProductIcon name={t.icon} className="h-5 w-5" />
-                      </span>
-                      <span className="display text-lg">{t.num}</span>
-                    </span>
-                    <span className={`chip ${st.cls}`}>
-                      {status === "running" && <Loader2 className="h-3 w-3 animate-spin" strokeWidth={3} />}
-                      {status === "locked" && <Lock className="h-3 w-3" strokeWidth={3} />}
-                      {st.label}
-                    </span>
-                  </div>
-                  <div className="flex flex-1 flex-col p-4">
-                    <h3 className="display text-xl leading-tight">{t.name}</h3>
-                    <div className="mt-3 flex-1">
-                      {locked ? (
-                        <p className="text-sm font-semibold text-muted">{t.tagline}</p>
-                      ) : status === "running" ? (
-                        <div className="space-y-2">
-                          <div className="h-3 w-5/6 animate-pulse bg-cream" />
-                          <div className="h-3 w-2/3 animate-pulse bg-cream" />
+          <div id="phase-tools" className="mt-10">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <p className="text-xs font-black uppercase tracking-widest text-muted">Your 13 AI Business Engines</p>
+                <h2 className="display text-3xl md:text-4xl">Click any tool in order to review &amp; customize</h2>
+              </div>
+              <div className="inline-flex border-[2.5px] border-ink bg-cream p-1 self-start">
+                <button
+                  type="button"
+                  onClick={() => setViewMode("phases")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-black uppercase cursor-pointer ${
+                    viewMode === "phases" ? "bg-ink text-sun" : "text-ink hover:bg-paper"
+                  }`}
+                >
+                  <Layers className="h-3.5 w-3.5" /> Guided 4-Phase View
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("grid")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-black uppercase cursor-pointer ${
+                    viewMode === "grid" ? "bg-ink text-sun" : "text-ink hover:bg-paper"
+                  }`}
+                >
+                  <LayoutGrid className="h-3.5 w-3.5" /> All 13 Tools Grid
+                </button>
+              </div>
+            </div>
+
+            {viewMode === "phases" ? (
+              <div className="space-y-10">
+                {LAUNCH_PHASES.map((phase) => {
+                  const phaseTools = phase.slugs
+                    .map((s) => TOOLS.find((t) => t.slug === s))
+                    .filter((t): t is (typeof TOOLS)[number] => !!t);
+                  return (
+                    <section key={phase.step} className="b3 hard bg-paper/50 p-5 md:p-6">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b-[3px] border-ink pb-4 mb-6">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className={`px-2.5 py-0.5 text-xs font-black uppercase border-2 border-ink ${phase.bg}`}>
+                              {phase.step}
+                            </span>
+                            <h3 className="display text-2xl md:text-3xl">{phase.title}</h3>
+                          </div>
+                          <p className="mt-1 text-xs sm:text-sm font-bold text-ink/75">{phase.subtitle}</p>
                         </div>
-                      ) : status === "error" ? (
-                        <p className="line-clamp-2 text-sm font-bold">{a?.error ?? "Generation failed."}</p>
-                      ) : a ? (
-                        <Preview tool={t.slug} a={a} leads={data?.leadCount ?? 0} />
-                      ) : (
-                        <p className="text-sm font-semibold text-muted">Not generated yet.</p>
-                      )}
-                    </div>
-                    <div className="mt-4 flex items-center justify-between text-sm font-extrabold uppercase">
-                      {locked ? (
-                        <>
-                          <span>{money(t.price)}/mo</span>
-                          <span className="flex items-center gap-1">Unlock <ArrowUpRight className="h-4 w-4" strokeWidth={3} /></span>
-                        </>
-                      ) : (
-                        <span className="ml-auto flex items-center gap-1">Open <ArrowUpRight className="h-4 w-4" strokeWidth={3} /></span>
-                      )}
-                    </div>
-                  </div>
-                </>
-              );
-              const cls = `card card-lift flex flex-col no-underline ${locked ? "bg-paper opacity-80" : "bg-paper"}`;
-              return locked ? (
-                <Link key={t.slug} to={`/product/${t.slug}`} className={cls} onClick={() => add(t, { open: false })}>
-                  {body}
-                </Link>
-              ) : (
-                <Link key={t.slug} to={`/dashboard/${t.slug}?b=${bizId}`} className={cls}>
-                  {body}
-                </Link>
-              );
-            })}
+                      </div>
+                      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {phaseTools.map(renderToolCard)}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {TOOLS.map(renderToolCard)}
+              </div>
+            )}
           </div>
         )}
+
         {bizLoading && (list?.length ?? 0) > 0 && !data && (
           <p className="mt-6 flex items-center gap-2 font-extrabold"><Loader2 className="h-5 w-5 animate-spin" strokeWidth={3} /> Loading tools…</p>
         )}

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ArrowRight, ArrowUpRight, Zap, Sparkles, Check } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Zap, Sparkles, Check, Rocket, Globe, Compass, MessageSquare } from "lucide-react";
 import { useProducts } from "../queries/products";
 import { CardSkeleton } from "../components/product-card";
 import { ProductArt, ProductIcon } from "../components/product-art";
@@ -13,11 +13,13 @@ import { RoiCalculator } from "../components/RoiCalculator";
 import { AboutCreator } from "../components/AboutCreator";
 import { SubscriptionPlans } from "../components/SubscriptionPlans";
 import { InteractiveDeliverableExplorer } from "../components/InteractiveDeliverableExplorer";
+import { useSession } from "../queries/business";
 
 function Hero() {
   const { data } = useProducts();
   const { add, clear } = useCart();
   const [, navigate] = useLocation();
+  const { data: session } = useSession();
   const booking = data?.products.find((p) => p.slug === "idea-wizard");
   const bundle = data?.products.find((p) => p.slug === "phase-1-launch");
 
@@ -38,25 +40,25 @@ function Hero() {
         <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3 text-xs font-black uppercase tracking-wider">
           <div className="flex flex-wrap items-center gap-2 md:gap-5">
             <span className="inline-flex items-center gap-1.5 bg-ink px-2.5 py-1 text-sun">
-              <Sparkles className="h-3.5 w-3.5 text-mint" /> All-In-One AI Business Subscription
+              <Sparkles className="h-3.5 w-3.5 text-mint" /> Start Here: How This Website Works
             </span>
-            <span className="flex items-center gap-1.5">
+            <a href="#quick-start-section" className="flex items-center gap-1.5 no-underline text-ink hover:underline">
               <span className="grid h-5 w-5 place-items-center bg-sun border border-ink text-[10px]">1</span>
-              Answer 8 Questions
-            </span>
+              Pick a Business Model (or Enter Your Idea)
+            </a>
             <ArrowRight className="h-3.5 w-3.5 hidden sm:inline" strokeWidth={3} />
-            <span className="flex items-center gap-1.5">
+            <Link to="/dashboard" className="flex items-center gap-1.5 no-underline text-ink hover:underline">
               <span className="grid h-5 w-5 place-items-center bg-mint border border-ink text-[10px]">2</span>
-              13 AI Engines Build Plan, Brand &amp; Site
-            </span>
+              13 AI Tools Build Your Plan, Brand &amp; Website
+            </Link>
             <ArrowRight className="h-3.5 w-3.5 hidden sm:inline" strokeWidth={3} />
-            <span className="flex items-center gap-1.5">
+            <Link to="/sites/mouth-off" className="flex items-center gap-1.5 no-underline text-ink hover:underline">
               <span className="grid h-5 w-5 place-items-center bg-sun border border-ink text-[10px]">3</span>
-              Publish Live &amp; Collect Leads in CRM
-            </span>
+              Share Your Free Live Site &amp; Collect Leads
+            </Link>
           </div>
-          <a href="#interactive-demo" className="ulink hidden lg:inline-block text-ink">
-            Try Live Deliverable Explorer ↓
+          <a href="#how-to-start" className="ulink hidden lg:inline-block text-ink">
+            See 4-Step Guide ↓
           </a>
         </div>
       </div>
@@ -89,27 +91,26 @@ function Hero() {
           />
 
           {/* left copy */}
-          <div className="rise absolute bottom-8 left-4 z-30 max-w-[320px] md:bottom-14 md:left-8 md:max-w-md" style={{ animationDelay: "0.55s" }}>
+          <div className="rise absolute bottom-8 left-4 z-30 max-w-[340px] md:bottom-14 md:left-8 md:max-w-md" style={{ animationDelay: "0.55s" }}>
             <div className="b3 hard bg-paper p-5">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-xs font-extrabold uppercase tracking-[0.2em]">Phase 1 — SaaS Launch Pass</p>
-                <span className="bg-mint px-2 py-0.5 border border-ink text-[10px] font-black uppercase">Cancel anytime</span>
+                <p className="text-xs font-extrabold uppercase tracking-[0.2em]">Start in 60 Seconds</p>
+                <span className="bg-mint px-2 py-0.5 border border-ink text-[10px] font-black uppercase">13 AI Engines Ready</span>
               </div>
-              <p className="display mt-2 text-2xl md:text-3xl">Idea to open. Almost hands-free.</p>
+              <p className="display mt-2 text-2xl md:text-3xl">Go from raw idea to live business today.</p>
               <p className="mt-2 hidden text-sm font-semibold text-muted sm:block">
-                One simple subscription unlocks 13 connected AI engines that build your business plan, brand identity, logo, live hosted website, ads, funding leads, and CRM automatically.
+                Pick a ready-made business below or answer 8 quick questions. We generate your business plan, brand name, logo, live website, ads, grants list, and customer CRM automatically.
               </p>
               <div className="mt-4 flex flex-wrap gap-2.5">
-                <button
-                  type="button"
-                  onClick={handleSubscribeAllAccess}
+                <a
+                  href="#quick-start-section"
                   className="btn btn-sm btn-yellow cursor-pointer font-black"
                 >
-                  <Zap className="h-4 w-4 fill-ink" strokeWidth={2.5} /> Subscribe All-Access · $99/mo
-                </button>
-                <a href="#subscription-plans" className="btn btn-sm bg-paper">
-                  Compare Plans <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                  <Rocket className="h-4 w-4 fill-ink" strokeWidth={2.5} /> Step 1: Launch Wizard ↓
                 </a>
+                <Link to={session ? "/dashboard" : "/start"} className="btn btn-sm bg-paper">
+                  {session ? "Open My Dashboard" : "8-Question Builder"} <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                </Link>
               </div>
             </div>
           </div>
@@ -155,6 +156,110 @@ function Hero() {
             <span className="h-3 w-3 bg-ink" />
             <span className="h-3 w-3 bg-ink" />
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function StartHereRoadmap() {
+  const steps = [
+    {
+      num: "STEP 1",
+      title: "Pick an Idea or Answer 8 Questions",
+      desc: "Don't have a business idea yet? Pick one of our 6 proven business models below, or answer 8 simple questions about your skills and budget.",
+      actionLabel: "Use 1-Click Quick Start ↓",
+      href: "#quick-start-section",
+      badge: "Takes 60 seconds",
+      bg: "bg-sun",
+      icon: Compass,
+    },
+    {
+      num: "STEP 2",
+      title: "Let 13 AI Tools Build Your Assets",
+      desc: "Your answers automatically generate a 5-year business plan, company name, brand voice, color palette, logo, ad copy, and 30 days of social posts.",
+      actionLabel: "Open Your Dashboard →",
+      to: "/dashboard",
+      badge: "Automated Pipeline",
+      bg: "bg-mint",
+      icon: Zap,
+    },
+    {
+      num: "STEP 3",
+      title: "Publish Your Free Live Website",
+      desc: "Tool #07 builds and hosts a real conversion-ready website for your business at /sites/your-name with a built-in customer contact form.",
+      actionLabel: "Preview Live Sample Site ↗",
+      to: "/sites/mouth-off",
+      badge: "Free Hosting + SSL",
+      bg: "bg-paper",
+      icon: Globe,
+    },
+    {
+      num: "STEP 4",
+      title: "Get Funding, Leads & AI Coaching",
+      desc: "Check off your LLC/tax checklist, apply to matched grants, manage customer inquiries in your CRM, and ask your 24/7 AI Co-Founder what to do next.",
+      actionLabel: "Ask AI Co-Founder →",
+      to: "/advisor",
+      badge: "Grow & Run Daily",
+      bg: "bg-cream",
+      icon: MessageSquare,
+    },
+  ];
+
+  return (
+    <section id="how-to-start" className="border-b-[3px] border-ink bg-cream py-14 px-4 md:px-8">
+      <div className="mx-auto max-w-[1400px]">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <span className="inline-flex items-center gap-1.5 bg-ink text-sun px-3 py-1 text-xs font-black uppercase tracking-widest border border-ink">
+              <Sparkles className="h-3.5 w-3.5 text-mint" /> New Here? Follow These 4 Steps
+            </span>
+            <h2 className="display mt-3 text-4xl sm:text-5xl md:text-6xl leading-none">
+              How to Launch Your Business on This Site
+            </h2>
+          </div>
+          <p className="max-w-md text-sm font-bold text-ink/80">
+            You don't need coding, design, or a business degree. Follow the 4 steps below in order to get your business live today.
+          </p>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map((s) => {
+            const Icon = s.icon;
+            return (
+              <div key={s.num} className="b3 hard flex flex-col justify-between bg-paper p-5">
+                <div>
+                  <div className="flex items-center justify-between gap-2 pb-3 border-b-2 border-ink">
+                    <span className={`px-2.5 py-1 text-xs font-black uppercase border-2 border-ink ${s.bg}`}>
+                      {s.num}
+                    </span>
+                    <span className="text-[11px] font-extrabold uppercase text-muted">{s.badge}</span>
+                  </div>
+                  <div className="mt-4 flex items-center gap-2.5">
+                    <span className={`grid h-9 w-9 shrink-0 place-items-center border-2 border-ink ${s.bg}`}>
+                      <Icon className="h-5 w-5 text-ink" strokeWidth={2.5} />
+                    </span>
+                    <h3 className="display text-xl leading-tight">{s.title}</h3>
+                  </div>
+                  <p className="mt-3 text-xs sm:text-sm font-semibold text-ink/80 leading-relaxed">
+                    {s.desc}
+                  </p>
+                </div>
+
+                <div className="mt-5 pt-3 border-t-2 border-dashed border-ink/30">
+                  {s.href ? (
+                    <a href={s.href} className="btn btn-sm btn-yellow w-full justify-between text-xs font-black">
+                      <span>{s.actionLabel}</span>
+                    </a>
+                  ) : (
+                    <Link to={s.to!} className="btn btn-sm btn-quiet w-full justify-between text-xs font-black">
+                      <span>{s.actionLabel}</span>
+                    </Link>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -417,11 +522,12 @@ export default function Index() {
   return (
     <>
       <Hero />
+      <StartHereRoadmap />
+      <QuickStartSection />
       <SocialProofTicker />
       <InteractiveDeliverableExplorer />
       <Flow />
       <SubscriptionPlans />
-      <QuickStartSection />
       <Editorial />
       <RoiCalculator />
       <BundleBlock />

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useSearch } from "wouter";
-import { AlertTriangle, ArrowLeft, ArrowUpRight, Loader2, Lock, RefreshCw, Sparkles, Wand2 } from "lucide-react";
+import { AlertTriangle, ArrowLeft, ArrowRight, ArrowUpRight, Compass, Loader2, Lock, RefreshCw, Sparkles, Wand2 } from "lucide-react";
 import { PageLoader } from "../components/protected-route";
 import { ProductIcon } from "../components/product-art";
 import { EDIT_HINTS, UPSTREAM, VIEWERS } from "../components/viewers";
-import { STATUS, toolBySlug } from "../lib/tools";
+import { STATUS, TOOLS, toolBySlug } from "../lib/tools";
 import { money } from "../lib/format";
 import { useCart } from "../lib/cart";
 import { errorMessage, useAccess, useBusiness, useBusinesses, useChoose, useRebuild, useRegenerate } from "../queries/business";
@@ -14,6 +14,61 @@ const NEXT_WAVE: Record<string, string> = {
   "name-generator": "business-plan",
   "brand-generator": "color-font-system",
   "color-font-system": "logo-generation",
+};
+
+const TOOL_USER_TIPS: Record<string, { whatItDoes: string; howToUse: string }> = {
+  "idea-wizard": {
+    whatItDoes: "Turns your skills, budget, and location into 3 tailored business models.",
+    howToUse: "Review the concepts below and click 'Choose this idea' on the one you want to build—or use 'Change it' to ask for a different direction.",
+  },
+  "name-generator": {
+    whatItDoes: "Generates memorable brand names, taglines, and domain ideas matched to your business.",
+    howToUse: "Pick your favorite name below to automatically update your business name across your plan, logo, and live website.",
+  },
+  "business-plan": {
+    whatItDoes: "Builds your executive summary, pricing tiers, cost structure, break-even target, and 3-month launch roadmap.",
+    howToUse: "Read through your pricing and 90-day milestones. Want higher prices or a different revenue model? Type it in the 'Change it' box below.",
+  },
+  "brand-generator": {
+    whatItDoes: "Defines your mission statement, positioning, voice rules, and 30-second elevator pitch.",
+    howToUse: "Use your elevator pitch on social bios and sales calls. Use 'Change it' if you want a bolder, warmer, or more premium tone.",
+  },
+  "color-font-system": {
+    whatItDoes: "Selects your 5-color brand palette and Google Font pairing.",
+    howToUse: "These colors and fonts automatically style your live hosted website (/sites/your-name). Click any hex code to copy it.",
+  },
+  "logo-generation": {
+    whatItDoes: "Designs custom brand marks and emblems tailored to your business name and palette.",
+    howToUse: "Select your primary logo concept below—it will appear in the header of your live website.",
+  },
+  "website-generator": {
+    whatItDoes: "Writes and publishes your live conversion-focused website with service packages, FAQ, and a customer contact form.",
+    howToUse: "Click 'View live site' to open your public website, share the link with customers, or use 'Change it' to tweak your headline or prices.",
+  },
+  "ad-generator": {
+    whatItDoes: "Creates ready-to-paste Facebook, Instagram, and Google Search ad copy and targeting angles.",
+    howToUse: "Copy any ad variation below and paste it into Meta Ads Manager or Google Ads when you're ready to drive traffic to your live website.",
+  },
+  "social-generator": {
+    whatItDoes: "Plans 30 days of launch posts, hooks, captions, and hashtags across Instagram, LinkedIn, and TikTok.",
+    howToUse: "Copy today's post, include your /sites/your-name link in your bio, and post consistently to get your first organic leads.",
+  },
+  "launch-checklist": {
+    whatItDoes: "Gives you a step-by-step legal, tax, banking, and licensing checklist for your location.",
+    howToUse: "Check off each item as you register your LLC/DBA, get your free IRS EIN, and open your business bank account.",
+  },
+  "funding-finder": {
+    whatItDoes: "Matches your business with grants, SBA microloans, and local funding programs.",
+    howToUse: "Review the eligibility and 'Next step' for each grant or loan below to apply for non-dilutive startup capital.",
+  },
+  "customer-crm": {
+    whatItDoes: "Captures every lead who fills out the contact form on your live website (/sites/your-name).",
+    howToUse: "Add contacts manually or watch website inquiries land here automatically. Update each lead's status from New → Contacted → Won.",
+  },
+  "ai-advisor": {
+    whatItDoes: "Your 24/7 AI Co-Founder that has already read your business plan, brand voice, and pricing.",
+    howToUse: "Ask any question below—like 'How do I get my first 5 customers this week?' or 'Write a cold email to local businesses.'",
+  },
 };
 
 export default function ToolPage({ slug }: { slug: string }) {
@@ -41,6 +96,11 @@ export default function ToolPage({ slug }: { slug: string }) {
   }
   if (accessLoading || listLoading || (bizId && bizLoading)) return <PageLoader label={`Opening ${tool.name}`} />;
 
+  const currentIdx = TOOLS.findIndex((t) => t.slug === slug);
+  const prevTool = currentIdx > 0 ? TOOLS[currentIdx - 1] : null;
+  const nextTool = currentIdx >= 0 && currentIdx < TOOLS.length - 1 ? TOOLS[currentIdx + 1] : null;
+  const tip = TOOL_USER_TIPS[slug];
+
   const owned = access?.tools.includes(slug) ?? false;
   const asset = data?.assets[slug];
   const statuses = Object.fromEntries(Object.entries(data?.assets ?? {}).map(([k, v]) => [k, v.status]));
@@ -58,7 +118,7 @@ export default function ToolPage({ slug }: { slug: string }) {
     if (!data) return;
     setErr(null);
     regenerate.mutate(
-      { id: data.business.id, tool: slug, instruction: text },
+      { id: data.business.id, tool: slug, instruction: text } as any,
       {
         onSuccess: () => {
           setInstruction("");
@@ -83,9 +143,33 @@ export default function ToolPage({ slug }: { slug: string }) {
 
   return (
     <div className="mx-auto max-w-[1400px] px-4 py-8 md:px-8">
-      <Link to={`/dashboard${bizId ? `?b=${bizId}` : ""}`} className="ulink inline-flex items-center gap-2 text-sm font-extrabold uppercase">
-        <ArrowLeft className="h-4 w-4" strokeWidth={3} /> Dashboard
-      </Link>
+      {/* Top Step Navigation Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-ink/20 pb-4">
+        <Link to={`/dashboard${bizId ? `?b=${bizId}` : ""}`} className="ulink inline-flex items-center gap-2 text-sm font-extrabold uppercase">
+          <ArrowLeft className="h-4 w-4" strokeWidth={3} /> Back to Dashboard
+        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          {prevTool && (
+            <Link
+              to={`/dashboard/${prevTool.slug}${bizId ? `?b=${bizId}` : ""}`}
+              className="btn btn-sm btn-quiet text-xs font-black"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> #{prevTool.num} {prevTool.name.replace("1-Click ", "")}
+            </Link>
+          )}
+          <span className="bg-ink text-sun px-2.5 py-1 text-xs font-black uppercase">
+            Step {tool.num} of 13
+          </span>
+          {nextTool && (
+            <Link
+              to={`/dashboard/${nextTool.slug}${bizId ? `?b=${bizId}` : ""}`}
+              className="btn btn-sm btn-yellow text-xs font-black"
+            >
+              Next: #{nextTool.num} {nextTool.name.replace("1-Click ", "")} <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          )}
+        </div>
+      </div>
 
       {/* header */}
       <header className="mt-5 grid gap-6 border-b-[3px] border-ink pb-6 md:grid-cols-[1fr_auto] md:items-end">
@@ -117,6 +201,33 @@ export default function ToolPage({ slug }: { slug: string }) {
         </div>
       </header>
 
+      {/* Plain-English User Guide Box */}
+      {tip && owned && (
+        <div className="b3 hard mt-6 bg-sun/35 p-4 md:p-5">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <p className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-ink">
+                <Compass className="h-4 w-4" /> How to Use Tool #{tool.num} ({tool.name})
+              </p>
+              <p className="mt-1 text-sm font-extrabold text-ink">{tip.whatItDoes}</p>
+              <p className="mt-1 text-xs sm:text-sm font-semibold text-ink/85">
+                <strong>Your action on this page:</strong> {tip.howToUse}
+              </p>
+            </div>
+            {slug === "website-generator" && data && (
+              <a
+                href={`/sites/${data.business.slug}`}
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-sm btn-yellow shrink-0 font-black"
+              >
+                Open Live Website ↗
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+
       {err && (
         <p role="alert" className="b3 mt-6 flex items-center gap-2 bg-paper p-3 font-extrabold">
           <AlertTriangle className="h-5 w-5" strokeWidth={3} /> {err}
@@ -135,7 +246,7 @@ export default function ToolPage({ slug }: { slug: string }) {
               disabled={rebuild.isPending || data.running}
               onClick={() =>
                 rebuild.mutate(
-                  { id: data.business.id, from: NEXT_WAVE[slug] },
+                  { id: data.business.id, fromTool: NEXT_WAVE[slug] } as any,
                   { onSuccess: () => setOfferRebuild(false), onError: (e) => setErr(errorMessage(e)) },
                 )
               }
@@ -213,7 +324,7 @@ export default function ToolPage({ slug }: { slug: string }) {
                 }}
               >
                 <label htmlFor="instruction" className="flex shrink-0 items-center gap-2 font-extrabold uppercase">
-                  <Wand2 className="h-5 w-5" strokeWidth={3} /> Change it
+                  <Wand2 className="h-5 w-5" strokeWidth={3} /> Ask AI to Tweak This
                 </label>
                 <input
                   id="instruction"
@@ -227,7 +338,7 @@ export default function ToolPage({ slug }: { slug: string }) {
                 />
                 <button className="btn shrink-0" disabled={running || outOfGens || !instruction.trim()}>
                   {running ? <Loader2 className="h-5 w-5 animate-spin" strokeWidth={3} /> : <Sparkles className="h-5 w-5" strokeWidth={3} />}
-                  {running ? "Working…" : "Apply"}
+                  {running ? "Working…" : "Apply Change"}
                 </button>
               </form>
             )}
@@ -251,6 +362,45 @@ export default function ToolPage({ slug }: { slug: string }) {
                   choosing={choose.isPending}
                 />
               )}
+            </div>
+
+            {/* Bottom Guided Step-by-Step Footer Navigation */}
+            <div className="b3 hard mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 bg-paper p-5">
+              <div>
+                <p className="text-xs font-black uppercase tracking-wider text-muted">
+                  Step {tool.num} of 13 Complete
+                </p>
+                <p className="display text-xl">
+                  {nextTool
+                    ? `Ready for Step #${nextTool.num}: ${nextTool.name}?`
+                    : "You've reached the final tool in your 13-engine launch suite!"}
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                {prevTool && (
+                  <Link
+                    to={`/dashboard/${prevTool.slug}${bizId ? `?b=${bizId}` : ""}`}
+                    className="btn btn-sm btn-quiet"
+                  >
+                    <ArrowLeft className="h-4 w-4" /> Previous (#{prevTool.num})
+                  </Link>
+                )}
+                {nextTool ? (
+                  <Link
+                    to={`/dashboard/${nextTool.slug}${bizId ? `?b=${bizId}` : ""}`}
+                    className="btn btn-sm btn-yellow font-black"
+                  >
+                    Continue to #{nextTool.num} {nextTool.name.replace("1-Click ", "")} <ArrowRight className="h-4 w-4" />
+                  </Link>
+                ) : (
+                  <Link
+                    to={`/dashboard${bizId ? `?b=${bizId}` : ""}`}
+                    className="btn btn-sm btn-yellow font-black"
+                  >
+                    Return to Full Dashboard <ArrowRight className="h-4 w-4" />
+                  </Link>
+                )}
+              </div>
             </div>
           </>
         )}

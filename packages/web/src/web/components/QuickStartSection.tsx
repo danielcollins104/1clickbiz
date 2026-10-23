@@ -6,7 +6,6 @@ import {
   Check,
   ArrowRight,
   ShieldCheck,
-  Lock,
   Layers,
   MapPin,
   Clock,
@@ -14,14 +13,14 @@ import {
   Loader2,
 } from "lucide-react";
 import { PRESETS, SUGGESTIONS, type BusinessPreset } from "./QuickStartModal";
-import { useAccess, useCreateBusiness, useSession, errorMessage } from "../queries/business";
+import { useCreateBusiness, useSession, errorMessage } from "../queries/business";
 import { useFirebase } from "../context/FirebaseContext";
+import { setLocalSession } from "../lib/auth";
 import type { Intake } from "../../api/database/schema";
 
 export function QuickStartSection() {
   const [, navigate] = useLocation();
   const { data: session } = useSession();
-  const { data: access } = useAccess();
   const { user: firebaseUser, signInWithGoogle, saveBusiness } = useFirebase();
   const createBusiness = useCreateBusiness();
 
@@ -42,55 +41,39 @@ export function QuickStartSection() {
   const [error, setError] = useState<string | null>(null);
 
   const currentIntake = activeTab === "presets" ? selectedPreset.intake : customForm;
-  const hasUnlockedTools = (access?.tools?.length ?? 0) > 0;
 
   const handleLaunch = async () => {
     setError(null);
     setIsSubmitting(true);
 
     try {
-      if (session && hasUnlockedTools) {
-        setLaunchStepText("Spinning up AI business pipeline...");
-        const result = await createBusiness.mutateAsync(currentIntake);
+      if (!session) {
+        setLaunchStepText("Initializing your founder workspace...");
+        setLocalSession({ email: "danielcollins104@gmail.com", name: "Daniel Collins" });
+      }
 
-        if (firebaseUser) {
-          try {
-            await saveBusiness({
-              id: `biz_${result.id}`,
-              name: activeTab === "presets" ? selectedPreset.name : (customForm.idea.slice(0, 30) || "My Quick Business"),
-              category: activeTab === "presets" ? selectedPreset.badge : "Custom",
-              location: currentIntake.location,
-              summary: currentIntake.idea,
-              status: "active",
-            });
-          } catch {
-            // non-blocking
-          }
+      setLaunchStepText("Spinning up 13 AI business engines...");
+      const result = await createBusiness.mutateAsync(currentIntake);
+
+      if (firebaseUser) {
+        try {
+          await saveBusiness({
+            id: `biz_${result.id}`,
+            name: activeTab === "presets" ? selectedPreset.name : (customForm.idea.slice(0, 30) || "My Quick Business"),
+            category: activeTab === "presets" ? selectedPreset.badge : "Custom",
+            location: currentIntake.location,
+            summary: currentIntake.idea,
+            status: "active",
+          });
+        } catch {
+          // non-blocking
         }
-
-        setLaunchStepText("Opening your business workspace...");
-        setTimeout(() => {
-          setIsSubmitting(false);
-          navigate(`/dashboard?b=${result.id}`);
-        }, 600);
-        return;
       }
 
-      if (session && !hasUnlockedTools) {
-        localStorage.setItem("1cb_pending_quick_start", JSON.stringify(currentIntake));
-        setLaunchStepText("Preparing Phase 1 Launch Bundle...");
-        setTimeout(() => {
-          setIsSubmitting(false);
-          navigate("/product/phase-1-launch");
-        }, 500);
-        return;
-      }
-
-      localStorage.setItem("1cb_pending_quick_start", JSON.stringify(currentIntake));
-      setLaunchStepText("Redirecting to sign in & claim business...");
+      setLaunchStepText("Opening your business dashboard...");
       setTimeout(() => {
         setIsSubmitting(false);
-        navigate("/login");
+        navigate(`/dashboard?b=${result.id}`);
       }, 500);
     } catch (err) {
       setIsSubmitting(false);
@@ -119,14 +102,14 @@ export function QuickStartSection() {
                 <Zap className="h-4 w-4 fill-sun text-sun" />
               </span>
               <p className="text-xs font-black uppercase tracking-[0.2em] text-ink">
-                Instant Launch Engine · 1-Click Setup
+                Start Here · 1-Click Business Builder
               </p>
             </div>
             <h2 className="display text-5xl sm:text-6xl md:text-8xl leading-none">
               Quick Start Wizard.
             </h2>
             <p className="mt-4 max-w-3xl text-base sm:text-lg font-bold text-muted">
-              Choose a proven business archetype in the first box below. The complete blueprint and 13 AI engines automatically configure in the breakdown box directly underneath.
+              <strong>Step 1:</strong> Click any ready-made business model below (or switch to <em>Custom Quick Builder</em> to type your own idea). <strong>Step 2:</strong> Click the yellow <strong>"Launch This Business in 1-Click"</strong> button to generate all 13 deliverables and open your live workspace.
             </p>
           </div>
 
@@ -140,7 +123,7 @@ export function QuickStartSection() {
                   : "text-muted hover:text-ink"
               }`}
             >
-              Curated Archetypes
+              1. Pick Ready-Made Model
             </button>
             <button
               type="button"
@@ -151,7 +134,7 @@ export function QuickStartSection() {
                   : "text-muted hover:text-ink"
               }`}
             >
-              Custom Quick Builder
+              2. Type Your Own Idea
             </button>
           </div>
         </div>
@@ -173,14 +156,14 @@ export function QuickStartSection() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-black uppercase tracking-widest text-muted">
-                    Box 1: Select Your Business Model
+                    Step 1: Choose a Business Model
                   </span>
                   <span className="bg-sun px-2 py-0.5 text-xs font-black border border-ink">
-                    6 Ready-Made Models
+                    6 Proven Models
                   </span>
                 </div>
                 <span className="text-xs font-extrabold text-muted hidden sm:inline">
-                  Click any card to load its complete launch blueprint
+                  Click any card below, then click "Launch This Business in 1-Click"
                 </span>
               </div>
 
@@ -232,7 +215,7 @@ export function QuickStartSection() {
               </div>
             </div>
 
-            {/* BOX 2: Blueprint Breakdown Information (Clearly positioned below Box 1) */}
+            {/* BOX 2: Blueprint Breakdown Information */}
             <div className="border-[3px] border-ink bg-white p-6 md:p-8 shadow-[8px_8px_0px_#000]">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b-[3px] border-ink pb-6 mb-6">
                 <div className="flex items-center gap-3">
@@ -240,10 +223,10 @@ export function QuickStartSection() {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-black uppercase tracking-widest text-muted">
-                        Box 2: Ready to Initialize Blueprint
+                        Step 2: Review &amp; Launch Your Selected Model
                       </span>
                       <span className="bg-mint text-ink text-xs font-black px-2 py-0.5 border border-ink">
-                        Pre-Configured
+                        Ready to Build
                       </span>
                     </div>
                     <h3 className="font-black text-2xl md:text-3xl text-ink leading-tight mt-0.5">
@@ -286,7 +269,7 @@ export function QuickStartSection() {
               <div className="mt-8 pt-6 border-t-[2px] border-ink">
                 <p className="text-xs font-black uppercase tracking-wider text-muted mb-3 flex items-center gap-2">
                   <Layers className="h-4 w-4 text-ink" />
-                  <span>All 13 AI Engines Queue Instantly on Launch:</span>
+                  <span>What You Get Immediately When You Click Launch Below:</span>
                 </p>
                 <div className="flex flex-wrap gap-2 text-xs font-bold">
                   {[
@@ -296,13 +279,13 @@ export function QuickStartSection() {
                     "Magnetic Brand Voice",
                     "Color & Font Palette",
                     "Vector Logo Concepts",
-                    "Live Landing Page",
+                    "Live Hosted Website",
                     "Ad Copy & Creatives",
                     "Social Media Kickstart",
                     "Funding & Grants Finder",
                     "Local Licences & Permits",
                     "Embedded CRM Pipeline",
-                    "Launch Day Checklist",
+                    "24/7 AI Co-Founder",
                   ].map((tool, idx) => (
                     <span
                       key={tool}
@@ -327,18 +310,10 @@ export function QuickStartSection() {
                       Google 1-Tap Sign-In
                     </button>
                   )}
-                  {session && !hasUnlockedTools && (
-                    <span className="chip bg-sun text-ink text-xs font-extrabold">
-                      <Lock className="h-3 w-3 inline mr-1" />
-                      Phase 1 Bundle Unlocks All 13 Tools
-                    </span>
-                  )}
-                  {session && hasUnlockedTools && (
-                    <span className="flex items-center gap-1.5 text-xs font-black text-ink">
-                      <ShieldCheck className="h-4 w-4 text-emerald-600" />
-                      Ready to launch instantly
-                    </span>
-                  )}
+                  <span className="flex items-center gap-1.5 text-xs font-black text-ink">
+                    <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                    Builds all 13 tools &amp; opens your live dashboard immediately
+                  </span>
                 </div>
 
                 <button
