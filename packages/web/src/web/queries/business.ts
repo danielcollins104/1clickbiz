@@ -3,6 +3,14 @@ import { orpc } from "../lib/api";
 import { authClient, useLocalSession } from "../lib/auth";
 import { useFirebase } from "../context/FirebaseContext";
 import { TOOLS } from "../lib/tools";
+import {
+  CURATED_LOGO_PALETTES,
+  LOGO_STYLE_DIRECTIONS,
+  buildCuttingEdgeVectorSvg,
+  buildDiffusionLogoUrl,
+  generateCuttingEdgeLogoSuite,
+  type GeneratedLogoConcept,
+} from "../lib/ai-logo-engine";
 import type { Intake } from "../../api/database/schema";
 
 const LOCAL_BIZ_KEY = "1cb_local_businesses";
@@ -28,6 +36,45 @@ interface StoredLocalLead {
   notes: string;
   source: string;
   createdAt: string;
+}
+
+function buildInitialLogoConcepts(name: string, idea: string): GeneratedLogoConcept[] {
+  const pal = CURATED_LOGO_PALETTES[0]!;
+  return LOGO_STYLE_DIRECTIONS.map((st, idx) => {
+    const svgCode = buildCuttingEdgeVectorSvg({
+      businessName: name,
+      tagline: "EST. 2026 · OFFICIAL",
+      prompt: idea,
+      styleId: st.id,
+      palette: pal,
+      seed: 100 + idx,
+    });
+    const svgDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svgCode)}`;
+    const diffusionUrl = buildDiffusionLogoUrl({
+      businessName: name,
+      prompt: idea,
+      styleLabel: st.label,
+      palette: pal,
+      seed: 700 + idx * 113,
+    });
+    return {
+      id: `logo-${st.id}-${idx}`,
+      name: `${name} — ${st.label}`,
+      styleId: st.id,
+      styleLabel: st.label,
+      engineBadge: "GenAI Neural Vector SVG",
+      rationale: st.description,
+      promptUsed: idea,
+      svgCode,
+      svgDataUrl,
+      diffusionUrl,
+      activeMode: "vector" as const,
+      image: {
+        key: `genai-logo-${st.id}-${idx}`,
+        url: svgDataUrl,
+      },
+    };
+  });
 }
 
 function buildDefaultAssets(name: string, slug: string, intake: Intake) {
@@ -96,11 +143,11 @@ function buildDefaultAssets(name: string, slug: string, intake: Intake) {
     },
     "color-font-system": {
       colors: [
-        { role: "Primary", name: "Ink Black", hex: "#131313", usage: "Headlines, borders, primary CTAs" },
-        { role: "Secondary", name: "Sun Yellow", hex: "#FDE047", usage: "Highlights, badges, hero accents" },
-        { role: "Accent", name: "Mint Fresh", hex: "#6EE7B7", usage: "Success states, conversion callouts" },
-        { role: "Background", name: "Warm Paper", hex: "#FAF7F0", usage: "Page canvas and cards" },
-        { role: "Text", name: "Deep Charcoal", hex: "#1F1F1F", usage: "Body copy and UI labels" },
+        { role: "Primary", name: "Ink Black", hex: "#131313", usage: "Headlines, borders, primary CTAs", onColor: "#FFFFFF" },
+        { role: "Secondary", name: "Sun Yellow", hex: "#FDE047", usage: "Highlights, badges, hero accents", onColor: "#131313" },
+        { role: "Accent", name: "Mint Fresh", hex: "#6EE7B7", usage: "Success states, conversion callouts", onColor: "#131313" },
+        { role: "Background", name: "Warm Paper", hex: "#FAF7F0", usage: "Page canvas and cards", onColor: "#131313" },
+        { role: "Text", name: "Deep Charcoal", hex: "#1F1F1F", usage: "Body copy and UI labels", onColor: "#FFFFFF" },
       ],
       headingFont: "Space Grotesk",
       bodyFont: "Plus Jakarta Sans",
@@ -108,14 +155,7 @@ function buildDefaultAssets(name: string, slug: string, intake: Intake) {
     },
     "logo-generation": {
       chosen: 0,
-      concepts: [
-        {
-          name: "Bold Monogram Emblem",
-          style: "Modern Geometric",
-          description: `High-contrast emblem mark for ${name}.`,
-          image: { key: "default-logo", url: "/images/spot-login.webp" },
-        },
-      ],
+      concepts: buildInitialLogoConcepts(name, idea),
     },
     "website-generator": {
       seo: { title: `${name} — Official Site`, description: idea },
@@ -248,6 +288,29 @@ function getLocalBusinesses(): StoredLocalBusiness[] {
 function saveLocalBusinesses(list: StoredLocalBusiness[]) {
   if (typeof window === "undefined") return;
   localStorage.setItem(LOCAL_BIZ_KEY, JSON.stringify(list));
+}
+
+export function saveLocalLogoConcepts(
+  businessId: number,
+  concepts: GeneratedLogoConcept[],
+  chosen: number
+) {
+  const list = getLocalBusinesses();
+  const b = list.find((x) => x.id === businessId) || list[0];
+  if (!b) return;
+  b.assets["logo-generation"] = {
+    tool: "logo-generation",
+    status: "done",
+    error: null,
+    version: (b.assets["logo-generation"]?.version ?? 1) + 1,
+    updatedAt: new Date().toISOString(),
+    content: {
+      chosen,
+      concepts,
+    },
+  };
+  b.updatedAt = new Date().toISOString();
+  saveLocalBusinesses(list);
 }
 
 function getLocalLeads(businessId?: number): StoredLocalLead[] {
@@ -453,11 +516,25 @@ export function useRegenerate() {
   const baseOpts = orpc.businesses.regenerate.mutationOptions({ onSettled: done });
   return useMutation({
     ...baseOpts,
-    mutationFn: async (input: { id: number; tool: string }, ctx) => {
+    mutationFn: async (input: { id: number; tool: string; instruction?: string }, ctx) => {
       try {
-        if (baseOpts.mutationFn) return await baseOpts.mutationFn(input, ctx);
+        if (baseOpts.mutationFn) return await baseOpts.mutationFn(input as any, ctx);
       } catch {
         // Local fallback
+      }
+      if (input.tool === "logo-generation") {
+        const list = getLocalBusinesses();
+        const b = list.find((x) => x.id === input.id) || list[0];
+        if (b) {
+          const nextConcepts = await generateCuttingEdgeLogoSuite({
+            businessName: b.name,
+            tagline: "OFFICIAL BRAND",
+            prompt: input.instruction || b.intake.idea,
+            palette: CURATED_LOGO_PALETTES[Math.floor(Math.random() * CURATED_LOGO_PALETTES.length)]!,
+            renderMode: "hybrid",
+          });
+          saveLocalLogoConcepts(b.id, nextConcepts, 0);
+        }
       }
       done();
       return { ok: true };
@@ -753,11 +830,14 @@ export function useSite(slug: string) {
       if (!found) return null;
       const colors = (found.assets["color-font-system"]?.content?.colors ?? []) as { role: string; hex: string }[];
       const getHex = (role: string, fallback: string) => colors.find((c) => c.role.toLowerCase() === role.toLowerCase())?.hex || fallback;
+      const logoContent = found.assets["logo-generation"]?.content;
+      const chosenIdx = typeof logoContent?.chosen === "number" ? logoContent.chosen : 0;
+      const chosenLogo = logoContent?.concepts?.[chosenIdx]?.image ?? logoContent?.concepts?.[0]?.image ?? null;
       return {
         name: found.name,
         slug: found.slug,
         site: found.assets["website-generator"]?.content ?? {},
-        logo: found.assets["logo-generation"]?.content?.concepts?.[0]?.image ?? null,
+        logo: chosenLogo,
         theme: {
           primary: getHex("Primary", "#131313"),
           secondary: getHex("Secondary", "#FDE047"),
