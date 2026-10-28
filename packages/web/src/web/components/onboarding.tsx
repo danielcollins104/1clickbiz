@@ -54,8 +54,8 @@ export function Onboarding({
       desc: "Open each card below to pick your business name, logo, 5-year plan, and ad copy.",
     },
     {
-      title: "5. Open your free live website",
-      desc: "Preview your live hosted site and customize your free /sites/your-name URL.",
+      title: "5. Open your free live website today",
+      desc: "Use the Generative AI Website & Web App Builder to create, iterate until satisfied, and host free on our site or your custom domain.",
     },
     {
       title: "6. Share your link & get a lead",
@@ -156,14 +156,14 @@ export function Onboarding({
                       className="btn btn-sm btn-yellow text-xs font-black"
                       onClick={() => update.mutate({ openedSite: true })}
                     >
-                      Preview Your Live Site ↗
+                      Open Free Live Website &amp; AI Builder ↗
                     </a>
                   ) : (
                     <Link
                       to={`/dashboard/website-generator${bizId ? `?b=${bizId}` : ""}`}
-                      className="ulink text-xs font-black"
+                      className="btn btn-sm btn-yellow text-xs font-black"
                     >
-                      Open Tool #07 (Website Generator) →
+                      Open Free Live Website Builder →
                     </Link>
                   )
                 ) : i === 5 ? (

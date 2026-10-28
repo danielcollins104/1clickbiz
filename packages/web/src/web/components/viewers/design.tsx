@@ -5,11 +5,15 @@ import {
   Copy,
   Download,
   ExternalLink,
+  Globe,
+  History,
   Layers,
   Loader2,
   Monitor,
   Palette,
   RefreshCw,
+  Rocket,
+  Sliders,
   Smartphone,
   Sparkles,
   Tablet,
@@ -30,7 +34,18 @@ import {
   type LogoPalette,
   type LogoRenderMode,
 } from "../../lib/ai-logo-engine";
-import { saveLocalLogoConcepts } from "../../queries/business";
+import {
+  INTERACTIVE_APP_TEMPLATES,
+  QUICK_ITERATION_PROMPTS,
+  WEBSITE_VIBES,
+  downloadStandaloneSiteHtml,
+  generateCreativeWebsite,
+  iterateCreativeWebsite,
+  type InteractiveAppType,
+  type SiteVersionSnapshot,
+  type WebsiteVibeId,
+} from "../../lib/ai-website-engine";
+import { saveLocalLogoConcepts, saveLocalWebsiteData } from "../../queries/business";
 
 /** Injects a Google Fonts stylesheet for the given families (once per set). */
 export function useGoogleFonts(families: (string | undefined)[]) {
@@ -528,7 +543,6 @@ export function LogoViewer({ content, choose, choosing, bizId, bizSlug, bizName 
                     alt={`Logo concept ${i + 1}: ${x.styleLabel || x.style}`}
                     className="h-full w-full object-contain"
                     onError={(e) => {
-                      // If external diffusion URL is rate-limited or offline, seamlessly fall back to crisp neural SVG
                       if (x.svgDataUrl && (e.currentTarget as HTMLImageElement).src !== x.svgDataUrl) {
                         (e.currentTarget as HTMLImageElement).src = x.svgDataUrl;
                       }
@@ -713,37 +727,484 @@ export function LogoViewer({ content, choose, choosing, bizId, bizSlug, bizName 
   );
 }
 
-/* ---------------- 07 Website Generator ---------------- */
+/* ---------------- 07 Generative AI Website & Web App Studio ---------------- */
 
-export function WebsiteViewer({ content: c, bizSlug }: ViewerProps) {
-  const url = `${window.location.origin}/sites/${bizSlug}`;
+export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initialSlug, bizName }: ViewerProps) {
+  const [siteData, setSiteData] = useState<Record<string, any>>(initialContent);
+  const [activeSlug, setActiveSlug] = useState(initialSlug || "my-business");
   const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const [studioTab, setStudioTab] = useState<"create" | "iterate" | "host">("create");
+  const [previewRev, setPreviewRev] = useState(1);
+
+  // Generative AI Form State
+  const [builderName, setBuilderName] = useState(bizName || "My Creative Business");
+  const [builderPrompt, setBuilderPrompt] = useState(
+    (initialContent.creativePrompt as string) ||
+      `An above-and-beyond interactive web app and conversion site for ${bizName || "our customers"}`,
+  );
+  const [builderVibe, setBuilderVibe] = useState<WebsiteVibeId>(
+    (initialContent.vibeId as WebsiteVibeId) || "neo-brutalist",
+  );
+  const [builderAppType, setBuilderAppType] = useState<InteractiveAppType>(
+    (initialContent.interactiveApp?.type as InteractiveAppType) || "quote-calculator",
+  );
+  const [iterationInput, setIterationInput] = useState("");
+  const [isSynthesizing, setIsSynthesizing] = useState(false);
+
+  // Hosting & Custom Domain State
+  const [customSlugInput, setCustomSlugInput] = useState(initialSlug || "my-business");
+  const [customDomainInput, setCustomDomainInput] = useState(
+    (initialContent.customDomain as string) || "",
+  );
+  const [hostingNotice, setHostingNotice] = useState<string | null>(null);
+
+  const url = `${window.location.origin}/sites/${activeSlug}`;
+  const history = (siteData.iterationHistory ?? []) as SiteVersionSnapshot[];
 
   const deviceWidth =
     device === "desktop" ? "w-full" : device === "tablet" ? "w-[768px] mx-auto" : "w-[390px] mx-auto";
 
+  const handleGenerateSite = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSynthesizing(true);
+    setTimeout(() => {
+      const next = generateCreativeWebsite({
+        businessName: builderName || bizName,
+        creativePrompt: builderPrompt,
+        vibeId: builderVibe,
+        appType: builderAppType,
+        existingHistory: history,
+      });
+      if (customDomainInput.trim()) {
+        next.customDomain = customDomainInput.trim();
+      }
+      setSiteData(next);
+      saveLocalWebsiteData(bizId || activeSlug, next, activeSlug, builderName);
+      setPreviewRev((r) => r + 1);
+      setIsSynthesizing(false);
+    }, 320);
+  };
+
+  const handleIterateSite = (instructionText: string) => {
+    const clean = instructionText.trim();
+    if (!clean) return;
+    setIsSynthesizing(true);
+    setTimeout(() => {
+      const next = iterateCreativeWebsite(siteData, clean, builderName || bizName);
+      setSiteData(next);
+      setBuilderVibe((next.vibeId as WebsiteVibeId) || builderVibe);
+      if (next.interactiveApp?.type) {
+        setBuilderAppType(next.interactiveApp.type as InteractiveAppType);
+      }
+      saveLocalWebsiteData(bizId || activeSlug, next, activeSlug, builderName);
+      setIterationInput("");
+      setPreviewRev((r) => r + 1);
+      setIsSynthesizing(false);
+    }, 280);
+  };
+
+  const handleRestoreVersion = (snap: SiteVersionSnapshot) => {
+    const restored: Record<string, any> = {
+      ...snap.data,
+      iterationHistory: history,
+    };
+    setSiteData(restored);
+    saveLocalWebsiteData(bizId || activeSlug, restored, activeSlug, builderName);
+    setPreviewRev((r) => r + 1);
+  };
+
+  const handleSaveHosting = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanSlug = customSlugInput
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+    const finalSlug = cleanSlug.length >= 2 ? cleanSlug : activeSlug;
+    const cleanDomain = customDomainInput
+      .toLowerCase()
+      .trim()
+      .replace(/^https?:\/\//, "")
+      .replace(/\/.*$/, "");
+
+    const next = {
+      ...siteData,
+      customDomain: cleanDomain,
+    };
+    setSiteData(next);
+    const savedSlug = saveLocalWebsiteData(bizId || activeSlug, next, finalSlug, builderName);
+    setActiveSlug(savedSlug || finalSlug);
+    setPreviewRev((r) => r + 1);
+    setHostingNotice(
+      cleanDomain
+        ? `✓ Live at /sites/${finalSlug} and bound to custom domain ${cleanDomain}!`
+        : `✓ Your free live website is now hosted at ${window.location.origin}/sites/${finalSlug}`,
+    );
+  };
+
   return (
     <div className="space-y-6">
+      {/* Live Hosted Status Banner */}
       <div className="card flex flex-col gap-4 bg-ink p-5 text-sun md:flex-row md:items-center md:justify-between">
         <div className="min-w-0">
-          <p className="text-xs font-extrabold uppercase tracking-[0.2em]">Your site is live at</p>
-          <p className="mt-1 truncate font-mono text-lg font-bold">{url}</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="bg-mint text-ink px-2 py-0.5 text-[10px] font-black uppercase">
+              FREE LIVE HOSTING ACTIVE
+            </span>
+            <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-sun/80">
+              Open your free live website today
+            </p>
+          </div>
+          <p className="mt-1.5 truncate font-mono text-lg font-bold">{url}</p>
+          {siteData.customDomain && (
+            <p className="text-xs font-mono text-mint mt-0.5">
+              ✓ Custom Domain Linked: https://{siteData.customDomain}
+            </p>
+          )}
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <CopyButton text={url} label="Copy link" className="!bg-paper" />
-          <a href={`/sites/${bizSlug}`} target="_blank" rel="noreferrer" className="btn btn-sm btn-yellow">
-            <ExternalLink className="h-4 w-4" strokeWidth={3} /> Open site in new tab
+        <div className="flex flex-wrap items-center gap-2.5">
+          <CopyButton text={url} label="Copy Live URL" className="!bg-paper" />
+          <button
+            type="button"
+            onClick={() => downloadStandaloneSiteHtml(siteData, builderName || bizName, activeSlug)}
+            className="btn btn-sm bg-mint text-ink font-black cursor-pointer"
+          >
+            <Download className="h-4 w-4" strokeWidth={2.5} /> Export HTML5 Web App
+          </button>
+          <a
+            href={`/sites/${activeSlug}`}
+            target="_blank"
+            rel="noreferrer"
+            className="btn btn-sm btn-yellow font-black"
+          >
+            <ExternalLink className="h-4 w-4" strokeWidth={3} /> Open Full Live Site &amp; Studio ↗
           </a>
         </div>
       </div>
 
+      {/* Generative AI Website & Web App Builder Studio */}
+      <section className="b3 hard bg-paper p-5 md:p-7">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b-[3px] border-ink pb-5">
+          <div>
+            <span className="inline-flex items-center gap-1.5 bg-ink text-sun px-2.5 py-1 text-xs font-black uppercase tracking-wider">
+              <Sparkles className="h-3.5 w-3.5 text-mint" /> Generative AI Website &amp; Interactive Web App Studio
+            </span>
+            <h2 className="display mt-2 text-2xl sm:text-3xl md:text-4xl">
+              Create, Iterate Until Satisfied &amp; Host Free
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm font-bold text-ink/75 max-w-3xl">
+              Describe your dream website or interactive web app below. Then iterate as many times as you want until every headline, calculator, aesthetic vibe, and section is 100% right.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-1.5 bg-cream p-1.5 border-2 border-ink shrink-0">
+            <button
+              type="button"
+              onClick={() => setStudioTab("create")}
+              className={`px-3 py-1.5 text-xs font-black uppercase flex items-center gap-1.5 cursor-pointer transition-all ${
+                studioTab === "create" ? "bg-ink text-sun shadow-[2px_2px_0px_#000]" : "text-ink hover:bg-paper"
+              }`}
+            >
+              <Wand2 className="h-3.5 w-3.5" /> 1. AI Builder Form
+            </button>
+            <button
+              type="button"
+              onClick={() => setStudioTab("iterate")}
+              className={`px-3 py-1.5 text-xs font-black uppercase flex items-center gap-1.5 cursor-pointer transition-all ${
+                studioTab === "iterate" ? "bg-ink text-sun shadow-[2px_2px_0px_#000]" : "text-ink hover:bg-paper"
+              }`}
+            >
+              <RefreshCw className="h-3.5 w-3.5" /> 2. Iterate ({Math.max(1, history.length)})
+            </button>
+            <button
+              type="button"
+              onClick={() => setStudioTab("host")}
+              className={`px-3 py-1.5 text-xs font-black uppercase flex items-center gap-1.5 cursor-pointer transition-all ${
+                studioTab === "host" ? "bg-ink text-sun shadow-[2px_2px_0px_#000]" : "text-ink hover:bg-paper"
+              }`}
+            >
+              <Globe className="h-3.5 w-3.5" /> 3. Free Hosting &amp; Domain
+            </button>
+          </div>
+        </div>
+
+        {/* TAB 1: GENERATIVE AI FORM */}
+        {studioTab === "create" && (
+          <form onSubmit={handleGenerateSite} className="mt-6 grid gap-6 lg:grid-cols-12">
+            <div className="lg:col-span-5 space-y-4">
+              <div>
+                <label className="block text-xs font-black uppercase tracking-wider mb-1">
+                  1. Business or Web App Name
+                </label>
+                <input
+                  type="text"
+                  value={builderName}
+                  onChange={(e) => setBuilderName(e.target.value)}
+                  className="input font-extrabold text-sm"
+                  placeholder="e.g. Mouth Off, Nova AI Studio, Apex Detail..."
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-black uppercase tracking-wider mb-1">
+                  2. What should your creative website / web app do?
+                </label>
+                <textarea
+                  rows={3}
+                  value={builderPrompt}
+                  onChange={(e) => setBuilderPrompt(e.target.value)}
+                  className="input font-semibold text-xs leading-relaxed"
+                  placeholder="Describe your vision, target audience, interactive calculator or booking flow, and special offer..."
+                />
+              </div>
+            </div>
+
+            <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
+              <div>
+                <label className="block text-xs font-black uppercase tracking-wider mb-1.5">
+                  3. Embedded Interactive Web App Module
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {INTERACTIVE_APP_TEMPLATES.map((tpl) => {
+                    const active = builderAppType === tpl.id;
+                    return (
+                      <button
+                        key={tpl.id}
+                        type="button"
+                        onClick={() => setBuilderAppType(tpl.id)}
+                        className={`p-2.5 text-left border-2 border-ink transition-all cursor-pointer ${
+                          active ? "bg-sun shadow-[2px_2px_0px_#000]" : "bg-cream hover:bg-white"
+                        }`}
+                      >
+                        <p className="text-xs font-black">
+                          {tpl.badge} {tpl.label}
+                        </p>
+                        <p className="text-[10px] font-semibold text-ink/75 mt-0.5 line-clamp-1">
+                          {tpl.description}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-black uppercase tracking-wider mb-1.5">
+                  4. Visual Aesthetic Vibe
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                  {WEBSITE_VIBES.map((v) => {
+                    const active = builderVibe === v.id;
+                    return (
+                      <button
+                        key={v.id}
+                        type="button"
+                        onClick={() => setBuilderVibe(v.id)}
+                        className={`p-2 text-left border-2 border-ink transition-all cursor-pointer ${
+                          active ? "bg-mint shadow-[2px_2px_0px_#000]" : "bg-cream hover:bg-white"
+                        }`}
+                      >
+                        <p className="text-[11px] font-black leading-tight">{v.name}</p>
+                        <p className="text-[9px] font-bold uppercase text-ink/70 mt-0.5">{v.badge}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t-2 border-dashed border-ink/25">
+                <p className="text-xs font-bold text-ink/75">
+                  Generates hero, interactive web app calculator, Bento grid, 3-tier pricing, and CRM lead form.
+                </p>
+                <button
+                  type="submit"
+                  disabled={isSynthesizing}
+                  className="btn btn-yellow font-black cursor-pointer shadow-[3px_3px_0px_#000]"
+                >
+                  {isSynthesizing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" /> Synthesizing Live Site…
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 fill-ink" /> Generate Creative Website &amp; Web App
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
+
+        {/* TAB 2: ITERATE UNTIL SATISFIED */}
+        {studioTab === "iterate" && (
+          <div className="mt-6 space-y-5">
+            <div className="grid gap-4 lg:grid-cols-12 items-end">
+              <div className="lg:col-span-9">
+                <label className="block text-xs font-black uppercase tracking-wider mb-1.5">
+                  Tell the AI what to change, add, or refine (Unlimited Iterations):
+                </label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    value={iterationInput}
+                    onChange={(e) => setIterationInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleIterateSite(iterationInput)}
+                    placeholder="e.g. 'Switch to dark cyber glass theme', 'Add an ROI simulator', 'Make headlines bolder', 'Lower starter price to $79'..."
+                    className="input flex-1 font-semibold text-sm"
+                  />
+                  <button
+                    type="button"
+                    disabled={isSynthesizing || !iterationInput.trim()}
+                    onClick={() => handleIterateSite(iterationInput)}
+                    className="btn btn-yellow font-black shrink-0 cursor-pointer shadow-[3px_3px_0px_#000]"
+                  >
+                    {isSynthesizing ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" /> Iterating…
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 className="h-4 w-4" /> Apply AI Iteration
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+              <div className="lg:col-span-3">
+                <div className="bg-cream border-2 border-ink p-2.5 text-xs font-bold">
+                  <span className="block text-[10px] font-black uppercase text-muted">Active Revision</span>
+                  <span>
+                    Version #{Math.max(1, history.length)} · {siteData.vibeId || "neo-brutalist"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <span className="block text-[11px] font-black uppercase tracking-wider text-muted mb-2">
+                1-Click Instant AI Iterations:
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {QUICK_ITERATION_PROMPTS.map((q) => (
+                  <button
+                    key={q.label}
+                    type="button"
+                    onClick={() => handleIterateSite(q.instruction)}
+                    className="bg-cream hover:bg-sun text-ink border-2 border-ink px-3 py-1.5 text-xs font-black transition-all cursor-pointer shadow-[2px_2px_0px_#000]"
+                  >
+                    {q.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {history.length > 0 && (
+              <div className="pt-3 border-t-2 border-dashed border-ink/25">
+                <span className="text-[11px] font-black uppercase tracking-wider text-muted flex items-center gap-1.5 mb-2">
+                  <History className="h-3.5 w-3.5" /> Version History (Click any version to restore):
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {history.map((snap) => (
+                    <button
+                      key={snap.version}
+                      type="button"
+                      onClick={() => handleRestoreVersion(snap)}
+                      className="bg-white hover:bg-mint text-ink border-2 border-ink px-3 py-1 text-xs font-bold cursor-pointer"
+                    >
+                      <span className="font-black text-emerald-800 mr-1">v{snap.version}</span>
+                      {snap.prompt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 3: FREE HOSTING & CUSTOM DOMAIN */}
+        {studioTab === "host" && (
+          <div className="mt-6 grid gap-6 lg:grid-cols-12">
+            <form onSubmit={handleSaveHosting} className="lg:col-span-8 grid gap-4 sm:grid-cols-2">
+              <div className="bg-cream border-2 border-ink p-4">
+                <span className="inline-block bg-mint text-ink px-2 py-0.5 border border-ink text-[10px] font-black uppercase mb-2">
+                  Option A · Hosted Free on Our Site
+                </span>
+                <label className="block text-xs font-black uppercase mb-1">
+                  Your Free Hosted Path (/sites/your-slug)
+                </label>
+                <div className="flex items-center border-2 border-ink bg-white px-2.5 py-2 font-mono text-xs">
+                  <span className="text-muted select-none">/sites/</span>
+                  <input
+                    type="text"
+                    value={customSlugInput}
+                    onChange={(e) => setCustomSlugInput(e.target.value)}
+                    className="w-full font-black text-ink focus:outline-none"
+                    placeholder="your-business-name"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-cream border-2 border-ink p-4">
+                <span className="inline-block bg-sun text-ink px-2 py-0.5 border border-ink text-[10px] font-black uppercase mb-2">
+                  Option B · Connect Custom Domain Free
+                </span>
+                <label className="block text-xs font-black uppercase mb-1">
+                  Your Custom Domain Name
+                </label>
+                <input
+                  type="text"
+                  value={customDomainInput}
+                  onChange={(e) => setCustomDomainInput(e.target.value)}
+                  className="input font-mono text-xs"
+                  placeholder="www.yourbusiness.com"
+                />
+              </div>
+
+              <div className="sm:col-span-2 flex flex-wrap items-center justify-between gap-3">
+                <button type="submit" className="btn btn-yellow font-black cursor-pointer">
+                  <Rocket className="h-4 w-4" /> Save &amp; Publish Free Hosting Settings
+                </button>
+                {hostingNotice && (
+                  <span className="text-xs font-black text-emerald-800 bg-mint/40 px-3 py-1.5 border border-ink">
+                    {hostingNotice}
+                  </span>
+                )}
+              </div>
+            </form>
+
+            <div className="lg:col-span-4 bg-ink text-sun p-5 border-2 border-ink flex flex-col justify-between">
+              <div>
+                <span className="inline-block bg-mint text-ink px-2 py-0.5 text-[10px] font-black uppercase mb-2">
+                  Option C · Host Anywhere Else Free
+                </span>
+                <h3 className="display text-xl">Download Standalone Web App</h3>
+                <p className="text-xs font-semibold text-cream/80 mt-1 leading-relaxed">
+                  Export your entire generated website + interactive calculator as a self-contained HTML5 file ready for Cloudflare Pages, Netlify Drop, Vercel, or GitHub Pages.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => downloadStandaloneSiteHtml(siteData, builderName || bizName, activeSlug)}
+                className="btn btn-yellow w-full justify-center font-black mt-4 cursor-pointer"
+              >
+                <Download className="h-4 w-4" /> Download index.html
+              </button>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* Live Multi-Viewport Interactive Preview */}
       <div className="card overflow-hidden bg-cream border-[3px] border-ink p-3">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-ink bg-paper px-4 py-3 mb-3">
           <div className="flex items-center gap-2">
             <span className="h-3 w-3 rounded-full border-2 border-ink bg-sun" />
             <span className="h-3 w-3 rounded-full border-2 border-ink bg-mint" />
             <span className="h-3 w-3 rounded-full border-2 border-ink bg-ink" />
-            <span className="ml-2 font-mono text-xs font-bold text-ink truncate">/sites/{bizSlug}</span>
+            <span className="ml-2 font-mono text-xs font-bold text-ink truncate">
+              /sites/{activeSlug} {siteData.customDomain ? `(${siteData.customDomain})` : ""}
+            </span>
           </div>
 
           {/* Viewport switch controls */}
@@ -781,9 +1242,10 @@ export function WebsiteViewer({ content: c, bizSlug }: ViewerProps) {
         <div className="bg-paper p-2 overflow-x-auto">
           <div className={`${deviceWidth} transition-all duration-300 border-2 border-ink shadow-[4px_4px_0px_#000]`}>
             <iframe
+              key={`${activeSlug}-${previewRev}`}
               title="Website preview"
-              src={`/sites/${bizSlug}`}
-              className="h-[680px] w-full bg-white"
+              src={`/sites/${activeSlug}?embed=1&rev=${previewRev}`}
+              className="h-[740px] w-full bg-white"
               loading="lazy"
             />
           </div>
@@ -792,16 +1254,13 @@ export function WebsiteViewer({ content: c, bizSlug }: ViewerProps) {
 
       <div className="grid gap-6 md:grid-cols-2">
         <Section title="SEO" kicker="Search result">
-          <p className="text-lg font-extrabold text-[#1a0dab]">{c.seo?.title}</p>
-          <p className="text-sm font-semibold">{c.seo?.description}</p>
+          <p className="text-lg font-extrabold text-[#1a0dab]">{siteData.seo?.title}</p>
+          <p className="text-sm font-semibold">{siteData.seo?.description}</p>
         </Section>
         <Section title="Hero image">
-          <GenImage img={c.heroImage as Img} alt="Website hero" className="aspect-video w-full" />
+          <GenImage img={siteData.heroImage as Img} alt="Website hero" className="aspect-video w-full" />
         </Section>
       </div>
-      <p className="text-sm font-bold">
-        Enquiries from the contact form go to your Customer CRM. To change copy, describe the change in the box above and regenerate.
-      </p>
     </div>
   );
 }

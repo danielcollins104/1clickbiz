@@ -11,6 +11,11 @@ import {
   generateCuttingEdgeLogoSuite,
   type GeneratedLogoConcept,
 } from "../lib/ai-logo-engine";
+import {
+  generateCreativeWebsite,
+  iterateCreativeWebsite,
+  type CreativeSiteData,
+} from "../lib/ai-website-engine";
 import type { Intake } from "../../api/database/schema";
 
 const LOCAL_BIZ_KEY = "1cb_local_businesses";
@@ -63,7 +68,6 @@ export function buildThreeProvenIdeas(
   const location = intake?.location || "Your local area & online";
   const budget = intake?.budget || "$500–$2,000";
 
-  // Extract a clean core theme from user's interests & possibilities
   const cleanTopic = interests
     .split(/[,;&/]+/)[0]
     ?.trim()
@@ -164,6 +168,14 @@ function buildDefaultAssets(name: string, slug: string, intake: Intake) {
   const customer = intake.customer || "High-intent local and online customers";
   const idea = intake.idea || `${name} — Modern AI-Powered Business`;
   const initialIdeas = buildThreeProvenIdeas(intake.interests || intake.skills || name, idea, intake);
+  const initialWebsite = generateCreativeWebsite({
+    businessName: name,
+    location,
+    customer,
+    prompt: idea,
+    vibe: "neo-brutalist",
+    appType: "quote-calculator",
+  });
 
   const contents: Record<string, Record<string, any>> = {
     "idea-wizard": {
@@ -276,36 +288,7 @@ function buildDefaultAssets(name: string, slug: string, intake: Intake) {
       chosen: 0,
       concepts: buildInitialLogoConcepts(name, idea),
     },
-    "website-generator": {
-      seo: { title: `${name} — Official Site`, description: idea },
-      hero: {
-        eyebrow: location,
-        headline: `${name}: Built for ${customer.slice(0, 60)}.`,
-        subheadline: idea,
-        cta: "Get Started Today",
-      },
-      about: {
-        title: `Why ${name}?`,
-        body: `We started ${name} in ${location} to give ${customer} a faster, more reliable way to get results.`,
-      },
-      services: [
-        { title: "Starter Package", description: "Everything you need to get started immediately.", price: "$99" },
-        { title: "Growth Membership", description: "Ongoing priority service and monthly deliverables.", price: "$199/mo" },
-        { title: "VIP Concierge", description: "Full white-glove execution tailored to your goals.", price: "$499" },
-      ],
-      steps: [
-        { title: "1. Pick your plan", body: "Choose the package that matches your goals." },
-        { title: "2. Quick intake", body: "Share your preferences in under two minutes." },
-        { title: "3. Enjoy results", body: "We handle the rest and keep you updated at every step." },
-      ],
-      benefits: ["Fast turnaround", "Transparent flat pricing", "Dedicated founder support"],
-      faq: [
-        { q: "How quickly can we start?", a: "Immediately after you submit the contact form below." },
-        { q: "Is there a long-term contract?", a: "No—cancel or switch plans anytime." },
-      ],
-      contact: { title: "Get in Touch", body: "Send us a note below and we'll reply within 1 business hour.", button: "Send Inquiry" },
-      heroImage: { key: "hero", url: "/images/hero.webp" },
-    },
+    "website-generator": initialWebsite,
     "ad-generator": {
       ads: [
         { platform: "Instagram / Facebook", angle: "Problem → Solution", headline: `Tired of the old way? Meet ${name}.`, primaryText: idea, cta: "Learn More", audience: customer },
@@ -398,6 +381,29 @@ function getLocalBusinesses(): StoredLocalBusiness[] {
             };
             mutated = true;
           }
+
+          const siteContent = b.assets?.["website-generator"]?.content as Partial<CreativeSiteData> | undefined;
+          if (!siteContent || !siteContent.interactiveApp || !siteContent.bentoFeatures) {
+            const upgradedSite = generateCreativeWebsite({
+              businessName: b.name,
+              location: b.intake?.location,
+              customer: b.intake?.customer,
+              prompt: b.intake?.idea || `${b.name} interactive web app`,
+              vibe: siteContent?.vibe || "neo-brutalist",
+              appType: "quote-calculator",
+              existingSite: siteContent,
+            });
+            if (!b.assets) b.assets = {};
+            b.assets["website-generator"] = {
+              tool: "website-generator",
+              status: "done",
+              error: null,
+              version: (b.assets["website-generator"]?.version ?? 1) + 1,
+              updatedAt: new Date().toISOString(),
+              content: upgradedSite as any,
+            };
+            mutated = true;
+          }
         }
         if (mutated) {
           try {
@@ -443,6 +449,45 @@ function getLocalBusinesses(): StoredLocalBusiness[] {
 function saveLocalBusinesses(list: StoredLocalBusiness[]) {
   if (typeof window === "undefined") return;
   localStorage.setItem(LOCAL_BIZ_KEY, JSON.stringify(list));
+}
+
+export function saveLocalWebsiteData(
+  businessIdOrSlug: number | string,
+  siteData: CreativeSiteData,
+  newSlug?: string,
+  newName?: string
+) {
+  const list = getLocalBusinesses();
+  const b =
+    typeof businessIdOrSlug === "number"
+      ? list.find((x) => x.id === businessIdOrSlug) || list[0]
+      : list.find((x) => x.slug === businessIdOrSlug) || list[0];
+  if (!b) return null;
+  if (newName && newName.trim()) {
+    b.name = newName.trim();
+  }
+  if (newSlug && newSlug.trim()) {
+    const clean = newSlug
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+    if (clean.length >= 2) {
+      b.slug = clean;
+    }
+  }
+  b.assets["website-generator"] = {
+    tool: "website-generator",
+    status: "done",
+    error: null,
+    version: (b.assets["website-generator"]?.version ?? 1) + 1,
+    updatedAt: new Date().toISOString(),
+    content: siteData as any,
+  };
+  b.updatedAt = new Date().toISOString();
+  saveLocalBusinesses(list);
+  return b;
 }
 
 export function saveLocalIdeaWizardCards(
@@ -655,6 +700,7 @@ function useInvalidateBusiness() {
   const qc = useQueryClient();
   return () => {
     qc.invalidateQueries({ queryKey: orpc.businesses.key() });
+    qc.invalidateQueries({ queryKey: orpc.sites.key() });
     qc.invalidateQueries({ queryKey: orpc.billing.access.key() });
   };
 }
@@ -727,6 +773,20 @@ export function useRegenerate() {
             renderMode: "hybrid",
           });
           saveLocalLogoConcepts(b.id, nextConcepts, 0);
+        } else if (input.tool === "website-generator") {
+          const curSite = (b.assets["website-generator"]?.content ?? {}) as CreativeSiteData;
+          const nextSite = input.instruction
+            ? iterateCreativeWebsite(curSite, b.name, input.instruction)
+            : generateCreativeWebsite({
+                businessName: b.name,
+                location: b.intake.location,
+                customer: b.intake.customer,
+                prompt: b.intake.idea,
+                vibe: curSite.vibe || "neo-brutalist",
+                appType: curSite.interactiveApp?.type || "quote-calculator",
+                existingSite: curSite,
+              });
+          saveLocalWebsiteData(b.id, nextSite);
         }
       }
       done();
@@ -1032,8 +1092,12 @@ export function useSite(slug: string) {
       const chosenIdx = typeof logoContent?.chosen === "number" ? logoContent.chosen : 0;
       const chosenLogo = logoContent?.concepts?.[chosenIdx]?.image ?? logoContent?.concepts?.[0]?.image ?? null;
       return {
+        id: found.id,
         name: found.name,
         slug: found.slug,
+        location: found.intake?.location,
+        customer: found.intake?.customer,
+        idea: found.intake?.idea,
         site: found.assets["website-generator"]?.content ?? {},
         logo: chosenLogo,
         theme: {
