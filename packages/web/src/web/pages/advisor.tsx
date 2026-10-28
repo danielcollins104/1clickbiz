@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Search, MapPin, Brain, Shield, User, ArrowLeft, LogIn } from "lucide-react";
+import { Search, MapPin, Brain, Shield, User, ArrowLeft, LogIn, Sparkles, Cpu } from "lucide-react";
 import { GeminiChatbot } from "../components/GeminiChatbot";
 import { useFirebase } from "../context/FirebaseContext";
 
@@ -11,14 +11,20 @@ export default function AdvisorPage() {
       {/* Page Header */}
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b-4 border-ink pb-6">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Link to="/" className="ulink text-xs font-black uppercase inline-flex items-center gap-1">
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <Link to="/" className="ulink text-xs font-black uppercase inline-flex items-center gap-1 mr-2">
               <ArrowLeft className="h-3.5 w-3.5" /> Back to Home
             </Link>
+            <span className="inline-flex items-center gap-1 bg-ink text-sun px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider">
+              <Cpu className="h-3.5 w-3.5 text-mint" /> Sovereign Multi-Agent Executive Core
+            </span>
+            <span className="inline-flex items-center gap-1 bg-mint text-ink border border-ink px-2 py-0.5 text-[11px] font-black uppercase">
+              Vanguard-X™ Neural Engine v9.4
+            </span>
           </div>
-          <h1 className="display text-4xl md:text-5xl">Gemini Business Advisor</h1>
-          <p className="mt-2 text-base font-bold text-muted max-w-2xl">
-            Multi-turn intelligent business coaching powered by Google Gemini models, integrated with real-time Google Search and Maps Grounding.
+          <h1 className="display text-4xl md:text-5xl">Vanguard-X™ Sovereign Business Advisor</h1>
+          <p className="mt-2 text-base font-bold text-muted max-w-3xl">
+            Autonomous multi-agent executive intelligence engineered specifically for founders—combining deep financial &amp; strategic reasoning with our real-time Global Web Intelligence Grid and Geospatial Commercial Radar.
           </p>
         </div>
 
@@ -40,13 +46,13 @@ export default function AdvisorPage() {
               <div>
                 <p className="text-sm font-black">{user.displayName || user.email}</p>
                 <p className="text-xs font-bold text-emerald-700 flex items-center gap-1">
-                  <Shield className="h-3 w-3" /> Firestore Sync Active ({savedBusinesses.length} businesses)
+                  <Shield className="h-3 w-3" /> Cloud Memory Sync Active ({savedBusinesses.length} businesses)
                 </p>
               </div>
             </div>
           ) : (
             <div className="flex flex-col gap-1">
-              <p className="text-xs font-bold text-muted">Sign in to save chat history to Firestore</p>
+              <p className="text-xs font-bold text-muted">Sign in to sync Vanguard-X™ memory across devices</p>
               <button
                 type="button"
                 onClick={() => signInWithGoogle()}
@@ -66,9 +72,9 @@ export default function AdvisorPage() {
             <Brain className="h-5 w-5" />
           </div>
           <div>
-            <h4 className="font-black text-sm">Multi-Model Intelligence</h4>
+            <h4 className="font-black text-sm">Tri-Core Sovereign Architecture</h4>
             <p className="text-xs font-medium text-muted mt-0.5">
-              Powered by <code>gemini-4-argon</code> for complex tasks, <code>gemini-3.8-flash</code> for general tasks, and <code>gemini-3.1-flash-lite</code> for speed.
+              Powered by <code>vanguard-x-omni-9</code> for deep venture &amp; margin modeling, <code>vanguard-x-quantum-5</code> for growth execution, and <code>vanguard-x-hyper-lite</code> for instant synthesis.
             </p>
           </div>
         </div>
@@ -78,9 +84,9 @@ export default function AdvisorPage() {
             <Search className="h-5 w-5" />
           </div>
           <div>
-            <h4 className="font-black text-sm">Google Search Grounding</h4>
+            <h4 className="font-black text-sm">Live Market &amp; Grant Intelligence Grid</h4>
             <p className="text-xs font-medium text-muted mt-0.5">
-              Retrieves live web citations for 2026 small business grants, news, competitor launches, and regulations.
+              Scans live 2026 non-dilutive startup grants, competitor pricing matrices, demand signals, and regulatory filings with verified citations.
             </p>
           </div>
         </div>
@@ -90,15 +96,15 @@ export default function AdvisorPage() {
             <MapPin className="h-5 w-5" />
           </div>
           <div>
-            <h4 className="font-black text-sm">Google Maps Grounding</h4>
+            <h4 className="font-black text-sm">Geospatial Commercial Telemetry</h4>
             <p className="text-xs font-medium text-muted mt-0.5">
-              Scouts local business establishments, physical storefronts, suppliers, and municipal offices with live Google Maps links.
+              Pinpoints high-traffic commercial zones, local competitors, wholesale suppliers, and municipal licensing hubs with live map coordinates.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Main Chatbot Interface */}
+      {/* Main Vanguard-X Interface */}
       <GeminiChatbot />
     </div>
   );

@@ -18,8 +18,8 @@ const NEXT_WAVE: Record<string, string> = {
 
 const TOOL_USER_TIPS: Record<string, { whatItDoes: string; howToUse: string }> = {
   "idea-wizard": {
-    whatItDoes: "Don't know what kind of business you want to start? No problem! Let us generate proven business ideas that we know can be successful!",
-    howToUse: "Just enter your interests and a few possibilities below and we will build 3 complete business idea cards you can choose from.",
+    whatItDoes: "The time to start a business is now!  If you still havnt decided on something, use our Idea Wizard.  Well make you a business based on your interests that we know will succeed.  You can always start a different one later, but how long have you been at a standstill?  Run the wizard and choose the project that excites you.  Do it right now.  See you in the next step.",
+    howToUse: "Just enter your interests and a few possibilities below and we will build 3 complete business idea cards you can choose from. Check ✓ the parts you love on any card and iterate the rest until it's perfect!",
   },
   "name-generator": {
     whatItDoes: "Generates memorable brand names, taglines, and domain ideas matched to your business.",
@@ -42,8 +42,8 @@ const TOOL_USER_TIPS: Record<string, { whatItDoes: string; howToUse: string }> =
     howToUse: "Select your primary logo concept below—it will appear in the header of your live website.",
   },
   "website-generator": {
-    whatItDoes: "Writes and publishes your live conversion-focused website with service packages, FAQ, and a customer contact form.",
-    howToUse: "Click 'View live site' to open your public website, share the link with customers, or use 'Change it' to tweak your headline or prices.",
+    whatItDoes: "Generative AI Website & Interactive Web App Studio — create your site, iterate unlimited times until satisfied, and host free on our site or your custom domain.",
+    howToUse: "Use the Generative AI Builder Form below to create or iterate your site and interactive calculator, or click 'Open Full Live Site & Studio' to open /sites/your-name.",
   },
   "ad-generator": {
     whatItDoes: "Creates ready-to-paste Facebook, Instagram, and Google Search ad copy and targeting angles.",
@@ -66,8 +66,8 @@ const TOOL_USER_TIPS: Record<string, { whatItDoes: string; howToUse: string }> =
     howToUse: "Add contacts manually or watch website inquiries land here automatically. Update each lead's status from New → Contacted → Won.",
   },
   "ai-advisor": {
-    whatItDoes: "Your 24/7 AI Co-Founder that has already read your business plan, brand voice, and pricing.",
-    howToUse: "Ask any question below—like 'How do I get my first 5 customers this week?' or 'Write a cold email to local businesses.'",
+    whatItDoes: "Vanguard-X™ Sovereign AI Advisor — your 24/7 Tri-Core Autonomous Executive Co-Founder that has indexed your business plan, pricing, brand voice, and live website.",
+    howToUse: "Command Vanguard-X™ below—ask for a 7-day customer acquisition sprint, stress-test your pricing margins, or activate the Live Web Grant Grid & Geo Radar.",
   },
 };
 
@@ -113,7 +113,8 @@ export default function ToolPage({ slug }: { slug: string }) {
   const content = asset?.content as Record<string, unknown> | null | undefined;
   const isChat = slug === "ai-advisor";
   const isCrm = slug === "customer-crm";
-  const hasCustomStudio = slug === "idea-wizard" || slug === "logo-generation";
+  const hasCustomStudio =
+    slug === "idea-wizard" || slug === "logo-generation" || slug === "website-generator";
 
   const run = (text?: string) => {
     if (!data) return;
