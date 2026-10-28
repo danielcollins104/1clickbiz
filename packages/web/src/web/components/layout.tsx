@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Asterisk, CreditCard, Heart, LayoutDashboard, Menu, MousePointerClick, Sparkles, Trash2, UserRound, X, Zap, Check } from "lucide-react";
+import { Asterisk, BookOpen, CreditCard, Heart, LayoutDashboard, Menu, MousePointerClick, Sparkles, Trash2, UserRound, X, Zap, Check } from "lucide-react";
 import { useCart } from "../lib/cart";
 import { useWishlist } from "../lib/wishlist";
 import { useQuickStart } from "../context/QuickStartContext";
+import { useNotebook } from "../context/NotebookContext";
 import { money } from "../lib/format";
 import { ProductArt } from "./product-art";
 import { useAdminStatus } from "../queries/admin";
@@ -12,6 +13,7 @@ import { useFirebase } from "../context/FirebaseContext";
 import { FAQ } from "./FAQ";
 import { WishlistDrawer } from "./WishlistDrawer";
 import { QuickStartModal } from "./QuickStartModal";
+import { NotebookDrawer } from "./NotebookDrawer";
 import { ExitIntentNotice } from "./ExitIntentNotice";
 import { BUNDLE_SLUG, PRODUCTS } from "../../api/catalog";
 
@@ -41,6 +43,7 @@ export function Logo({ className = "" }: { className?: string }) {
 function Header() {
   const { count, setOpen, bump } = useCart();
   const { count: wishlistCount, setOpen: setWishlistOpen, bump: wishlistBump } = useWishlist();
+  const { notes, openNotebook, bump: notebookBump } = useNotebook();
   const { openQuickStart } = useQuickStart();
   const { data: session, isPending } = useSession();
   const { user: firebaseUser, signInWithGoogle, signOut: signOutFirebase } = useFirebase();
@@ -131,6 +134,27 @@ function Header() {
                 <span className="hidden sm:inline">Sign in</span>
               </Link>
             ))}
+
+          {/* Slide-Out Founder Notebook Trigger */}
+          <button
+            type="button"
+            onClick={() => openNotebook()}
+            className="btn btn-sm btn-quiet relative !px-3 cursor-pointer"
+            aria-label={`Open Founder Notebook, ${notes.length} notes`}
+            title="Open Slide-Out Founder Notebook"
+          >
+            <BookOpen className="h-5 w-5" strokeWidth={2.75} />
+            <span className="hidden sm:inline">Notebook</span>
+            {notes.length > 0 && (
+              <span
+                key={notebookBump}
+                className="pop grid h-6 min-w-6 place-items-center bg-mint text-ink border border-ink px-1 text-xs font-black"
+              >
+                {notes.length}
+              </span>
+            )}
+          </button>
+
           <button
             type="button"
             onClick={() => setWishlistOpen(true)}
@@ -139,7 +163,7 @@ function Header() {
             title="Saved Wishlist"
           >
             <Heart className={`h-5 w-5 ${wishlistCount > 0 ? "fill-rose-500 text-rose-500" : ""}`} strokeWidth={2.75} />
-            <span className="hidden sm:inline">Wishlist</span>
+            <span className="hidden lg:inline">Wishlist</span>
             {wishlistCount > 0 && (
               <span key={wishlistBump} className="pop grid h-6 min-w-6 place-items-center bg-rose-500 px-1 text-xs text-white font-black">
                 {wishlistCount}
@@ -187,6 +211,20 @@ function Header() {
               {n.label}
             </Link>
           ))}
+          <button
+            type="button"
+            onClick={() => {
+              setMenu(false);
+              openNotebook();
+            }}
+            className="display border-b-[3px] border-ink px-4 py-4 text-2xl no-underline flex items-center justify-between text-left w-full cursor-pointer"
+          >
+            <span className="flex items-center gap-2">
+              <BookOpen className="h-6 w-6" />
+              <span>Founder Notebook</span>
+            </span>
+            <span className="chip bg-mint text-ink text-sm">{notes.length}</span>
+          </button>
           <Link to="/wishlist" className="display border-b-[3px] border-ink px-4 py-4 text-2xl no-underline flex items-center justify-between">
             <span className="flex items-center gap-2">
               <Heart className="h-6 w-6 fill-rose-500 text-rose-500" />
@@ -433,11 +471,11 @@ function CartDrawer() {
                 </button>
                 <button
                   type="button"
-                  className="btn btn-yellow text-xs font-black shadow-[3px_3px_0px_#000] cursor-pointer"
                   onClick={() => {
                     setOpen(false);
                     navigate("/subscribe");
                   }}
+                  className="btn btn-yellow text-xs font-black shadow-[3px_3px_0px_#000] cursor-pointer"
                 >
                   Continue to Subscribe
                 </button>
@@ -512,6 +550,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <Footer />
       <CartDrawer />
       <WishlistDrawer />
+      <NotebookDrawer />
       <QuickStartModal />
       <ExitIntentNotice />
 

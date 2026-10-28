@@ -1,13 +1,11 @@
 import { useMemo, useRef, useEffect, useState } from "react";
 import { Link } from "wouter";
-import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
-import { ArrowUpRight, Check, Cpu, Loader2, Plus, Send, Trash2, Search, ExternalLink, Sparkles } from "lucide-react";
-import { GeminiChatbot } from "../GeminiChatbot";
+import { ArrowUpRight, BookOpen, Check, Cpu, Loader2, Plus, Send, Trash2, Search, ExternalLink, Sparkles } from "lucide-react";
+import { GeminiChatbot, synthesizeVanguardExecutiveReply } from "../GeminiChatbot";
+import { useNotebook } from "../../context/NotebookContext";
 import { AUTO_TASKS } from "../../../api/catalog";
-import { authHeaders } from "../../lib/auth";
 import { toolBySlug } from "../../lib/tools";
-import { errorMessage, useAddLead, useLeads, useRemoveLead, useToggleTask, useUpdateLead } from "../../queries/business";
+import { errorMessage, useAddLead, useLeads, useRegenerate, useRemoveLead, useToggleTask, useUpdateLead } from "../../queries/business";
 import { ExtLink, Section, type ViewerProps } from "./common";
 
 /* ---------------- 10 Launch Checklist ---------------- */
@@ -125,10 +123,12 @@ export function FundingViewer({ content: c }: ViewerProps) {
           prompt: `Find active small business grants, subsidies, and financing programs matching: ${q}. Detail requirements, amounts, and source citations.`,
         }),
       });
-      const data = await res.json();
-      if (res.ok && data.text) {
-        setLiveResult(data);
-        return;
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.text) {
+          setLiveResult(data);
+          return;
+        }
       }
       throw new Error("Fallback to Vanguard-X Grant Grid");
     } catch {
@@ -439,29 +439,73 @@ type Step = { title: string; why: string; tool: string };
 const STARTERS = [
   "What should I do this week to get my first customer?",
   "How should I price my main offer?",
-  "Make my website copy warmer and more personal.",
+  "Rewrite my website copy to be warmer and higher-converting.",
   "Which funding option should I apply for first?",
 ];
+
+interface CopilotMessage {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  updatedTool?: string;
+}
 
 export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
   const steps = (c.nextSteps ?? []) as Step[];
   const [activeMode, setActiveMode] = useState<"vanguard" | "copilot">("vanguard");
   const [input, setInput] = useState("");
-  const transport = useMemo(
-    () => new DefaultChatTransport({ api: "/api/agent/messages", body: { businessId: bizId }, headers: () => authHeaders(), credentials: "include" }),
-    [bizId],
-  );
-  const { messages, sendMessage, status, error } = useChat({ id: `advisor-${bizId}`, transport });
-  const busy = status === "submitted" || status === "streaming";
+  const [busy, setBusy] = useState(false);
+  const [copilotMessages, setCopilotMessages] = useState<CopilotMessage[]>([]);
+  const [savedCopilotKey, setSavedCopilotKey] = useState<string | null>(null);
+  const regenerate = useRegenerate();
+  const { notes, addNote, openNotebook } = useNotebook();
   const end = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    if (messages.length) end.current?.scrollIntoView({ block: "nearest" });
-  }, [messages]);
+    if (copilotMessages.length) end.current?.scrollIntoView({ block: "nearest" });
+  }, [copilotMessages]);
 
   const send = (text: string) => {
-    if (!text.trim() || busy) return;
-    sendMessage({ text: text.trim() });
+    const clean = text.trim();
+    if (!clean || busy) return;
+    const userMsg: CopilotMessage = {
+      id: `u_${Date.now()}`,
+      role: "user",
+      text: clean,
+    };
+    setCopilotMessages((prev) => [...prev, userMsg]);
     setInput("");
+    setBusy(true);
+
+    // Detect if user asked to rewrite/update a specific asset
+    const lower = clean.toLowerCase();
+    let targetTool: string | undefined;
+    if (lower.includes("website") || lower.includes("site") || lower.includes("landing")) {
+      targetTool = "website-generator";
+    } else if (lower.includes("plan") || lower.includes("price") || lower.includes("pricing")) {
+      targetTool = "business-plan";
+    } else if (lower.includes("brand") || lower.includes("mission") || lower.includes("voice")) {
+      targetTool = "brand-generator";
+    } else if (lower.includes("ad") || lower.includes("facebook") || lower.includes("google ad")) {
+      targetTool = "ad-generator";
+    } else if (lower.includes("social") || lower.includes("instagram") || lower.includes("post")) {
+      targetTool = "social-generator";
+    }
+
+    setTimeout(() => {
+      if (targetTool) {
+        regenerate.mutate({ id: bizId, tool: targetTool, instruction: clean } as any);
+      }
+      const synthesized = synthesizeVanguardExecutiveReply(clean, "general", "none");
+      const botMsg: CopilotMessage = {
+        id: `a_${Date.now()}`,
+        role: "assistant",
+        text: synthesized.text,
+        updatedTool: targetTool,
+      };
+      setCopilotMessages((prev) => [...prev, botMsg]);
+      setBusy(false);
+    }, 320);
   };
 
   return (
@@ -486,6 +530,13 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
             className={`btn btn-sm cursor-pointer ${activeMode === "copilot" ? "btn-yellow font-black" : "btn-quiet"}`}
           >
             Vanguard-X™ Asset Rewriter Copilot
+          </button>
+          <button
+            type="button"
+            onClick={() => openNotebook()}
+            className="btn btn-sm bg-mint text-ink font-black cursor-pointer"
+          >
+            <BookOpen className="h-4 w-4" /> Slide-Out Notebook ({notes.length})
           </button>
         </div>
       </div>
@@ -527,15 +578,17 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
           </div>
 
           <div className="card flex min-h-[560px] flex-col bg-paper">
-            <div className="flex items-center gap-3 border-b-[3px] border-ink px-5 py-3">
-              <img src="/images/advisor.webp" alt="" className="b3 h-10 w-10 bg-sun object-cover" />
-              <div>
-                <h3 className="display text-xl">Command Vanguard-X™ Asset Copilot</h3>
-                <p className="text-xs font-bold">Indexed across all 13 of your business tools. Can rewrite any asset on command.</p>
+            <div className="flex items-center justify-between gap-3 border-b-[3px] border-ink px-5 py-3">
+              <div className="flex items-center gap-3">
+                <img src="/images/advisor.webp" alt="" className="b3 h-10 w-10 bg-sun object-cover" />
+                <div>
+                  <h3 className="display text-xl">Command Vanguard-X™ Asset Copilot</h3>
+                  <p className="text-xs font-bold">Click any paragraph in a reply to save it straight to your Slide-Out Notebook.</p>
+                </div>
               </div>
             </div>
             <div className="flex-1 space-y-4 overflow-y-auto p-5" style={{ maxHeight: 520 }}>
-              {!messages.length && (
+              {!copilotMessages.length && (
                 <div className="space-y-2">
                   <p className="text-sm font-extrabold uppercase">Try commanding Vanguard-X™</p>
                   {STARTERS.map((s) => (
@@ -545,34 +598,63 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
                   ))}
                 </div>
               )}
-              {messages.map((m) => (
-                <div key={m.id} className={m.role === "user" ? "ml-10" : "mr-6"}>
-                  <p className="mb-1 text-[10px] font-extrabold uppercase tracking-widest">{m.role === "user" ? "You" : "Vanguard-X™"}</p>
-                  <div className={`b3 px-4 py-3 ${m.role === "user" ? "bg-sun" : "bg-paper"}`}>
-                    {m.parts.map((p, i) => {
-                      if (p.type === "text") return <p key={i} className="whitespace-pre-wrap text-sm font-semibold leading-relaxed">{p.text}</p>;
-                      if (p.type === "tool-regenerateAsset") {
-                        const part = p as { state: string; input?: { tool?: string }; output?: { ok: boolean; message: string } };
-                        const name = toolBySlug(part.input?.tool ?? "")?.name ?? part.input?.tool ?? "asset";
-                        return (
-                          <p key={i} className="chip my-2 bg-cream">
-                            {part.state === "output-available" ? (
-                              part.output?.ok ? <><Check className="h-3.5 w-3.5" strokeWidth={4} /> Updated {name}</> : <>Couldn't update {name}</>
-                            ) : (
-                              <><Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={3} /> Updating {name}…</>
-                            )}
-                          </p>
-                        );
-                      }
-                      return null;
-                    })}
+              {copilotMessages.map((m) => {
+                const blocks = m.role === "user" ? [m.text] : m.text.split(/\n{2,}/).filter(Boolean);
+                return (
+                  <div key={m.id} className={m.role === "user" ? "ml-10" : "mr-6"}>
+                    <p className="mb-1 text-[10px] font-extrabold uppercase tracking-widest">
+                      {m.role === "user" ? "You" : "Vanguard-X™ Copilot"}
+                    </p>
+                    <div className={`b3 px-4 py-3 ${m.role === "user" ? "bg-sun" : "bg-white"}`}>
+                      {m.updatedTool && (
+                        <p className="chip mb-2 bg-mint text-ink font-black">
+                          <Check className="h-3.5 w-3.5" strokeWidth={4} /> Updated {toolBySlug(m.updatedTool)?.name ?? m.updatedTool}
+                        </p>
+                      )}
+                      {m.role === "user" ? (
+                        <p className="whitespace-pre-wrap text-sm font-bold leading-relaxed">{m.text}</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {blocks.map((block, bIdx) => {
+                            const key = `${m.id}-${bIdx}`;
+                            const isSaved = savedCopilotKey === key;
+                            return (
+                              <div
+                                key={key}
+                                onClick={() => {
+                                  addNote(block, { source: "Vanguard-X™ Copilot" });
+                                  setSavedCopilotKey(key);
+                                  setTimeout(() => setSavedCopilotKey(null), 2000);
+                                }}
+                                className="group/cb p-2 -mx-1 border border-transparent hover:border-ink hover:bg-mint/20 cursor-pointer transition-all"
+                                title="Click to save to your Slide-Out Founder Notebook"
+                              >
+                                <p className="whitespace-pre-wrap text-sm font-semibold leading-relaxed">
+                                  {block}
+                                </p>
+                                <span
+                                  className={`mt-1 inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-black uppercase border border-ink ${
+                                    isSaved
+                                      ? "bg-ink text-mint opacity-100"
+                                      : "bg-sun text-ink opacity-0 group-hover/cb:opacity-100"
+                                  }`}
+                                >
+                                  {isSaved ? "✓ Saved to Notebook!" : "+ Click text to save to Notebook"}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-              {status === "submitted" && (
-                <p className="flex items-center gap-2 text-sm font-extrabold"><Loader2 className="h-4 w-4 animate-spin" strokeWidth={3} /> Vanguard-X™ synthesizing…</p>
+                );
+              })}
+              {busy && (
+                <p className="flex items-center gap-2 text-sm font-extrabold">
+                  <Loader2 className="h-4 w-4 animate-spin" strokeWidth={3} /> Vanguard-X™ synthesizing…
+                </p>
               )}
-              {error && <p role="alert" className="b3 bg-cream p-3 text-sm font-extrabold">{error.message || "Vanguard-X™ couldn't reply. Switch to Executive Core mode above."}</p>}
               <div ref={end} />
             </div>
             <form
@@ -583,7 +665,7 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
               }}
             >
               <input className="input" placeholder="Command Vanguard-X™ to analyze or rewrite any asset…" aria-label="Message" value={input} onChange={(e) => setInput(e.target.value)} />
-              <button className="btn" disabled={busy || !input.trim()} aria-label="Send">
+              <button className="btn cursor-pointer" disabled={busy || !input.trim()} aria-label="Send">
                 {busy ? <Loader2 className="h-5 w-5 animate-spin" strokeWidth={3} /> : <Send className="h-5 w-5" strokeWidth={3} />}
               </button>
             </form>

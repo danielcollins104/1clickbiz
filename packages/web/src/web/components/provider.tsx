@@ -4,8 +4,8 @@ import { CartProvider } from "../lib/cart";
 import { WishlistProvider } from "../lib/wishlist";
 import { authClient } from "../lib/auth";
 import { FirebaseProvider } from "../context/FirebaseContext";
-
 import { QuickStartProvider } from "../context/QuickStartContext";
+import { NotebookProvider } from "../context/NotebookContext";
 
 const queryClient = new QueryClient();
 
@@ -22,7 +22,9 @@ export function Provider({ children }: { children: React.ReactNode }) {
       <FirebaseProvider>
         <WishlistProvider>
           <CartProvider>
-            <QuickStartProvider>{children}</QuickStartProvider>
+            <NotebookProvider>
+              <QuickStartProvider>{children}</QuickStartProvider>
+            </NotebookProvider>
           </CartProvider>
         </WishlistProvider>
       </FirebaseProvider>

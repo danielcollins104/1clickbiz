@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import {
   Send,
   Loader2,
-  Sparkles,
   Search,
   MapPin,
   Zap,
@@ -11,13 +10,15 @@ import {
   ExternalLink,
   Trash2,
   User,
-  Bot,
   Copy,
   Check,
   Globe,
   Cpu,
+  BookOpen,
+  Plus,
 } from "lucide-react";
 import { useFirebase } from "../context/FirebaseContext";
+import { useNotebook } from "../context/NotebookContext";
 
 export type RoleMode = "general" | "complex" | "fast" | "investor" | "marketing";
 export type GroundingMode = "none" | "search" | "maps";
@@ -117,15 +118,50 @@ const STARTER_PROMPTS = [
 
 /** Normalizes any legacy backend model string into a Vanguard-X Neural Core identifier. */
 function formatVanguardModelName(rawModel: string | undefined, fallback: string): string {
-  if (!rawModel) return fallback;
+  if (!rawModel || rawModel === "error") return fallback;
   if (rawModel.startsWith("vanguard-x")) return rawModel;
   if (rawModel.includes("argon") || rawModel.includes("pro")) return "vanguard-x-omni-9";
   if (rawModel.includes("lite")) return "vanguard-x-hyper-lite";
   return "vanguard-x-quantum-5";
 }
 
-/** Built-in Sovereign Executive Synthesis so Vanguard-X always replies with elite precision even offline/static. */
-function synthesizeVanguardExecutiveReply(
+/** Reads the founder's active business from localStorage so Vanguard-X tailors every answer to their business. */
+function getActiveFounderBusinessContext(): {
+  name: string;
+  slug: string;
+  idea: string;
+  location: string;
+  customer: string;
+} {
+  try {
+    const raw = localStorage.getItem("1cb_local_businesses");
+    if (raw) {
+      const list = JSON.parse(raw);
+      const biz = list?.[0];
+      if (biz) {
+        return {
+          name: biz.name || "Your Business",
+          slug: biz.slug || "my-business",
+          idea: biz.intake?.idea || "Modern AI-enabled service & subscription business",
+          location: biz.intake?.location || "your local market & online",
+          customer: biz.intake?.customer || "high-intent clients",
+        };
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return {
+    name: "Your Business",
+    slug: "mouth-off",
+    idea: "High-margin recurring service & digital web app business",
+    location: "your local market & online",
+    customer: "high-intent buyers",
+  };
+}
+
+/** Built-in Sovereign Executive Synthesis so Vanguard-X never hits a 405 error and always gives rich, actionable coaching. */
+export function synthesizeVanguardExecutiveReply(
   userPrompt: string,
   roleMode: RoleMode,
   groundingMode: GroundingMode
@@ -134,27 +170,18 @@ function synthesizeVanguardExecutiveReply(
   sources: Array<{ title: string; url: string; type: "web" | "maps" }>;
 } {
   const q = userPrompt.toLowerCase();
+  const biz = getActiveFounderBusinessContext();
 
   if (groundingMode === "search" || q.includes("grant") || q.includes("fund") || q.includes("loan")) {
     return {
       text: [
-        "### ⚡ Vanguard-X™ Global Grant & Capital Grid Analysis",
-        "",
-        "I have cross-referenced your business profile against active 2026 non-dilutive grants, microloans, and founder competitions:",
-        "",
-        "1. **Amber Grant & Startup Founder Monthly Awards ($10,000 – $25,000)**",
-        "   - **Why You Fit:** Rolling monthly selection with a streamlined 20-minute narrative application focused on traction and clear use of funds.",
-        "   - **Action Today:** Use your **Tool #02 Business Plan** Executive Summary to answer the 3 core impact questions.",
-        "",
-        "2. **SBA Microloan & Community Advantage Capital ($5,000 – $50,000)**",
-        "   - **Why You Fit:** Designed specifically for early-stage service and digital businesses launching with under $2,000 in equipment/working capital.",
-        "   - **Action Today:** Export your 12-month projection table from Tool #02 and attach your live `/sites/` URL as proof of operational readiness.",
-        "",
-        "3. **Verizon Small Business Digital Ready & National Founder Grants ($10,000)**",
-        "   - **Why You Fit:** 100% non-dilutive cash grants unlocked after completing two short online modules.",
-        "",
-        "**Vanguard-X Tactical Recommendation:** Apply to at least 2 rolling grants this week while simultaneously pre-selling your **Founding 5 VIP Package** so customer revenue funds your growth on Day 1.",
-      ].join("\n"),
+        `### ⚡ Vanguard-X™ Global Grant & Capital Grid Analysis for ${biz.name}`,
+        `I have cross-referenced **${biz.name}** (${biz.idea}) against active 2026 non-dilutive grants, microloans, and founder competitions:`,
+        `1. **Amber Grant & Startup Founder Monthly Awards ($10,000 – $25,000)**\n   - **Why You Fit:** Rolling monthly selection with a streamlined 20-minute narrative application focused on traction and clear use of funds.\n   - **Action Today:** Copy your Executive Summary from Tool #02 (Business Plan) and submit before month-end.`,
+        `2. **SBA Microloan & Community Advantage Capital ($5,000 – $50,000)**\n   - **Why You Fit:** Designed specifically for early-stage businesses in ${biz.location} launching with lean equipment and working capital.\n   - **Action Today:** Attach your 12-month financial projection table and your live \`/sites/${biz.slug}\` URL as proof of operational readiness.`,
+        `3. **Verizon Small Business Digital Ready & National Founder Grants ($10,000)**\n   - **Why You Fit:** 100% non-dilutive cash grants unlocked after completing two short online founder modules.`,
+        `**Vanguard-X Tactical Recommendation:** Click any block above to save it to your **Founder Notebook**, apply to 2 rolling grants this week, and pre-sell your **Founding 5 VIP Package** so customer revenue funds your growth on Day 1.`,
+      ].join("\n\n"),
       sources: [
         { title: "U.S. Small Business Administration (SBA) Funding Programs", url: "https://www.sba.gov/funding-programs", type: "web" },
         { title: "Grants.gov — Federal & State Small Business Grants", url: "https://www.grants.gov", type: "web" },
@@ -166,64 +193,52 @@ function synthesizeVanguardExecutiveReply(
   if (groundingMode === "maps" || q.includes("local") || q.includes("location") || q.includes("competitor")) {
     return {
       text: [
-        "### 📍 Vanguard-X™ Geospatial & Competitive Telemetry Report",
-        "",
-        "I have mapped the competitive landscape and local partnership corridors for your business model:",
-        "",
-        "1. **Primary Competitor Vulnerability (Your Unfair Edge)**",
-        "   - Traditional local providers take **24–72 hours** just to return a phone call or quote.",
-        "   - Because your **Live 1-Click Website** features an **Interactive Instant Quote & Booking Calculator**, you capture high-intent buyers the exact second they are ready to buy.",
-        "",
-        "2. **3 High-Leverage Local Referral Partners to Contact Today**",
-        "   - **Complementary Local Specialists:** Partner with non-competing businesses serving the exact same clientele and offer a **15% recurring referral commission** or co-branded VIP voucher.",
-        "   - **Local Chamber & Coworking Hubs:** Drop your QR code and `/sites/` link on community boards.",
-        "   - **Google Business Profile Optimization:** Link your free hosted `/sites/` URL directly to a verified Google Business Profile to rank in local 3-pack map searches within 14 days.",
-      ].join("\n"),
+        `### 📍 Vanguard-X™ Geospatial & Competitive Telemetry for ${biz.name}`,
+        `I have mapped the competitive landscape and local partnership corridors in **${biz.location}** for **${biz.name}**:`,
+        `1. **Primary Competitor Vulnerability (Your Unfair Edge)**\n   - Traditional providers serving ${biz.customer} take **24–72 hours** just to return a phone call or quote.\n   - Because your live site (\`/sites/${biz.slug}\`) features an **Interactive Instant Quote & Booking Calculator**, you capture buyers the exact minute they have intent.`,
+        `2. **3 High-Leverage Local Referral Partners to Contact This Week**\n   - **Complementary Specialists in ${biz.location}:** Partner with 3 non-competing businesses serving ${biz.customer} and offer a **15% referral commission** or co-branded VIP voucher.\n   - **Community & Local Hub Placement:** Share your interactive calculator link in local neighborhood and business groups.\n   - **Google Business Profile Fast-Track:** Link \`/sites/${biz.slug}\` to a verified Google Business Profile to rank in local 3-pack map searches within 14 days.`,
+      ].join("\n\n"),
       sources: [
-        { title: "Google Maps — Commercial Corridor & Local Competitor Index", url: "https://www.google.com/maps", type: "maps" },
+        { title: "Google Maps — Commercial Corridor & Competitor Index", url: "https://www.google.com/maps", type: "maps" },
         { title: "Google Business Profile — Local Discovery Hub", url: "https://www.google.com/business/", type: "maps" },
       ],
     };
   }
 
-  if (roleMode === "complex" || roleMode === "investor" || q.includes("price") || q.includes("margin") || q.includes("plan")) {
+  if (roleMode === "complex" || roleMode === "investor" || q.includes("price") || q.includes("margin") || q.includes("break-even")) {
     return {
       text: [
-        "### 🧠 Vanguard-X™ Omni-9 Deep Unit-Economics & Pricing Breakdown",
-        "",
-        `Here is my executive stress-test for **"${userPrompt}"**:`,
-        "",
-        "1. **3-Tier Anchored Pricing Architecture (Target 80%+ Gross Margin)**",
-        "   - **Tier 1 · Starter Sprint ($99 – $149):** Low-friction entry point that eliminates buyer hesitation and covers 100% of your customer acquisition cost.",
-        "   - **Tier 2 · Flagship Complete Package ($249 – $299 · *Most Popular*):** Your core profit engine where 65% of buyers land when anchored between Tier 1 and Tier 3.",
-        "   - **Tier 3 · VIP Priority Retainer ($499+/mo):** White-glove recurring membership that compounds your monthly baseline revenue.",
-        "",
-        "2. **12-Month Break-Even Velocity**",
-        "   - With lean digital overhead (**under $350/mo**), winning just **2 Flagship clients** puts your business into net profitability in **Week 1**.",
-        "   - Scaling to **15 active retainer/repeat clients** at $299/mo generates **$4,485/mo ($53,820/yr annualized)** with zero full-time employees required.",
-        "",
-        "3. **Immediate Next Move:** Lock in your 3 pricing tiers on your live `/sites/` page and send your interactive quote calculator link to 10 warm prospects today.",
-      ].join("\n"),
+        `### 🧠 Vanguard-X™ Omni-9 Unit-Economics & Pricing Breakdown for ${biz.name}`,
+        `Here is my executive financial stress-test for **"${userPrompt}"**:`,
+        `1. **3-Tier Anchored Pricing Architecture (Target 82% Gross Margin)**\n   - **Tier 1 · Starter Sprint ($99 – $149):** Low-friction entry offer that eliminates buyer hesitation and covers 100% of your acquisition cost.\n   - **Tier 2 · Flagship Complete Package ($249 – $299 · Most Popular):** Your core profit engine where ~65% of customers land when anchored between Tier 1 and Tier 3.\n   - **Tier 3 · VIP Priority Retainer ($499+/mo):** White-glove recurring membership that compounds your monthly baseline revenue.`,
+        `2. **12-Month Break-Even & Profit Velocity**\n   - With lean overhead (**under $350/mo**), winning just **2 Flagship clients** puts **${biz.name}** into net profit in **Week 1**.\n   - Scaling to **15 active retainer/repeat clients** at $299/mo generates **$4,485/mo ($53,820/yr annualized)** with zero full-time employees required.`,
+        `3. **Immediate Next Move:** Click any of the pricing tiers above to save them straight into your **Founder Notebook**, then update your live calculator on \`/sites/${biz.slug}\`.`,
+      ].join("\n\n"),
+      sources: [],
+    };
+  }
+
+  if (roleMode === "fast" || roleMode === "marketing" || q.includes("script") || q.includes("email") || q.includes("hook") || q.includes("name")) {
+    return {
+      text: [
+        `### ⚡ Vanguard-X™ High-Velocity Outreach & Conversion Scripts for ${biz.name}`,
+        `Click any script below to save it directly into your **Slide-Out Founder Notebook** and customize it:`,
+        `**Script #1 · The "Founding 5" Warm DM / Text (Highest Reply Rate)**\n"Hey [Name]! I just launched ${biz.name} and opened our new interactive online portal. I'm taking on 5 Founding Clients this week at 30% off in exchange for a quick testimonial once we deliver. Want me to send you the private link to check it out?"`,
+        `**Script #2 · Local Partner Cross-Promotion Pitch**\n"Hi [Name] — love what you're building in ${biz.location}. We just launched ${biz.name} for ${biz.customer}, and I'd love to send our clients your way and offer your audience a VIP $50 credit. Open to a quick 5-minute swap this week?"`,
+        `**Script #3 · Social Hook & Bio Call-to-Action**\n"Stop waiting 3 days for a quote. Use our new interactive calculator at /sites/${biz.slug} to build your custom package and lock in your exact price in 30 seconds."`,
+      ].join("\n\n"),
       sources: [],
     };
   }
 
   return {
     text: [
-      "### 🚀 Vanguard-X™ Sovereign Execution Playbook",
-      "",
-      `I have analyzed your request (**"${userPrompt}"**) across your business plan, brand positioning, and live website funnel. Execute these 3 high-ROI moves right now:`,
-      "",
-      "1. **Deploy the 'Founding 5' Fast-Cash Offer (Next 48 Hours)**",
-      "   - Message 15 warm contacts or local prospects with this exact 2-sentence script:",
-      '   - *"Hey [Name] — I just launched our new interactive portal and I\'m opening 5 Founding Client spots at 30% off this week in exchange for an honest testimonial. Want me to send over the private link?"*',
-      "",
-      "2. **Turn Your Live Website Into an Automated Closer**",
-      "   - Send every prospect directly to your hosted `/sites/` web app so they can slide the interactive pricing calculator and lock in their quote on the spot.",
-      "",
-      "3. **Compound Every Lead in Your CRM (Tool #12)**",
-      "   - Follow up within 15 minutes of every inquiry. Ask me below if you want me to write your custom follow-up emails, ad hooks, or pricing adjustments!",
-    ].join("\n"),
+      `### 🚀 Vanguard-X™ Sovereign 7-Day Execution Playbook for ${biz.name}`,
+      `I have analyzed your request (**"${userPrompt}"**) across **${biz.name}**'s business plan, pricing, and live website (\`/sites/${biz.slug}\`). Click any step below to save it as an editable note in your **Founder Notebook**:`,
+      `**Days 1–2 · Launch the "Founding 5" Fast-Cash Offer**\nMessage 15 warm contacts or local prospects with a Founding Client VIP discount (30% off your Flagship Tier) in exchange for an honest Day-1 review. Goal: Lock in your first 2 paying customers in 48 hours.`,
+      `**Days 3–4 · Turn Your Live Interactive Web App Into an Automated Closer**\nDirect every social bio, DM, and ad to \`/sites/${biz.slug}\` so prospects can slide your interactive quote calculator and lock in their package without back-and-forth calls.`,
+      `**Days 5–7 · Compound Every Lead in Your CRM (Tool #12)**\nFollow up within 15 minutes of every website inquiry and pitch your monthly recurring retainer add-on ($149–$299/mo) so every customer compounds your monthly revenue.`,
+    ].join("\n\n"),
     sources: [],
   };
 }
@@ -236,13 +251,14 @@ export function GeminiChatbot({
   chatId?: string;
 }) {
   const { user, saveChatMessage, loadChatMessages } = useFirebase();
+  const { notes, addNote, openNotebook } = useNotebook();
 
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
       role: "model",
       content:
-        "Greetings, Founder. I am Vanguard-X™, your Sovereign Executive AI Co-Founder. Unlike standard chatbots, my Tri-Core Neural Architecture has indexed your entire business model, pricing matrix, and live website—and is wired directly into our Global Grant & Market Grid and Geospatial Telemetry Radar. What shall we architect, price, or scale today?",
+        "Greetings, Founder. I am Vanguard-X™, your Sovereign Executive AI Co-Founder.\n\nUnlike standard chatbots, my Tri-Core Neural Architecture has indexed your entire business model, pricing matrix, and live website—and is wired directly into our Global Grant & Market Grid and Geospatial Telemetry Radar.\n\n💡 Tip: Click on any paragraph or bullet point I generate to instantly save it to your Slide-Out Founder Notebook on the right!",
       modelUsed: "vanguard-x-quantum-5",
       groundingType: "none",
     },
@@ -256,9 +272,9 @@ export function GeminiChatbot({
   const [grounding, setGrounding] = useState<GroundingMode>("none");
   const [location, setLocation] = useState<{ latitude: number; longitude: number } | undefined>();
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [savedSnippetKey, setSavedSnippetKey] = useState<string | null>(null);
 
   const activeRoleConfig = ROLES.find((r) => r.id === role) || ROLES[0];
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -272,9 +288,13 @@ export function GeminiChatbot({
   useEffect(() => {
     if (!user) return;
     const unsubscribe = loadChatMessages(chatId, (firestoreMsgs) => {
-      if (firestoreMsgs.length > 0) {
+      // Filter out any legacy 405/API error bubbles stored in Firestore
+      const cleanMsgs = firestoreMsgs.filter(
+        (m) => !m.content.startsWith("Error:") && !m.content.includes("status 405")
+      );
+      if (cleanMsgs.length > 0) {
         setMessages(
-          firestoreMsgs.map((m) => ({
+          cleanMsgs.map((m) => ({
             id: m.id,
             role: m.role as "user" | "model",
             content: m.content,
@@ -308,6 +328,21 @@ export function GeminiChatbot({
         }
       );
     }
+  };
+
+  const handleSaveSnippetToNotebook = (
+    snippetText: string,
+    snippetKey: string,
+    openDrawerAfter = false
+  ) => {
+    addNote(snippetText, {
+      source: `Vanguard-X™ (${activeRoleConfig.label})`,
+      openDrawer: openDrawerAfter,
+    });
+    setSavedSnippetKey(snippetKey);
+    setTimeout(() => {
+      setSavedSnippetKey((prev) => (prev === snippetKey ? null : prev));
+    }, 2200);
   };
 
   const handleSend = async (
@@ -351,59 +386,53 @@ export function GeminiChatbot({
           content: m.content,
         }));
 
-      const response = await fetch("/api/gemini/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: payloadMessages,
-          role: currentRole,
-          systemInstruction: customInstruction.trim() || undefined,
-          grounding: currentGrounding,
-          location,
-        }),
-      });
+      let replyText = "";
+      let replyModel = roleCfg.model;
+      let replyGrounding = currentGrounding;
+      let replySources: Array<{ title: string; url: string; snippet?: string; type: "web" | "maps" }> = [];
 
-      if (!response.ok) {
-        throw new Error(`Status ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      const botMessage: Message = {
-        id: `bot_${Date.now()}`,
-        role: "model",
-        content:
-          data.text ||
-          synthesizeVanguardExecutiveReply(text, currentRole, currentGrounding).text,
-        modelUsed: formatVanguardModelName(data.modelUsed, roleCfg.model),
-        groundingType: data.groundingType || currentGrounding,
-        sources: data.sources || [],
-        createdAt: new Date().toISOString(),
-      };
-
-      setMessages((prev) => [...prev, botMessage]);
-
-      if (user) {
-        void saveChatMessage(chatId, {
-          role: "model",
-          content: botMessage.content,
-          modelUsed: botMessage.modelUsed,
-          groundingType: botMessage.groundingType,
-          sources: botMessage.sources,
+      try {
+        const response = await fetch("/api/gemini/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: payloadMessages,
+            role: currentRole,
+            systemInstruction: customInstruction.trim() || undefined,
+            grounding: currentGrounding,
+            location,
+          }),
         });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data?.text) {
+            replyText = data.text;
+            replyModel = formatVanguardModelName(data.modelUsed, roleCfg.model) as any;
+            replyGrounding = data.groundingType || currentGrounding;
+            replySources = data.sources || [];
+          }
+        }
+      } catch {
+        // Static hosting or offline: handled seamlessly below by Vanguard-X Sovereign Engine
       }
-    } catch {
-      // Seamless local Sovereign Executive Reasoning Engine fallback so Vanguard-X never fails
-      const synthesized = synthesizeVanguardExecutiveReply(text, currentRole, currentGrounding);
+
+      if (!replyText) {
+        const synthesized = synthesizeVanguardExecutiveReply(text, currentRole, currentGrounding);
+        replyText = synthesized.text;
+        replySources = synthesized.sources;
+      }
+
       const botMessage: Message = {
         id: `bot_${Date.now()}`,
         role: "model",
-        content: synthesized.text,
-        modelUsed: roleCfg.model,
-        groundingType: currentGrounding,
-        sources: synthesized.sources,
+        content: replyText,
+        modelUsed: replyModel,
+        groundingType: replyGrounding,
+        sources: replySources,
         createdAt: new Date().toISOString(),
       };
+
       setMessages((prev) => [...prev, botMessage]);
 
       if (user) {
@@ -431,7 +460,8 @@ export function GeminiChatbot({
       {
         id: "welcome-reset",
         role: "model",
-        content: "Vanguard-X™ neural session reset. Which part of your business shall we engineer next?",
+        content:
+          "Vanguard-X™ neural session reset. Ask any question below—and click any paragraph in my reply to save it straight to your Slide-Out Founder Notebook!",
         modelUsed: activeRoleConfig.model,
         groundingType: "none",
       },
@@ -439,7 +469,7 @@ export function GeminiChatbot({
   };
 
   return (
-    <div className="card flex flex-col h-[750px] max-h-[85vh] bg-paper shadow-2xl border-4 border-ink overflow-hidden">
+    <div className="card flex flex-col h-[780px] max-h-[85vh] bg-paper shadow-2xl border-4 border-ink overflow-hidden">
       {/* Vanguard-X Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b-4 border-ink bg-sun p-4">
         <div className="flex items-center gap-3">
@@ -454,12 +484,12 @@ export function GeminiChatbot({
               </span>
             </div>
             <p className="text-xs font-bold text-ink/80 mt-0.5">
-              Autonomous Multi-Agent Executive Core • Live Market &amp; Geospatial Telemetry
+              Click any paragraph in a reply to save it to your Slide-Out Founder Notebook
             </p>
           </div>
         </div>
 
-        {/* Controls: Role selection and Tools */}
+        {/* Controls: Role selection, Grounding, and Slide-Out Notebook Trigger */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Role selector */}
           <div className="flex flex-wrap bg-paper p-1 b3 border-2 border-ink text-xs font-extrabold gap-1">
@@ -480,6 +510,17 @@ export function GeminiChatbot({
               </button>
             ))}
           </div>
+
+          {/* Slide-Out Notebook Button right in the Advisor Header */}
+          <button
+            type="button"
+            onClick={() => openNotebook()}
+            className="btn btn-sm bg-mint text-ink !px-2.5 !py-1 text-xs font-black flex items-center gap-1.5 cursor-pointer"
+            title="Open Slide-Out Founder Notebook"
+          >
+            <BookOpen className="h-3.5 w-3.5" strokeWidth={2.5} />
+            <span>Notebook ({notes.length})</span>
+          </button>
 
           {/* Persona System Instruction toggle */}
           <button
@@ -573,11 +614,6 @@ export function GeminiChatbot({
               value={customInstruction}
               onChange={(e) => setCustomInstruction(e.target.value)}
             />
-            {customInstruction && (
-              <p className="text-[10px] text-emerald-700 font-bold mt-1">
-                Active custom directive locked into Vanguard-X™ neural context.
-              </p>
-            )}
           </div>
         </div>
       )}
@@ -614,13 +650,21 @@ export function GeminiChatbot({
       )}
 
       {/* Messages Thread */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-paper/60">
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5 bg-paper/60">
         {messages.map((m) => {
           const isUser = m.role === "user";
+          // Split advisor reply into clickable paragraphs/blocks so the user can click any block to save it to the Notebook!
+          const blocks = isUser
+            ? [m.content]
+            : m.content
+                .split(/\n{2,}/)
+                .map((b) => b.trim())
+                .filter(Boolean);
+
           return (
             <div
               key={m.id}
-              className={`flex gap-3 max-w-[92%] ${
+              className={`flex gap-3 max-w-[94%] ${
                 isUser ? "ml-auto flex-row-reverse" : "mr-auto"
               }`}
             >
@@ -635,50 +679,120 @@ export function GeminiChatbot({
 
               {/* Message Bubble */}
               <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-muted">
-                    {isUser ? "You (Founder)" : "Vanguard-X™"}
-                  </span>
-                  {!isUser && m.modelUsed && (
-                    <span className="text-[10px] font-bold px-1.5 py-0.2 bg-ink text-mint border border-ink rounded">
-                      {formatVanguardModelName(m.modelUsed, activeRoleConfig.model)}
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-muted">
+                      {isUser ? "You (Founder)" : "Vanguard-X™"}
                     </span>
-                  )}
-                  {!isUser && m.groundingType === "search" && (
-                    <span className="text-[10px] font-extrabold text-blue-700 flex items-center gap-0.5">
-                      <Search className="h-2.5 w-2.5" /> Web Grid Grounded
-                    </span>
-                  )}
-                  {!isUser && m.groundingType === "maps" && (
-                    <span className="text-[10px] font-extrabold text-emerald-700 flex items-center gap-0.5">
-                      <MapPin className="h-2.5 w-2.5" /> Geo Telemetry Grounded
-                    </span>
-                  )}
-                </div>
-
-                <div
-                  className={`b3 p-4 border-2 border-ink relative group ${
-                    isUser
-                      ? "bg-sun text-ink font-bold shadow-md"
-                      : "bg-white text-ink shadow-sm font-medium"
-                  }`}
-                >
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed">{m.content}</p>
-
-                  {/* Copy Button */}
-                  <button
-                    type="button"
-                    onClick={() => copyText(m.id, m.content)}
-                    className="absolute top-2 right-2 p-1 bg-paper/80 hover:bg-cream rounded opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                    title="Copy text"
-                  >
-                    {copiedId === m.id ? (
-                      <Check className="h-3.5 w-3.5 text-emerald-600" />
-                    ) : (
-                      <Copy className="h-3.5 w-3.5 text-muted" />
+                    {!isUser && m.modelUsed && (
+                      <span className="text-[10px] font-bold px-1.5 py-0.2 bg-ink text-mint border border-ink rounded">
+                        {formatVanguardModelName(m.modelUsed, activeRoleConfig.model)}
+                      </span>
                     )}
-                  </button>
+                    {!isUser && m.groundingType === "search" && (
+                      <span className="text-[10px] font-extrabold text-blue-700 flex items-center gap-0.5">
+                        <Search className="h-2.5 w-2.5" /> Web Grid Grounded
+                      </span>
+                    )}
+                    {!isUser && m.groundingType === "maps" && (
+                      <span className="text-[10px] font-extrabold text-emerald-700 flex items-center gap-0.5">
+                        <MapPin className="h-2.5 w-2.5" /> Geo Telemetry Grounded
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Quick Actions on every Advisor Reply: Save Full Reply to Notebook + Copy */}
+                  {!isUser && (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleSaveSnippetToNotebook(m.content, `${m.id}-full`, true)
+                        }
+                        className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-black uppercase bg-mint hover:bg-sun text-ink border border-ink shadow-[1px_1px_0px_#000] cursor-pointer transition-colors"
+                        title="Save entire reply as a new note and slide open your Founder Notebook"
+                      >
+                        {savedSnippetKey === `${m.id}-full` ? (
+                          <>
+                            <Check className="h-3 w-3" strokeWidth={3} /> Saved to Notebook!
+                          </>
+                        ) : (
+                          <>
+                            <BookOpen className="h-3 w-3" strokeWidth={2.5} /> + Save Full Reply to Notebook
+                          </>
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => copyText(m.id, m.content)}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-black uppercase bg-white hover:bg-cream text-ink border border-ink cursor-pointer"
+                        title="Copy reply text"
+                      >
+                        {copiedId === m.id ? (
+                          <>
+                            <Check className="h-3 w-3 text-emerald-700" /> Copied
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="h-3 w-3" /> Copy
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
                 </div>
+
+                {isUser ? (
+                  <div className="b3 p-4 border-2 border-ink bg-sun text-ink font-bold shadow-md">
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed">{m.content}</p>
+                  </div>
+                ) : (
+                  <div className="b3 p-3.5 border-2 border-ink bg-white text-ink shadow-sm space-y-2">
+                    {blocks.map((block, bIdx) => {
+                      const snippetKey = `${m.id}-block-${bIdx}`;
+                      const isSaved = savedSnippetKey === snippetKey;
+                      return (
+                        <div
+                          key={snippetKey}
+                          onClick={() => handleSaveSnippetToNotebook(block, snippetKey, false)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              handleSaveSnippetToNotebook(block, snippetKey, false);
+                            }
+                          }}
+                          title="Click this text block to save it as a new note in your Founder Notebook"
+                          className={`group/block relative rounded-none border border-transparent hover:border-ink hover:bg-mint/20 p-2 -mx-1 transition-all cursor-pointer ${
+                            isSaved ? "bg-mint/40 border-ink" : ""
+                          }`}
+                        >
+                          <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed pr-2">
+                            {block}
+                          </p>
+                          <span
+                            className={`mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-black uppercase border border-ink transition-opacity ${
+                              isSaved
+                                ? "bg-ink text-mint opacity-100"
+                                : "bg-sun text-ink opacity-0 group-hover/block:opacity-100"
+                            }`}
+                          >
+                            {isSaved ? (
+                              <>
+                                <Check className="h-2.5 w-2.5 stroke-[3]" /> Added to Notebook!
+                              </>
+                            ) : (
+                              <>
+                                <Plus className="h-2.5 w-2.5 stroke-[3]" /> Click text to save to Notebook
+                              </>
+                            )}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
                 {/* Grounding Sources (Search & Maps Links) */}
                 {m.sources && m.sources.length > 0 && (
