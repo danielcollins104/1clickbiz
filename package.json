@@ -4,7 +4,7 @@
   "workspaces": ["packages/*"],
   "scripts": {
     "dev": "cd packages/web && npm run dev",
-    "build": "cd packages/web && npm run build",
+    "build": "cd packages/web && npm run build && node -e \"const fs=require('fs');fs.cpSync('dist','../../dist',{recursive:true});fs.copyFileSync('dist/index.html','dist/404.html');fs.copyFileSync('../../dist/index.html','../../dist/404.html');fs.writeFileSync('../../dist/_redirects','/* /index.html 200\\n');\"",
     "build:web": "cd packages/web && npm run build",
     "start": "cd packages/web && npm run dev",
     "typecheck": "turbo typecheck",
