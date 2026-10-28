@@ -229,6 +229,11 @@ function StartHereRoadmap() {
             return (
               <div key={s.num} className="b3 hard flex flex-col justify-between bg-paper p-5">
                 <div>
+                  {s.num === "STEP 3" && (
+                    <div className="mb-3 border-2 border-ink bg-mint px-2.5 py-1.5 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000]">
+                      🔥 Keep going! You’re almost live — the hardest part is already behind you!
+                    </div>
+                  )}
                   <div className="flex items-center justify-between gap-2 pb-3 border-b-2 border-ink">
                     <span className={`px-2.5 py-1 text-xs font-black uppercase border-2 border-ink ${s.bg}`}>
                       {s.num}

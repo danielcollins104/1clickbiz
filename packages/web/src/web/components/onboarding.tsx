@@ -108,6 +108,11 @@ export function Onboarding({
               key={item.title}
             >
               <div>
+                {i === 2 && (
+                  <div className="mb-3 border-2 border-ink bg-mint px-2.5 py-1.5 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000]">
+                    🚀 Keep going! You’re building real momentum — this step powers all 13 AI engines at once!
+                  </div>
+                )}
                 <div className="flex items-center justify-between gap-2">
                   <p className="flex items-center gap-2 font-extrabold text-sm">
                     <span

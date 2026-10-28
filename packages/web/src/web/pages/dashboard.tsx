@@ -683,22 +683,34 @@ export default function DashboardPage() {
                     .map((s) => TOOLS.find((t) => t.slug === s))
                     .filter((t): t is (typeof TOOLS)[number] => !!t);
                   return (
-                    <section key={phase.step} className="b3 hard bg-paper/50 p-5 md:p-6">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b-[3px] border-ink pb-4 mb-6">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className={`px-2.5 py-0.5 text-xs font-black uppercase border-2 border-ink ${phase.bg}`}>
-                              {phase.step}
-                            </span>
-                            <h3 className="display text-2xl md:text-3xl">{phase.title}</h3>
-                          </div>
-                          <p className="mt-1 text-xs sm:text-sm font-bold text-ink/75">{phase.subtitle}</p>
+                    <div key={phase.step} className="space-y-3">
+                      {phase.step === "PHASE 3" && (
+                        <div className="b3 hard bg-mint p-4 flex items-center gap-3">
+                          <span className="grid h-8 w-8 shrink-0 place-items-center bg-ink text-sun border-2 border-ink font-black">
+                            <Sparkles className="h-4 w-4 text-sun" />
+                          </span>
+                          <p className="text-xs sm:text-sm font-black text-ink">
+                            🔥 Keep going — you’re halfway to launch! Your idea, plan, and brand are locked in. Now let’s put your live website and marketing out into the world!
+                          </p>
                         </div>
-                      </div>
-                      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        {phaseTools.map(renderToolCard)}
-                      </div>
-                    </section>
+                      )}
+                      <section className="b3 hard bg-paper/50 p-5 md:p-6">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b-[3px] border-ink pb-4 mb-6">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className={`px-2.5 py-0.5 text-xs font-black uppercase border-2 border-ink ${phase.bg}`}>
+                                {phase.step}
+                              </span>
+                              <h3 className="display text-2xl md:text-3xl">{phase.title}</h3>
+                            </div>
+                            <p className="mt-1 text-xs sm:text-sm font-bold text-ink/75">{phase.subtitle}</p>
+                          </div>
+                        </div>
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                          {phaseTools.map(renderToolCard)}
+                        </div>
+                      </section>
+                    </div>
                   );
                 })}
               </div>

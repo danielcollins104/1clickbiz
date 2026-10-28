@@ -581,7 +581,14 @@ export default function SitePage({ slug }: { slug: string }) {
 
               {/* TAB 3: FREE HOSTING & CUSTOM DOMAIN PUBLISHER */}
               {activeStudioTab === "publish" && (
-                <div className="grid gap-6 lg:grid-cols-2">
+                <div className="space-y-4">
+                  <div className="b3 bg-mint p-3.5 text-xs sm:text-sm font-black text-ink flex items-center gap-2.5">
+                    <Sparkles className="h-4 w-4 shrink-0 fill-ink" />
+                    <span>
+                      🚀 Keep going — you’ve made it to Step 3! You’re moments away from taking your creation live to the world.
+                    </span>
+                  </div>
+                  <div className="grid gap-6 lg:grid-cols-2">
                   {/* Option A: Free Hosting on 1ClickBiz + Custom Domain Binding */}
                   <form onSubmit={handleSaveHosting} className="b3 bg-cream p-5 space-y-4">
                     <div className="flex items-center justify-between">
@@ -675,6 +682,7 @@ export default function SitePage({ slug }: { slug: string }) {
                     >
                       <Download className="h-4 w-4" /> Download Standalone Web App (.html)
                     </button>
+                  </div>
                   </div>
                 </div>
               )}

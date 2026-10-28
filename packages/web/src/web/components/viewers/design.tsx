@@ -1124,7 +1124,14 @@ export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initial
 
         {/* TAB 3: FREE HOSTING & CUSTOM DOMAIN */}
         {studioTab === "host" && (
-          <div className="mt-6 grid gap-6 lg:grid-cols-12">
+          <div className="mt-6 space-y-4">
+            <div className="b3 bg-mint p-3.5 text-xs sm:text-sm font-black text-ink flex items-center gap-2.5">
+              <Sparkles className="h-4 w-4 shrink-0 fill-ink" />
+              <span>
+                🚀 Keep going — you’ve made it to Step 3! You’re moments away from taking your creation live to the world.
+              </span>
+            </div>
+            <div className="grid gap-6 lg:grid-cols-12">
             <form onSubmit={handleSaveHosting} className="lg:col-span-8 grid gap-4 sm:grid-cols-2">
               <div className="bg-cream border-2 border-ink p-4">
                 <span className="inline-block bg-mint text-ink px-2 py-0.5 border border-ink text-[10px] font-black uppercase mb-2">
@@ -1190,6 +1197,7 @@ export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initial
               >
                 <Download className="h-4 w-4" /> Download index.html
               </button>
+            </div>
             </div>
           </div>
         )}
