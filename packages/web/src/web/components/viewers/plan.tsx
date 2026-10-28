@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ExternalLink, Lightbulb, Loader2, Rocket, Sparkles } from "lucide-react";
+import { Check, ExternalLink, Lightbulb, Loader2, RefreshCw, Rocket, Sparkles } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChooseButton, CopyButton, Level, List, Section, type ViewerProps } from "./common";
 import {
@@ -31,9 +31,127 @@ const POSSIBILITY_CHIPS = [
   "🌐 100% online digital delivery",
 ];
 
+export type IdeaFacetKey =
+  | "title"
+  | "summary"
+  | "whyYou"
+  | "targetCustomer"
+  | "revenueModel"
+  | "firstStep";
+
+const ALL_IDEA_FACETS: IdeaFacetKey[] = [
+  "title",
+  "summary",
+  "whyYou",
+  "targetCustomer",
+  "revenueModel",
+  "firstStep",
+];
+
+type IdeaWithApprovals = ProvenBusinessIdea & {
+  approvedFacets?: Partial<Record<IdeaFacetKey, boolean>>;
+  iterationCount?: number;
+};
+
+/** Generates a fresh variation for a specific facet (incorporating optional user tweak text). */
+function generateFacetVariation(
+  facet: IdeaFacetKey,
+  cardIndex: number,
+  step: number,
+  interests: string,
+  possibilities: string,
+  customNote?: string
+): string {
+  const cleanTopic =
+    interests
+      .split(/[,;&/]+/)[0]
+      ?.trim()
+      .replace(/\.$/, "") || "Modern Specialist";
+  const topicTitle =
+    cleanTopic.length > 30
+      ? cleanTopic.slice(0, 30).trim()
+      : cleanTopic.charAt(0).toUpperCase() + cleanTopic.slice(1);
+  const noteSuffix = customNote?.trim() ? ` — tailored for ${customNote.trim()}` : "";
+  const v = (step + cardIndex) % 4;
+
+  switch (facet) {
+    case "title": {
+      const titlesByCard = [
+        [
+          `${topicTitle} VIP Membership & Retainer Club`,
+          `${topicTitle} Autopilot Monthly Studio`,
+          `All-Access ${topicTitle} Subscription Co.`,
+          `Premier ${topicTitle} Recurring Partner`,
+        ],
+        [
+          `48-Hour Turnkey ${topicTitle} Express`,
+          `${topicTitle} Flat-Rate Launch Box`,
+          `Instant ${topicTitle} Productized Studio`,
+          `Done-For-You ${topicTitle} Sprint Package`,
+        ],
+        [
+          `Bespoke ${topicTitle} Concierge Collective`,
+          `${topicTitle} White-Glove Advisory & Kits`,
+          `Signature ${topicTitle} Curated Experience`,
+          `Private ${topicTitle} Specialist Guild`,
+        ],
+      ];
+      const pool = titlesByCard[cardIndex % 3]!;
+      return customNote?.trim() && customNote.trim().length < 36
+        ? `${topicTitle} · ${customNote.trim().replace(/^\w/, (c) => c.toUpperCase())}`
+        : pool[v]!;
+    }
+    case "summary": {
+      const summaries = [
+        `A streamlined, high-retention business centered on ${interests.toLowerCase()} (${possibilities})${noteSuffix}. Clients subscribe or book online in 60 seconds with zero complicated sales calls.`,
+        `A modern, low-overhead ${cleanTopic.toLowerCase()} service designed around ${possibilities.toLowerCase()}${noteSuffix}. Built to start generating cash flow in your first week with repeatable checklists.`,
+        `An above-and-beyond ${cleanTopic.toLowerCase()} offering that packages your passion for ${interests.toLowerCase()} into a clear, irresistible offer${noteSuffix}.`,
+        `A community-loved ${cleanTopic.toLowerCase()} brand combining effortless online booking with standout personal delivery (${possibilities})${noteSuffix}.`,
+      ];
+      return summaries[v]!;
+    }
+    case "whyYou": {
+      const reasons = [
+        `Turns your genuine enthusiasm for ${interests} into a simple, repeatable system${noteSuffix}—so you get paid for what you already enjoy without heavy overhead.`,
+        `Built specifically around "${possibilities}"${noteSuffix}, allowing you to start lean on your own schedule and scale up as word-of-mouth grows.`,
+        `Most competitors in ${cleanTopic.toLowerCase()} are slow and confusing; your clear packaging and passion for ${interests} make you the obvious first choice${noteSuffix}.`,
+        `Zero gatekeeping or expensive equipment required—leverages your eye for ${cleanTopic.toLowerCase()} to create immediate value for paying customers${noteSuffix}.`,
+      ];
+      return reasons[v]!;
+    }
+    case "targetCustomer": {
+      const targets = [
+        `Busy local households and professionals who value quality ${cleanTopic.toLowerCase()} and gladly pay for reliable, hassle-free delivery${noteSuffix}.`,
+        `Small business owners and founders looking for a trusted ${cleanTopic.toLowerCase()} partner without hiring a full-time employee${noteSuffix}.`,
+        `High-intent enthusiasts and repeat buyers who want curated ${cleanTopic.toLowerCase()} results delivered fast${noteSuffix}.`,
+        `Neighborhood clients and online referrals searching for a friendly, dependable ${cleanTopic.toLowerCase()} specialist${noteSuffix}.`,
+      ];
+      return targets[v]!;
+    }
+    case "revenueModel": {
+      const models = [
+        `$99 Starter Session + $199/mo Flagship Membership + $349/mo VIP Priority Tier (80%+ gross profit margin)${noteSuffix}.`,
+        `$149 Flat-Rate Standard Package, $299 Deluxe Bundle, and $59/mo recurring care add-on${noteSuffix}.`,
+        `$79 Intro Trial Offer that converts into a $249/mo recurring plan or $450 seasonal package${noteSuffix}.`,
+        `3 Simple Tiers: $125 Basic, $275 Most Popular Complete Package, and $495 White-Glove VIP${noteSuffix}.`,
+      ];
+      return models[v]!;
+    }
+    case "firstStep": {
+      const steps = [
+        `Share your free live 1-Click website link with 10 warm contacts and offer a "Founding 5" VIP discount this week${noteSuffix}.`,
+        `Post a before/after or quick demo of your ${cleanTopic.toLowerCase()} offer in 3 local groups with a direct link to your online quote calculator${noteSuffix}.`,
+        `Send a friendly 2-sentence invite to 15 people you know offering a risk-free starter package in exchange for a launch testimonial${noteSuffix}.`,
+        `Turn on your live hosted website today, pick your 3 pricing tiers, and book your very first paying customer within 7 days${noteSuffix}.`,
+      ];
+      return steps[v]!;
+    }
+  }
+}
+
 export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
   const qc = useQueryClient();
-  const rawIdeas = (content.ideas ?? []) as ProvenBusinessIdea[];
+  const rawIdeas = (content.ideas ?? []) as IdeaWithApprovals[];
   const initialChosen = typeof content.chosen === "number" ? content.chosen : 0;
 
   const [interests, setInterests] = useState<string>(
@@ -42,7 +160,7 @@ export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
   const [possibilities, setPossibilities] = useState<string>(
     (content.possibilities as string) || "Recurring subscription or turnkey package I can run from home"
   );
-  const [ideas, setIdeas] = useState<ProvenBusinessIdea[]>(() =>
+  const [ideas, setIdeas] = useState<IdeaWithApprovals[]>(() =>
     rawIdeas.length >= 3 && rawIdeas[0]?.summary
       ? rawIdeas
       : buildThreeProvenIdeas(interests, possibilities)
@@ -50,6 +168,13 @@ export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
   const [chosen, setChosen] = useState<number>(initialChosen);
   const [isBuilding, setIsBuilding] = useState(false);
   const [justBuilt, setJustBuilt] = useState(false);
+  const [cardNotes, setCardNotes] = useState<Record<number, string>>({});
+
+  const persistIdeas = (nextIdeas: IdeaWithApprovals[], nextChosen = chosen) => {
+    setIdeas(nextIdeas);
+    saveLocalIdeaWizardCards(bizId, nextIdeas, nextChosen, interests, possibilities);
+    qc.invalidateQueries({ queryKey: orpc.businesses.key() });
+  };
 
   const handleAddInterestChip = (chip: string) => {
     const clean = chip.replace(/^[^\w]+/, "").trim();
@@ -68,22 +193,116 @@ export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
     setIsBuilding(true);
     setJustBuilt(false);
     setTimeout(() => {
-      const generated = buildThreeProvenIdeas(interests, possibilities);
-      setIdeas(generated);
-      setChosen(0);
-      saveLocalIdeaWizardCards(bizId, generated, 0, interests, possibilities);
-      qc.invalidateQueries({ queryKey: orpc.businesses.key() });
+      const freshCards = buildThreeProvenIdeas(interests, possibilities);
+      // Preserve any facets the user already checked/approved on each card!
+      const merged: IdeaWithApprovals[] = freshCards.map((fresh, idx) => {
+        const existing = ideas[idx];
+        const approved = existing?.approvedFacets ?? {};
+        const hasAnyApproved = Object.values(approved).some(Boolean);
+        if (!existing || !hasAnyApproved) {
+          return { ...fresh, approvedFacets: {}, iterationCount: 1 };
+        }
+        return {
+          ...fresh,
+          title: approved.title ? existing.title : fresh.title,
+          summary: approved.summary ? existing.summary : fresh.summary,
+          whyYou: approved.whyYou ? existing.whyYou : fresh.whyYou,
+          targetCustomer: approved.targetCustomer ? existing.targetCustomer : fresh.targetCustomer,
+          revenueModel: approved.revenueModel ? existing.revenueModel : fresh.revenueModel,
+          firstStep: approved.firstStep ? existing.firstStep : fresh.firstStep,
+          approvedFacets: approved,
+          iterationCount: (existing.iterationCount ?? 1) + 1,
+        };
+      });
+      persistIdeas(merged, chosen);
       setIsBuilding(false);
       setJustBuilt(true);
       setTimeout(() => setJustBuilt(false), 3000);
-    }, 350);
+    }, 300);
+  };
+
+  /** Toggle the checkmark approval for a single facet on a card */
+  const toggleFacetApproval = (cardIdx: number, facet: IdeaFacetKey) => {
+    const next = ideas.map((card, i) => {
+      if (i !== cardIdx) return card;
+      const prevApproved = card.approvedFacets ?? {};
+      return {
+        ...card,
+        approvedFacets: {
+          ...prevApproved,
+          [facet]: !prevApproved[facet],
+        },
+      };
+    });
+    persistIdeas(next);
+  };
+
+  /** Approve or uncheck all 6 facets on a card in 1 click */
+  const toggleAllFacetsOnCard = (cardIdx: number, approveAll: boolean) => {
+    const next = ideas.map((card, i) => {
+      if (i !== cardIdx) return card;
+      const nextMap: Partial<Record<IdeaFacetKey, boolean>> = {};
+      if (approveAll) {
+        for (const k of ALL_IDEA_FACETS) nextMap[k] = true;
+      }
+      return {
+        ...card,
+        approvedFacets: nextMap,
+      };
+    });
+    persistIdeas(next);
+  };
+
+  /** Iterate a single facet OR all unchecked facets on a card until it's perfect */
+  const handleIterateCard = (cardIdx: number, singleFacet?: IdeaFacetKey) => {
+    const customNote = cardNotes[cardIdx]?.trim();
+    const next = ideas.map((card, i) => {
+      if (i !== cardIdx) return card;
+      const approved = card.approvedFacets ?? {};
+      const nextStep = (card.iterationCount ?? 1) + 1;
+
+      if (singleFacet) {
+        return {
+          ...card,
+          [singleFacet]: generateFacetVariation(
+            singleFacet,
+            cardIdx,
+            nextStep,
+            interests,
+            possibilities,
+            customNote
+          ),
+          iterationCount: nextStep,
+        };
+      }
+
+      // Regenerate ONLY the facets that are NOT checked/approved
+      const updated = { ...card, iterationCount: nextStep };
+      for (const facet of ALL_IDEA_FACETS) {
+        if (!approved[facet]) {
+          (updated as any)[facet] = generateFacetVariation(
+            facet,
+            cardIdx,
+            nextStep,
+            interests,
+            possibilities,
+            customNote
+          );
+        }
+      }
+      return updated;
+    });
+
+    persistIdeas(next);
+    if (!singleFacet && customNote) {
+      setCardNotes((prev) => ({ ...prev, [cardIdx]: "" }));
+    }
   };
 
   const handleSelectCard = (index: number) => {
     setChosen(index);
-    saveLocalIdeaWizardCards(bizId, ideas, index, interests, possibilities);
+    persistIdeas(ideas, index);
     if (choose) choose(index);
-    qc.invalidateQueries({ queryKey: orpc.businesses.key() });
   };
 
   return (
@@ -96,11 +315,11 @@ export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
               <Lightbulb className="h-3.5 w-3.5 fill-ink" /> Proven Business Idea Generator
             </span>
             <span className="inline-flex items-center gap-1 bg-mint text-ink px-2.5 py-0.5 text-xs font-black uppercase">
-              3 Complete Business Cards
+              Check ✓ What You Like · Iterate the Rest
             </span>
           </div>
           <h2 className="display text-2xl sm:text-3xl md:text-4xl text-sun leading-tight">
-            Don't know what kind of business you want to start? No problem! Let us generate proven business ideas that we know can be successful!
+            The time to start a business is now! If you still haven&apos;t decided on something, use our Idea Wizard. We&apos;ll make you a business based on your interests that we know will succeed. You can always start a different one later, but how long have you been at a standstill? Run the wizard and choose the project that excites you. Do it right now. See you in the next step.
           </h2>
           <p className="mt-2.5 text-sm sm:text-base font-bold text-paper/90 max-w-3xl">
             Just enter your interests and a few possibilities below and we will build 3 complete business idea cards you can choose from.
@@ -174,10 +393,10 @@ export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
             <p className="text-xs sm:text-sm font-extrabold text-ink">
               {justBuilt ? (
                 <span className="inline-flex items-center gap-1.5 text-emerald-800 bg-mint px-3 py-1 border-2 border-ink">
-                  <Check className="h-4 w-4 stroke-[3]" /> Built 3 complete business idea cards below! Click "Choose this idea" on your favorite.
+                  <Check className="h-4 w-4 stroke-[3]" /> Updated your 3 idea cards! Any parts you checked ✓ were kept locked.
                 </span>
               ) : (
-                "Click the button to build 3 complete, proven business idea cards tailored to your inputs:"
+                "Tip: Check ✓ the parts of any card you like to lock them in, then iterate the rest until the card is perfect!"
               )}
             </p>
             <button
@@ -201,7 +420,7 @@ export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
         </form>
       </section>
 
-      {/* 3 Complete Business Idea Cards */}
+      {/* 3 Complete Business Idea Cards with Individual Facet Checkmarks & Simple Iteration */}
       <div>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div>
@@ -209,7 +428,7 @@ export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
               Your 3 Complete Business Idea Cards
             </h3>
             <p className="text-sm font-bold text-muted">
-              Compare demand, startup cost, and how each business makes money—then click <strong>"Choose this idea"</strong> on the card you want to launch.
+              Click the <strong>✓ Checkmark</strong> on each part you love to lock it in, and click <strong>Iterate Unchecked ↻</strong> until the card is 100% perfect for you.
             </p>
           </div>
           <span className="chip bg-sun text-xs font-black">
@@ -221,7 +440,60 @@ export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
           {ideas.map((idea, i) => {
             const isSelected = i === chosen;
             const summaryText = idea.summary || (idea as any).oneLiner || "";
-            const scoreNum = typeof idea.score === "number" && !Number.isNaN(idea.score) ? Math.round(idea.score) : 95 - i * 3;
+            const firstStepText =
+              idea.firstStep ||
+              "Launch your free hosted website and invite your first 5 founding customers this week.";
+            const scoreNum =
+              typeof idea.score === "number" && !Number.isNaN(idea.score)
+                ? Math.round(idea.score)
+                : 95 - i * 3;
+            const approved = idea.approvedFacets ?? {};
+            const approvedCount = ALL_IDEA_FACETS.filter((k) => approved[k]).length;
+            const allApproved = approvedCount === ALL_IDEA_FACETS.length;
+
+            /** Helper bar rendered on every facet row for 1-click checkmark approval + 1-click single-facet spin */
+            const renderFacetControls = (facet: IdeaFacetKey, label: string) => {
+              const isChecked = !!approved[facet];
+              return (
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-muted">
+                    {label}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    {!isChecked && (
+                      <button
+                        type="button"
+                        onClick={() => handleIterateCard(i, facet)}
+                        title="Try another variation for just this part"
+                        className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-black uppercase bg-paper hover:bg-sun border border-ink cursor-pointer transition-colors"
+                      >
+                        <RefreshCw className="h-2.5 w-2.5" strokeWidth={3} /> New
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => toggleFacetApproval(i, facet)}
+                      title={isChecked ? "Approved & locked! Click to unlock" : "Click to approve & lock this part"}
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-black uppercase border border-ink cursor-pointer transition-all ${
+                        isChecked
+                          ? "bg-mint text-ink shadow-[1px_1px_0px_#000]"
+                          : "bg-white hover:bg-mint/40 text-ink/80"
+                      }`}
+                    >
+                      <span
+                        className={`grid h-3.5 w-3.5 place-items-center border border-ink ${
+                          isChecked ? "bg-ink text-mint" : "bg-cream"
+                        }`}
+                      >
+                        {isChecked && <Check className="h-2.5 w-2.5 stroke-[4]" />}
+                      </span>
+                      {isChecked ? "Approved" : "Approve"}
+                    </button>
+                  </div>
+                </div>
+              );
+            };
+
             return (
               <article
                 key={i}
@@ -229,6 +501,7 @@ export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
                   isSelected ? "bg-sun/25 ring-2 ring-ink" : "bg-paper"
                 }`}
               >
+                {/* Card Header */}
                 <div className="flex items-center justify-between border-b-[3px] border-ink bg-ink text-paper px-5 py-3">
                   <div>
                     <span className="text-[11px] font-black uppercase tracking-widest text-mint block">
@@ -246,51 +519,145 @@ export function IdeaViewer({ content, bizId, choose, choosing }: ViewerProps) {
                   </div>
                 </div>
 
-                <div className="flex flex-1 flex-col gap-4 p-5">
-                  <h4 className="display text-2xl leading-tight">{idea.title}</h4>
-                  <p className="font-semibold text-sm leading-relaxed">{summaryText}</p>
+                {/* Simple Approval Progress Bar */}
+                <div className="flex items-center justify-between gap-2 border-b-2 border-ink bg-cream px-4 py-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`px-2 py-0.5 font-black border border-ink text-[11px] ${
+                        allApproved ? "bg-mint text-ink" : "bg-paper text-ink"
+                      }`}
+                    >
+                      ✓ {approvedCount} / {ALL_IDEA_FACETS.length} Approved
+                    </span>
+                    {allApproved && (
+                      <span className="text-[11px] font-black text-emerald-800">
+                        Perfect Card!
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => toggleAllFacetsOnCard(i, !allApproved)}
+                    className="text-[11px] font-black underline hover:text-emerald-800 cursor-pointer"
+                  >
+                    {allApproved ? "Uncheck All" : "✓ Approve All 6"}
+                  </button>
+                </div>
 
-                  <div className="b3 bg-cream p-3 text-sm font-semibold">
-                    <b className="font-extrabold uppercase block text-xs text-muted mb-1">Why This Works For You</b>
-                    {idea.whyYou}
+                <div className="flex flex-1 flex-col gap-3.5 p-5">
+                  {/* Facet 1: Idea Title */}
+                  <div
+                    className={`b3 p-3 transition-colors ${
+                      approved.title ? "bg-mint/20 border-emerald-900" : "bg-paper"
+                    }`}
+                  >
+                    {renderFacetControls("title", "1. Business Concept Name")}
+                    <h4 className="display text-xl sm:text-2xl leading-tight">{idea.title}</h4>
                   </div>
 
-                  <dl className="grid grid-cols-2 gap-3 text-sm border-t-2 border-ink/15 pt-3">
-                    <div>
-                      <dt className="text-xs font-extrabold uppercase text-muted">Market Demand</dt>
+                  {/* Facet 2: Pitch / Summary */}
+                  <div
+                    className={`b3 p-3 transition-colors ${
+                      approved.summary ? "bg-mint/20 border-emerald-900" : "bg-paper"
+                    }`}
+                  >
+                    {renderFacetControls("summary", "2. The Pitch")}
+                    <p className="font-semibold text-sm leading-relaxed">{summaryText}</p>
+                  </div>
+
+                  {/* Facet 3: Why This Works For You */}
+                  <div
+                    className={`b3 p-3 text-sm font-semibold transition-colors ${
+                      approved.whyYou ? "bg-mint/20 border-emerald-900" : "bg-cream"
+                    }`}
+                  >
+                    {renderFacetControls("whyYou", "3. Why This Works For You")}
+                    <p>{idea.whyYou}</p>
+                  </div>
+
+                  {/* Quick Stats Snapshot */}
+                  <dl className="grid grid-cols-2 gap-2.5 text-sm">
+                    <div className="b3 bg-paper p-2">
+                      <dt className="text-[10px] font-extrabold uppercase text-muted">Market Demand</dt>
                       <dd className="mt-1"><Level v={idea.demand || "High"} /></dd>
                     </div>
-                    <div>
-                      <dt className="text-xs font-extrabold uppercase text-muted">Competition</dt>
-                      <dd className="mt-1"><Level v={idea.competition || "Low"} /></dd>
+                    <div className="b3 bg-paper p-2">
+                      <dt className="text-[10px] font-extrabold uppercase text-muted">Startup Cost</dt>
+                      <dd className="font-black text-xs text-ink mt-1">{idea.startupCost || "$250 – $1,000"}</dd>
                     </div>
-                    <div className="b3 bg-paper p-2.5">
-                      <dt className="text-[11px] font-extrabold uppercase text-muted">Startup Cost</dt>
-                      <dd className="font-black text-ink mt-0.5">{idea.startupCost || "$250 – $1,000"}</dd>
-                    </div>
-                    <div className="b3 bg-paper p-2.5">
-                      <dt className="text-[11px] font-extrabold uppercase text-muted">Time to First Sale</dt>
-                      <dd className="font-black text-ink mt-0.5">{idea.timeToFirstSale || "5 – 10 days"}</dd>
-                    </div>
-                    <div className="col-span-2 b3 bg-paper p-3">
-                      <dt className="text-xs font-extrabold uppercase text-muted">Target Customer</dt>
-                      <dd className="font-semibold mt-1">{idea.targetCustomer}</dd>
-                    </div>
-                    <div className="col-span-2 b3 bg-paper p-3">
-                      <dt className="text-xs font-extrabold uppercase text-muted">How It Makes Money</dt>
-                      <dd className="font-semibold mt-1">{idea.revenueModel}</dd>
-                    </div>
-                    {idea.firstStep && (
-                      <div className="col-span-2 b3 bg-mint/35 p-3">
-                        <dt className="text-xs font-extrabold uppercase text-ink flex items-center gap-1">
-                          <Rocket className="h-3.5 w-3.5" /> Day-1 Launch Step
-                        </dt>
-                        <dd className="font-semibold text-xs mt-1">{idea.firstStep}</dd>
-                      </div>
-                    )}
                   </dl>
 
-                  <div className="mt-auto pt-3">
+                  {/* Facet 4: Target Customer */}
+                  <div
+                    className={`b3 p-3 text-sm transition-colors ${
+                      approved.targetCustomer ? "bg-mint/20 border-emerald-900" : "bg-paper"
+                    }`}
+                  >
+                    {renderFacetControls("targetCustomer", "4. Target Customer")}
+                    <p className="font-semibold">{idea.targetCustomer}</p>
+                  </div>
+
+                  {/* Facet 5: How It Makes Money */}
+                  <div
+                    className={`b3 p-3 text-sm transition-colors ${
+                      approved.revenueModel ? "bg-mint/20 border-emerald-900" : "bg-paper"
+                    }`}
+                  >
+                    {renderFacetControls("revenueModel", "5. How It Makes Money")}
+                    <p className="font-semibold">{idea.revenueModel}</p>
+                  </div>
+
+                  {/* Facet 6: Day-1 Launch Step */}
+                  <div
+                    className={`b3 p-3 text-sm transition-colors ${
+                      approved.firstStep ? "bg-mint/25 border-emerald-900" : "bg-mint/20"
+                    }`}
+                  >
+                    {renderFacetControls("firstStep", "6. Day-1 Launch Step")}
+                    <p className="font-semibold text-xs flex items-start gap-1.5">
+                      <Rocket className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                      <span>{firstStepText}</span>
+                    </p>
+                  </div>
+
+                  {/* Simple Card Iteration Box: Regenerates ONLY unchecked facets */}
+                  <div className="mt-auto pt-3 border-t-2 border-dashed border-ink/25 space-y-3">
+                    {allApproved ? (
+                      <div className="bg-mint/40 border-2 border-ink p-2.5 text-center text-xs font-black text-ink">
+                        ✓ All 6 facets approved! Uncheck any box above if you want to iterate it further.
+                      </div>
+                    ) : (
+                      <div className="bg-cream border-2 border-ink p-3 space-y-2">
+                        <label className="block text-[11px] font-black uppercase text-ink">
+                          Iterate {ALL_IDEA_FACETS.length - approvedCount} Unchecked Part{ALL_IDEA_FACETS.length - approvedCount === 1 ? "" : "s"} (Checked ✓ parts stay locked):
+                        </label>
+                        <div className="flex gap-1.5">
+                          <input
+                            type="text"
+                            value={cardNotes[i] || ""}
+                            onChange={(e) =>
+                              setCardNotes((prev) => ({ ...prev, [i]: e.target.value }))
+                            }
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleIterateCard(i);
+                              }
+                            }}
+                            placeholder="Optional tweak (e.g. lower price, 100% online)..."
+                            className="input !py-1.5 !px-2.5 text-xs font-bold flex-1 bg-white"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleIterateCard(i)}
+                            className="btn btn-sm btn-yellow !px-3 !py-1.5 text-xs font-black shrink-0 cursor-pointer"
+                          >
+                            <RefreshCw className="h-3.5 w-3.5" strokeWidth={2.5} /> Iterate
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                     <ChooseButton
                       selected={isSelected}
                       disabled={choosing}
