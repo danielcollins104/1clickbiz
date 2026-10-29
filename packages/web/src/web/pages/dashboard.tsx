@@ -80,28 +80,32 @@ const LAUNCH_PHASES = [
   {
     step: "PHASE 1",
     title: "Validate Your Idea, Name & Business Plan",
-    subtitle: "Start here: confirm your business model, pick your company name, and review your financial & pricing roadmap.",
+    subtitle: "Start here: approve your idea card facets, pick your company name, and review your pricing roadmap. Then head to Phase 2 ↓",
+    nextHint: "Leads to Phase 2: Build Your Brand Identity & Logo ↓",
     bg: "bg-sun",
     slugs: ["idea-wizard", "name-generator", "business-plan"],
   },
   {
     step: "PHASE 2",
     title: "Build Your Brand Identity, Colors & Logo",
-    subtitle: "Establish how your business looks and sounds—these choices automatically style your live website.",
+    subtitle: "Establish how your business looks and sounds—these choices automatically style your live website. Then move to Phase 3 ↓",
+    nextHint: "Leads to Phase 3: Launch Your Free Website & Income Engine ↓",
     bg: "bg-mint",
     slugs: ["brand-generator", "color-font-system", "logo-generation"],
   },
   {
     step: "PHASE 3",
     title: "Publish Your Free Website & Launch Marketing",
-    subtitle: "Your live website is hosted free at /sites/your-name. Copy your ads and social posts to bring in traffic.",
+    subtitle: "Open your free live website builder to create, iterate until satisfied, and host free—then copy your ads and social posts to bring in paying customers! Next: Phase 4 ↓",
+    nextHint: "Leads to Phase 4: Collect Leads, Get Funded & Scale Your Income ↓",
     bg: "bg-cream",
     slugs: ["website-generator", "ad-generator", "social-generator"],
   },
   {
     step: "PHASE 4",
-    title: "Make It Legal, Get Funded & Close Customers",
-    subtitle: "Check off your legal setup, apply for grants, manage incoming customer inquiries in your CRM, and ask your AI Advisor.",
+    title: "Make It Legal, Get Funded & Earn Real Income!",
+    subtitle: "Check off your legal setup, apply for grants, manage incoming customer inquiries in your CRM, and ask Vanguard-X™ how to grow your income daily.",
+    nextHint: "🎉 Goal Reached: Your Business Is Live & Built for Financial Independence!",
     bg: "bg-paper",
     slugs: ["launch-checklist", "funding-finder", "customer-crm", "ai-advisor"],
   },
@@ -685,19 +689,26 @@ export default function DashboardPage() {
                   return (
                     <div key={phase.step} className="space-y-3">
                       {phase.step === "PHASE 3" && (
-                        <div className="b3 hard bg-mint p-4 flex items-center gap-3">
-                          <span className="grid h-8 w-8 shrink-0 place-items-center bg-ink text-sun border-2 border-ink font-black">
-                            <Sparkles className="h-4 w-4 text-sun" />
-                          </span>
-                          <p className="text-xs sm:text-sm font-black text-ink">
-                            🔥 Keep going — you’re halfway to launch! Your idea, plan, and brand are locked in. Now let’s put your live website and marketing out into the world!
-                          </p>
+                        <div className="b3 hard bg-mint p-4 md:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="flex items-start sm:items-center gap-3">
+                            <span className="grid h-9 w-9 shrink-0 place-items-center bg-ink text-sun border-2 border-ink font-black">
+                              <Sparkles className="h-4 w-4 text-sun" />
+                            </span>
+                            <div>
+                              <p className="text-xs font-black uppercase tracking-wider text-emerald-950">
+                                🌟 The Beginning of Your Financial Independence
+                              </p>
+                              <p className="text-xs sm:text-sm font-black text-ink mt-0.5 leading-snug">
+                                🔥 KEEP GOING — YOUR OWN INCOME STREAM IS RIGHT IN FRONT OF YOU! You finished the foundation in Phases 1 &amp; 2. Complete Phase 3 below and you’ll have a real, live business ready to bring paying customers and real income into your life!
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       )}
                       <section className="b3 hard bg-paper/50 p-5 md:p-6">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b-[3px] border-ink pb-4 mb-6">
                           <div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-wrap items-center gap-2">
                               <span className={`px-2.5 py-0.5 text-xs font-black uppercase border-2 border-ink ${phase.bg}`}>
                                 {phase.step}
                               </span>
@@ -705,6 +716,9 @@ export default function DashboardPage() {
                             </div>
                             <p className="mt-1 text-xs sm:text-sm font-bold text-ink/75">{phase.subtitle}</p>
                           </div>
+                          <span className="bg-cream border-2 border-ink px-3 py-1 text-xs font-black text-emerald-900 shrink-0 self-start md:self-center">
+                            {phase.nextHint}
+                          </span>
                         </div>
                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                           {phaseTools.map(renderToolCard)}

@@ -167,8 +167,9 @@ function StartHereRoadmap() {
     {
       num: "STEP 1",
       title: "Pick an Idea or Answer 8 Questions",
-      desc: "Don't have a business idea yet? Pick one of our 6 proven business models below, or answer 8 simple questions about your skills and budget.",
-      actionLabel: "Use 1-Click Quick Start ↓",
+      desc: "Don't have a business idea yet? Pick one of our 6 proven models below, or answer 8 simple questions. Once done, go right to Step 2 ➔",
+      nextHint: "Leads to Step 2: 13 AI Engines Build Everything ➔",
+      actionLabel: "Start Step 1 Below ↓",
       href: "#quick-start-section",
       badge: "Takes 60 seconds",
       bg: "bg-sun",
@@ -177,8 +178,9 @@ function StartHereRoadmap() {
     {
       num: "STEP 2",
       title: "Let 13 AI Tools Build Your Assets",
-      desc: "Your answers automatically generate a 5-year business plan, company name, brand voice, color palette, logo, ad copy, and 30 days of social posts.",
-      actionLabel: "Open Your Dashboard →",
+      desc: "Your answers automatically build your 5-year plan, company name, brand voice, logo, and ad copy. Approve your favorites, then go to Step 3 ➔",
+      nextHint: "Leads to Step 3: Launch Your Free Live Website ➔",
+      actionLabel: "Open Step 2 Dashboard →",
       to: "/dashboard",
       badge: "Automated Pipeline",
       bg: "bg-mint",
@@ -187,8 +189,9 @@ function StartHereRoadmap() {
     {
       num: "STEP 3",
       title: "Publish Your Free Live Website",
-      desc: "Tool #07 builds and hosts a real conversion-ready website for your business at /sites/your-name with a built-in customer contact form.",
-      actionLabel: "Preview Live Sample Site ↗",
+      desc: "Open our Generative AI Website & Web App Builder to create, iterate until you love it, and host free! Then move to Step 4 to start earning ➔",
+      nextHint: "Leads to Step 4: Collect Customers & Earn Income! ➔",
+      actionLabel: "Open Live Website Studio ↗",
       to: "/sites/mouth-off",
       badge: "Free Hosting + SSL",
       bg: "bg-paper",
@@ -196,11 +199,12 @@ function StartHereRoadmap() {
     },
     {
       num: "STEP 4",
-      title: "Get Funding, Leads & AI Coaching",
-      desc: "Check off your LLC/tax checklist, apply to matched grants, manage customer inquiries in your CRM, and ask your 24/7 AI Co-Founder what to do next.",
-      actionLabel: "Ask AI Co-Founder →",
+      title: "Get Funding, Leads & Real Income!",
+      desc: "Share your live link, collect paying customer inquiries in your CRM, apply to matched grants, and ask Vanguard-X™ how to scale your income daily!",
+      nextHint: "🎉 Goal Reached: Financial Independence & Real Income!",
+      actionLabel: "Ask Vanguard-X™ Advisor →",
       to: "/advisor",
-      badge: "Grow & Run Daily",
+      badge: "Earn & Scale Daily",
       bg: "bg-cream",
       icon: MessageSquare,
     },
@@ -212,14 +216,14 @@ function StartHereRoadmap() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <span className="inline-flex items-center gap-1.5 bg-ink text-sun px-3 py-1 text-xs font-black uppercase tracking-widest border border-ink">
-              <Sparkles className="h-3.5 w-3.5 text-mint" /> New Here? Follow These 4 Steps
+              <Sparkles className="h-3.5 w-3.5 text-mint" /> Day 1 of Your Financial Independence · 4 Simple Steps
             </span>
             <h2 className="display mt-3 text-4xl sm:text-5xl md:text-6xl leading-none">
-              How to Launch Your Business on This Site
+              Your Guided Path to Real Business Income
             </h2>
           </div>
-          <p className="max-w-md text-sm font-bold text-ink/80">
-            You don't need coding, design, or a business degree. Follow the 4 steps below in order to get your business live today.
+          <p className="max-w-md text-sm font-bold text-ink/85">
+            Each step leads directly into the next—no coding or business degree required! Complete these 4 steps in order and you will own a live business ready to bring real income into your life.
           </p>
         </div>
 
@@ -230,8 +234,8 @@ function StartHereRoadmap() {
               <div key={s.num} className="b3 hard flex flex-col justify-between bg-paper p-5">
                 <div>
                   {s.num === "STEP 3" && (
-                    <div className="mb-3 border-2 border-ink bg-mint px-2.5 py-1.5 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000]">
-                      🔥 Keep going! You’re almost live — the hardest part is already behind you!
+                    <div className="mb-3 border-2 border-ink bg-mint px-2.5 py-2 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000] leading-snug">
+                      🔥 KEEP GOING — YOUR FINANCIAL INDEPENDENCE IS TAKING SHAPE! Once you complete this step, your business is officially LIVE to bring in real income!
                     </div>
                   )}
                   <div className="flex items-center justify-between gap-2 pb-3 border-b-2 border-ink">
@@ -248,6 +252,9 @@ function StartHereRoadmap() {
                   </div>
                   <p className="mt-3 text-xs sm:text-sm font-semibold text-ink/80 leading-relaxed">
                     {s.desc}
+                  </p>
+                  <p className="mt-2.5 text-[11px] font-black text-emerald-800 bg-cream/90 border border-ink/20 px-2 py-1">
+                    {s.nextHint}
                   </p>
                 </div>
 

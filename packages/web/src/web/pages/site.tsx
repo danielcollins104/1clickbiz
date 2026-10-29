@@ -295,9 +295,28 @@ export default function SitePage({ slug }: { slug: string }) {
           {/* Expandable 3-Stage Generative AI Studio Panel */}
           {studioOpen && (
             <div className="mx-auto max-w-[1400px] p-4 md:p-6 space-y-5">
+              {/* Financial Independence & Step-by-Step Guide Banner */}
+              <div className="b3 hard bg-sun/35 p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 bg-ink text-sun px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider">
+                    <Sparkles className="h-3 w-3 text-mint" /> Welcome to Day 1 of Your Financial Independence!
+                  </span>
+                  <p className="mt-1.5 text-xs sm:text-sm font-black text-ink leading-relaxed">
+                    Follow <strong>Step 1 ➔ Step 2 ➔ Step 3</strong> below—each step leads directly into the next! Once you complete Step 3, your live website &amp; web app are officially open to bring paying customers and <strong>real income</strong> into your life!
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs font-black uppercase shrink-0">
+                  <span className={`px-2.5 py-1 border-2 border-ink ${activeStudioTab === "create" ? "bg-sun" : "bg-paper"}`}>Step 1: Create</span>
+                  <span>➔</span>
+                  <span className={`px-2.5 py-1 border-2 border-ink ${activeStudioTab === "iterate" ? "bg-mint" : "bg-paper"}`}>Step 2: Iterate</span>
+                  <span>➔</span>
+                  <span className={`px-2.5 py-1 border-2 border-ink ${activeStudioTab === "publish" ? "bg-ink text-sun" : "bg-paper"}`}>Step 3: Earn Income!</span>
+                </div>
+              </div>
+
               {/* Step Tabs */}
               <div className="flex flex-wrap items-center justify-between gap-4 border-b-[3px] border-ink pb-4">
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setActiveStudioTab("create")}
@@ -307,8 +326,9 @@ export default function SitePage({ slug }: { slug: string }) {
                         : "bg-cream text-ink hover:bg-paper"
                     }`}
                   >
-                    <Wand2 className="h-4 w-4" /> 1. Generative AI Builder Form
+                    <Wand2 className="h-4 w-4" /> Step 1: Build Your Income Website
                   </button>
+                  <span className="font-black text-ink hidden sm:inline">➔</span>
                   <button
                     type="button"
                     onClick={() => setActiveStudioTab("iterate")}
@@ -318,8 +338,9 @@ export default function SitePage({ slug }: { slug: string }) {
                         : "bg-cream text-ink hover:bg-paper"
                     }`}
                   >
-                    <Sliders className="h-4 w-4" /> 2. Iterate Until Satisfied ({historyList.length || 1} versions)
+                    <Sliders className="h-4 w-4" /> Step 2: Iterate Until Perfect ({historyList.length || 1})
                   </button>
+                  <span className="font-black text-ink hidden sm:inline">➔</span>
                   <button
                     type="button"
                     onClick={() => setActiveStudioTab("publish")}
@@ -329,7 +350,7 @@ export default function SitePage({ slug }: { slug: string }) {
                         : "bg-cream text-ink hover:bg-paper"
                     }`}
                   >
-                    <Globe className="h-4 w-4" /> 3. Free Hosting &amp; Custom Domain
+                    <Globe className="h-4 w-4" /> Step 3: Go Live Free &amp; Make Income!
                   </button>
                 </div>
 
@@ -466,24 +487,38 @@ export default function SitePage({ slug }: { slug: string }) {
                   </div>
 
                   <div className="flex flex-wrap items-center justify-between gap-4 border-t-2 border-ink pt-4">
-                    <p className="text-xs font-extrabold text-muted">
-                      Generates a complete multi-section site + working interactive web app below. You can iterate as many times as you want!
-                    </p>
-                    <button
-                      type="submit"
-                      disabled={isGenerating}
-                      className="btn btn-yellow font-black text-sm sm:text-base px-7 py-3 cursor-pointer"
-                    >
-                      {isGenerating ? (
-                        <>
-                          <Loader2 className="h-5 w-5 animate-spin" /> Synthesizing Website &amp; Web App…
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="h-5 w-5 fill-ink" /> Generate Creative Website &amp; Web App
-                        </>
-                      )}
-                    </button>
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-black uppercase text-emerald-800">
+                        Step 1 of 3 · Leads directly to Step 2 (Iterate &amp; Refine) ➔
+                      </p>
+                      <p className="text-xs font-extrabold text-muted">
+                        Click the yellow button to build your live site &amp; interactive calculator and automatically advance to Step 2!
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => setActiveStudioTab("iterate")}
+                        className="btn btn-sm btn-quiet font-black text-xs cursor-pointer"
+                      >
+                        Skip to Step 2: Iterate ➔
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isGenerating}
+                        className="btn btn-yellow font-black text-sm sm:text-base px-7 py-3 cursor-pointer"
+                      >
+                        {isGenerating ? (
+                          <>
+                            <Loader2 className="h-5 w-5 animate-spin" /> Building Your Income Engine…
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="h-5 w-5 fill-ink" /> Build My Site &amp; Continue to Step 2 ➔
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </form>
               )}
@@ -494,11 +529,14 @@ export default function SitePage({ slug }: { slug: string }) {
                   <div className="b3 bg-cream p-4 md:p-5 space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div>
+                        <span className="inline-block bg-ink text-sun px-2 py-0.5 text-[10px] font-black uppercase mb-1">
+                          Step 2 of 3 · Refine Your Vision, Then Head to Step 3!
+                        </span>
                         <h3 className="display text-xl md:text-2xl">
                           Iterate &amp; Refine Until You Are 100% Satisfied
                         </h3>
                         <p className="text-xs sm:text-sm font-bold text-ink/80">
-                          Tell the AI what to tweak, add, or restyle—or click any 1-click evolution chip below. Every change saves a snapshot so you can undo anytime!
+                          Tell the AI what to tweak, add, or restyle—or click any 1-click evolution chip below. Once you love how your site looks below, click the green button at the bottom to move to Step 3!
                         </p>
                       </div>
                       <span className="chip bg-ink text-sun text-xs font-black">
@@ -575,6 +613,25 @@ export default function SitePage({ slug }: { slug: string }) {
                         ))}
                       </div>
                     )}
+
+                    {/* Direct Handoff Bar to Step 3 */}
+                    <div className="border-t-[3px] border-ink pt-4 flex flex-wrap items-center justify-between gap-3 bg-sun/30 p-3.5">
+                      <div>
+                        <p className="text-xs sm:text-sm font-black text-ink">
+                          🎉 Happy with your website &amp; interactive calculator below? You’re ready for the final step!
+                        </p>
+                        <p className="text-xs font-bold text-ink/75">
+                          Click the button on the right to move to Step 3, claim your free live URL, and open your doors for income!
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setActiveStudioTab("publish")}
+                        className="btn bg-mint text-ink font-black text-xs sm:text-sm cursor-pointer border-2 border-ink shadow-[3px_3px_0px_#000]"
+                      >
+                        <Rocket className="h-4 w-4" /> Step 2 Complete! ➔ Continue to Step 3 (Go Live &amp; Earn Income!)
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -582,11 +639,21 @@ export default function SitePage({ slug }: { slug: string }) {
               {/* TAB 3: FREE HOSTING & CUSTOM DOMAIN PUBLISHER */}
               {activeStudioTab === "publish" && (
                 <div className="space-y-4">
-                  <div className="b3 bg-mint p-3.5 text-xs sm:text-sm font-black text-ink flex items-center gap-2.5">
-                    <Sparkles className="h-4 w-4 shrink-0 fill-ink" />
-                    <span>
-                      🚀 Keep going — you’ve made it to Step 3! You’re moments away from taking your creation live to the world.
-                    </span>
+                  <div className="b3 hard bg-mint p-4 md:p-5 text-ink space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="bg-ink text-sun px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider">
+                        🔥 Step 3 of 3 · The Beginning of Your Financial Independence!
+                      </span>
+                      <span className="text-xs font-black uppercase text-emerald-950">
+                        You Made It to the Finish Line!
+                      </span>
+                    </div>
+                    <p className="text-sm sm:text-base font-black text-ink leading-snug">
+                      Keep going — you are 1 click away from owning a real, live income stream!
+                    </p>
+                    <p className="text-xs sm:text-sm font-bold text-ink/85 leading-relaxed">
+                      Most people only talk about starting a business—you actually built yours! Lock in your free hosted web address (or custom domain) below, share your link with your first customers, and start bringing real business income into your life today!
+                    </p>
                   </div>
                   <div className="grid gap-6 lg:grid-cols-2">
                   {/* Option A: Free Hosting on 1ClickBiz + Custom Domain Binding */}

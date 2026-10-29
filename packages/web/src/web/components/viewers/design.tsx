@@ -782,6 +782,7 @@ export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initial
       saveLocalWebsiteData(bizId || activeSlug, next, activeSlug, builderName);
       setPreviewRev((r) => r + 1);
       setIsSynthesizing(false);
+      setStudioTab("iterate");
     }, 320);
   };
 
@@ -885,6 +886,25 @@ export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initial
 
       {/* Generative AI Website & Web App Builder Studio */}
       <section className="b3 hard bg-paper p-5 md:p-7">
+        {/* Financial Independence & Step-by-Step Handoff Banner */}
+        <div className="b3 bg-sun/35 p-4 mb-5 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div>
+            <span className="inline-flex items-center gap-1.5 bg-ink text-sun px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider">
+              <Sparkles className="h-3 w-3 text-mint" /> Welcome to Day 1 of Your Financial Independence!
+            </span>
+            <p className="mt-1.5 text-xs sm:text-sm font-black text-ink leading-relaxed">
+              Follow <strong>Step 1 ➔ Step 2 ➔ Step 3</strong> below—each step leads directly into the next! Once you finish Step 3, your live website &amp; web app are officially open to bring paying customers and <strong>real income</strong> into your life!
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs font-black uppercase shrink-0">
+            <span className={`px-2 py-1 border-2 border-ink ${studioTab === "create" ? "bg-sun" : "bg-paper"}`}>Step 1: Build</span>
+            <span>➔</span>
+            <span className={`px-2 py-1 border-2 border-ink ${studioTab === "iterate" ? "bg-mint" : "bg-paper"}`}>Step 2: Iterate</span>
+            <span>➔</span>
+            <span className={`px-2 py-1 border-2 border-ink ${studioTab === "host" ? "bg-ink text-sun" : "bg-paper"}`}>Step 3: Earn Income!</span>
+          </div>
+        </div>
+
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b-[3px] border-ink pb-5">
           <div>
             <span className="inline-flex items-center gap-1.5 bg-ink text-sun px-2.5 py-1 text-xs font-black uppercase tracking-wider">
@@ -898,7 +918,7 @@ export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initial
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-1.5 bg-cream p-1.5 border-2 border-ink shrink-0">
+          <div className="flex flex-wrap items-center gap-1.5 bg-cream p-1.5 border-2 border-ink shrink-0">
             <button
               type="button"
               onClick={() => setStudioTab("create")}
@@ -906,8 +926,9 @@ export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initial
                 studioTab === "create" ? "bg-ink text-sun shadow-[2px_2px_0px_#000]" : "text-ink hover:bg-paper"
               }`}
             >
-              <Wand2 className="h-3.5 w-3.5" /> 1. AI Builder Form
+              <Wand2 className="h-3.5 w-3.5" /> Step 1: AI Builder
             </button>
+            <span className="font-black text-xs">➔</span>
             <button
               type="button"
               onClick={() => setStudioTab("iterate")}
@@ -915,8 +936,9 @@ export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initial
                 studioTab === "iterate" ? "bg-ink text-sun shadow-[2px_2px_0px_#000]" : "text-ink hover:bg-paper"
               }`}
             >
-              <RefreshCw className="h-3.5 w-3.5" /> 2. Iterate ({Math.max(1, history.length)})
+              <RefreshCw className="h-3.5 w-3.5" /> Step 2: Iterate ({Math.max(1, history.length)})
             </button>
+            <span className="font-black text-xs">➔</span>
             <button
               type="button"
               onClick={() => setStudioTab("host")}
@@ -924,7 +946,7 @@ export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initial
                 studioTab === "host" ? "bg-ink text-sun shadow-[2px_2px_0px_#000]" : "text-ink hover:bg-paper"
               }`}
             >
-              <Globe className="h-3.5 w-3.5" /> 3. Free Hosting &amp; Domain
+              <Globe className="h-3.5 w-3.5" /> Step 3: Go Live &amp; Earn!
             </button>
           </div>
         </div>
@@ -1013,24 +1035,38 @@ export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initial
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t-2 border-dashed border-ink/25">
-                <p className="text-xs font-bold text-ink/75">
-                  Generates hero, interactive web app calculator, Bento grid, 3-tier pricing, and CRM lead form.
-                </p>
-                <button
-                  type="submit"
-                  disabled={isSynthesizing}
-                  className="btn btn-yellow font-black cursor-pointer shadow-[3px_3px_0px_#000]"
-                >
-                  {isSynthesizing ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" /> Synthesizing Live Site…
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4 fill-ink" /> Generate Creative Website &amp; Web App
-                    </>
-                  )}
-                </button>
+                <div>
+                  <p className="text-xs font-black uppercase text-emerald-800">
+                    Step 1 of 3 · Leads directly to Step 2 (Iterate &amp; Refine) ➔
+                  </p>
+                  <p className="text-xs font-bold text-ink/75">
+                    Generates hero, interactive calculator, 3-tier pricing, and CRM lead form—then takes you straight to Step 2!
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setStudioTab("iterate")}
+                    className="btn btn-sm btn-quiet font-black text-xs cursor-pointer"
+                  >
+                    Skip to Step 2 ➔
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSynthesizing}
+                    className="btn btn-yellow font-black cursor-pointer shadow-[3px_3px_0px_#000]"
+                  >
+                    {isSynthesizing ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" /> Synthesizing Live Site…
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-4 w-4 fill-ink" /> Build My Site &amp; Continue to Step 2 ➔
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </form>
@@ -1042,7 +1078,7 @@ export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initial
             <div className="grid gap-4 lg:grid-cols-12 items-end">
               <div className="lg:col-span-9">
                 <label className="block text-xs font-black uppercase tracking-wider mb-1.5">
-                  Tell the AI what to change, add, or refine (Unlimited Iterations):
+                  Step 2 of 3 · Tell the AI what to change, add, or refine (Unlimited Iterations):
                 </label>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <input
@@ -1119,17 +1155,46 @@ export function WebsiteViewer({ content: initialContent, bizId, bizSlug: initial
                 </div>
               </div>
             )}
+
+            {/* Direct Handoff Bar to Step 3 */}
+            <div className="border-t-[3px] border-ink pt-4 flex flex-wrap items-center justify-between gap-3 bg-sun/30 p-3.5">
+              <div>
+                <p className="text-xs sm:text-sm font-black text-ink">
+                  🎉 Happy with your website &amp; interactive calculator below? You’re ready for Step 3!
+                </p>
+                <p className="text-xs font-bold text-ink/75">
+                  Click the button on the right to move to Step 3, claim your free live URL, and open your doors for income!
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStudioTab("host")}
+                className="btn bg-mint text-ink font-black text-xs sm:text-sm cursor-pointer border-2 border-ink shadow-[3px_3px_0px_#000]"
+              >
+                <Rocket className="h-4 w-4" /> Step 2 Complete! ➔ Continue to Step 3 (Go Live &amp; Earn Income!)
+              </button>
+            </div>
           </div>
         )}
 
         {/* TAB 3: FREE HOSTING & CUSTOM DOMAIN */}
         {studioTab === "host" && (
           <div className="mt-6 space-y-4">
-            <div className="b3 bg-mint p-3.5 text-xs sm:text-sm font-black text-ink flex items-center gap-2.5">
-              <Sparkles className="h-4 w-4 shrink-0 fill-ink" />
-              <span>
-                🚀 Keep going — you’ve made it to Step 3! You’re moments away from taking your creation live to the world.
-              </span>
+            <div className="b3 hard bg-mint p-4 md:p-5 text-ink space-y-1.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="bg-ink text-sun px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider">
+                  🔥 Step 3 of 3 · The Beginning of Your Financial Independence!
+                </span>
+                <span className="text-xs font-black uppercase text-emerald-950">
+                  You Made It to the Finish Line!
+                </span>
+              </div>
+              <p className="text-sm sm:text-base font-black text-ink leading-snug">
+                Keep going — you are 1 click away from owning a real, live income stream!
+              </p>
+              <p className="text-xs sm:text-sm font-bold text-ink/85 leading-relaxed">
+                Most people only talk about starting a business—you actually built yours! Lock in your free hosted web address (or custom domain) below, share your link with your first customers, and start bringing real business income into your life today!
+              </p>
             </div>
             <div className="grid gap-6 lg:grid-cols-12">
             <form onSubmit={handleSaveHosting} className="lg:col-span-8 grid gap-4 sm:grid-cols-2">

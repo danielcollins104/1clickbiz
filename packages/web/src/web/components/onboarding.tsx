@@ -38,46 +38,55 @@ export function Onboarding({
 
   const stepDetails = [
     {
-      title: "1. Create your account",
-      desc: "Your founder workspace is active and saves all generated assets.",
+      title: "1. Create your founder account",
+      desc: "Step 1 Done! You officially claimed your workspace. Now go right to Step 2 →",
+      nextHint: "Leads to Step 2: Unlock your 13 AI income engines →",
     },
     {
-      title: "2. Unlock your AI tools",
-      desc: "Unlock all 13 AI engines so your plan, brand, website, and ads build together.",
+      title: "2. Unlock your 13 AI engines",
+      desc: "Activate all 13 AI builders so your plan, brand, website, and ads build automatically. Then move to Step 3 →",
+      nextHint: "Leads to Step 3: Tell the AI about your dream business →",
     },
     {
-      title: "3. Answer 8 intake questions",
-      desc: "Tell us your skills, budget, location, and idea so the AI can tailor your business.",
+      title: "3. Answer 8 quick questions",
+      desc: "Share your skills, budget, and location in 60 seconds. Once you click submit, head straight to Step 4 →",
+      nextHint: "Leads to Step 4: Watch your 13 business assets come alive →",
     },
     {
-      title: "4. Review your 13 deliverables",
-      desc: "Open each card below to pick your business name, logo, 5-year plan, and ad copy.",
+      title: "4. Approve your idea, name & logo",
+      desc: "Check off your favorite idea card facets, pick your business name, and lock in your logo. Then go to Step 5 →",
+      nextHint: "Leads to Step 5: Launch your free live website & web app →",
     },
     {
       title: "5. Open your free live website today",
-      desc: "Use the Generative AI Website & Web App Builder to create, iterate until satisfied, and host free on our site or your custom domain.",
+      desc: "Use the Generative AI Builder (Steps 1 → 2 → 3) to create, iterate until you love it, and publish free! Then finish at Step 6 →",
+      nextHint: "Leads to Step 6: Share your link & start earning income! →",
     },
     {
-      title: "6. Share your link & get a lead",
-      desc: "Send your live website link to customers—every inquiry lands in Tool #12 (CRM).",
+      title: "6. Share your link & make your first income!",
+      desc: "Send your live link to customers or post it online—every inquiry lands in Tool #12 (CRM) so you can close sales and get paid!",
+      nextHint: "🎉 Goal Reached: Your business is LIVE & ready to generate income!",
     },
   ];
 
   return (
     <section className="b3 hard mb-8 bg-paper">
       <header className="flex flex-wrap items-center justify-between gap-4 border-b-[3px] border-ink bg-sun/40 p-5">
-        <div>
-          <div className="flex items-center gap-2">
+        <div className="max-w-3xl">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1 bg-ink px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider text-sun">
-              <Sparkles className="h-3 w-3 text-mint" /> Step-by-Step Launch Guide
+              <Sparkles className="h-3 w-3 text-mint" /> Day 1 of Your Financial Independence
             </span>
-            <span className="text-xs font-extrabold uppercase tracking-widest">
+            <span className="bg-mint border border-ink px-2 py-0.5 text-xs font-black uppercase tracking-wider text-ink">
               {done} of 6 steps complete
             </span>
           </div>
-          <h2 className="display mt-2 text-2xl md:text-3xl">
-            Follow these 6 steps to get your business open &amp; making sales.
+          <h2 className="display mt-2 text-2xl md:text-4xl">
+            Your Step-by-Step Path to Real Income &amp; Freedom.
           </h2>
+          <p className="mt-1.5 text-xs sm:text-sm font-bold text-ink/85 leading-relaxed">
+            Each box below leads directly into the next! Don’t overthink it—just follow <strong>1 → 2 → 3 → 4 → 5 → 6</strong>. Once you complete Step 6, you own a live, cash-flowing business built to bring real income into your life!
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="hidden sm:block w-36 h-4 border-2 border-ink bg-white">
@@ -97,6 +106,20 @@ export function Onboarding({
           </button>
         </div>
       </header>
+
+      {/* Full-width Financial Independence Momentum Banner right above the steps */}
+      <div className="border-b-[3px] border-ink bg-ink text-paper px-5 py-3 flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm font-black">
+        <span className="flex items-center gap-2 text-sun">
+          <span>🔥</span>
+          <span>
+            KEEP GOING! This is the beginning of your financial independence — every step below brings you closer to your own income stream!
+          </span>
+        </span>
+        <span className="text-mint uppercase tracking-wider text-[11px]">
+          Step 1 ➔ Step 2 ➔ Step 3 ➔ Live Income!
+        </span>
+      </div>
+
       <div className="grid md:grid-cols-3">
         {stepDetails.map((item, i) => {
           const isCurrent = !steps[i] && steps.slice(0, i).every(Boolean);
@@ -109,8 +132,8 @@ export function Onboarding({
             >
               <div>
                 {i === 2 && (
-                  <div className="mb-3 border-2 border-ink bg-mint px-2.5 py-1.5 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000]">
-                    🚀 Keep going! You’re building real momentum — this step powers all 13 AI engines at once!
+                  <div className="mb-3 border-2 border-ink bg-mint px-3 py-2 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000] leading-snug">
+                    💰 KEEP GOING — YOUR NEW INCOME STARTS HERE! Most people only dream of financial freedom. Answering these 8 quick questions turns your dream into a real, money-making business!
                   </div>
                 )}
                 <div className="flex items-center justify-between gap-2">
@@ -126,12 +149,15 @@ export function Onboarding({
                   </p>
                   {isCurrent && (
                     <span className="bg-ink text-sun px-2 py-0.5 text-[10px] font-black uppercase">
-                      Do Next
+                      Do This Now
                     </span>
                   )}
                 </div>
-                <p className="mt-2 text-xs font-semibold text-ink/75 leading-relaxed">
+                <p className="mt-2 text-xs font-semibold text-ink/80 leading-relaxed">
                   {item.desc}
+                </p>
+                <p className="mt-2 text-[11px] font-black text-emerald-800 bg-cream/80 border border-ink/20 px-2 py-1">
+                  {item.nextHint}
                 </p>
               </div>
 
