@@ -14,6 +14,7 @@ import ResetPasswordPage from "./pages/reset-password";
 import AdminPage from "./pages/admin";
 import SitePage from "./pages/site";
 import AdvisorPage from "./pages/advisor";
+import SalesFunnelPage from "./pages/sales-funnel";
 import { Provider } from "./components/provider";
 import { Layout } from "./components/layout";
 import { ProtectedRoute } from "./components/protected-route";
@@ -41,6 +42,8 @@ function App() {
       <Layout>
         <Switch>
           <Route path="/" component={Index} />
+          <Route path="/funnel" component={SalesFunnelPage} />
+          <Route path="/sales" component={SalesFunnelPage} />
           <Route path="/shop" component={Shop} />
           <Route path="/pricing" component={Shop} />
           <Route path="/product/:slug">{(params) => <ProductPage key={params.slug} />}</Route>

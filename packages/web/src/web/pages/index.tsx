@@ -60,6 +60,9 @@ function Hero() {
             </Link>
           </div>
           <div className="hidden lg:flex items-center gap-4">
+            <Link to="/funnel" className="bg-ink text-sun px-2.5 py-1 text-xs font-black uppercase no-underline hover:bg-mint hover:text-ink border border-ink">
+              ⚡ Open Automated Sales Funnel →
+            </Link>
             <a href="#platform-benefits" className="ulink text-ink">
               6 Key Benefits ↓
             </a>
@@ -109,12 +112,12 @@ function Hero() {
                 Ready for real financial independence? Pick a proven business model below or answer 8 quick questions. Our 13 AI engines build your business plan, brand, vector logo, free live website, ads, grants list, and customer CRM in 60 seconds.
               </p>
               <div className="mt-4 flex flex-wrap gap-2.5">
-                <a
-                  href="#quick-start-section"
+                <Link
+                  to="/funnel"
                   className="btn btn-sm btn-yellow cursor-pointer font-black"
                 >
-                  <Rocket className="h-4 w-4 fill-ink" strokeWidth={2.5} /> Step 1: Launch My Business ↓
-                </a>
+                  <Rocket className="h-4 w-4 fill-ink" strokeWidth={2.5} /> Start 60s Sales Funnel →
+                </Link>
                 <a
                   href="#income-freedom-calculator"
                   className="btn btn-sm bg-mint text-ink font-black"

@@ -18,6 +18,7 @@ import { ExitIntentNotice } from "./ExitIntentNotice";
 import { BUNDLE_SLUG, PRODUCTS } from "../../api/catalog";
 
 const NAV = [
+  { to: "/funnel", label: "Sales Funnel" },
   { to: "/start", label: "Start Wizard" },
   { to: "/dashboard", label: "My Dashboard" },
   { to: "/shop", label: "13 AI Tools" },
