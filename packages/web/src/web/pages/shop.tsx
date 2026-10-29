@@ -7,6 +7,7 @@ import { CardSkeleton, GridCard } from "../components/product-card";
 import { StackFinder } from "../components/StackFinder";
 import { SubscriptionPlans } from "../components/SubscriptionPlans";
 import { IncomeFreedomCalculator } from "../components/IncomeFreedomCalculator";
+import { PlatformBenefitsHighlight } from "../components/PlatformBenefitsHighlight";
 
 const FILTERS = [
   { id: "all", label: "All 13 Engines" },
@@ -68,6 +69,7 @@ export default function Shop() {
       {f === "all" && (
         <>
           <SubscriptionPlans compact />
+          <PlatformBenefitsHighlight compact />
           <IncomeFreedomCalculator />
         </>
       )}

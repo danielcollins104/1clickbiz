@@ -14,6 +14,7 @@ import { IncomeFreedomCalculator } from "../components/IncomeFreedomCalculator";
 import { AboutCreator } from "../components/AboutCreator";
 import { SubscriptionPlans } from "../components/SubscriptionPlans";
 import { InteractiveDeliverableExplorer } from "../components/InteractiveDeliverableExplorer";
+import { PlatformBenefitsHighlight } from "../components/PlatformBenefitsHighlight";
 import { useSession } from "../queries/business";
 
 function Hero() {
@@ -58,9 +59,14 @@ function Hero() {
               Share Your Free Live Site &amp; Collect Leads
             </Link>
           </div>
-          <a href="#how-to-start" className="ulink hidden lg:inline-block text-ink">
-            See 4-Step Guide ↓
-          </a>
+          <div className="hidden lg:flex items-center gap-4">
+            <a href="#platform-benefits" className="ulink text-ink">
+              6 Key Benefits ↓
+            </a>
+            <a href="#how-to-start" className="ulink text-ink">
+              See 4-Step Guide ↓
+            </a>
+          </div>
         </div>
       </div>
 
@@ -542,6 +548,7 @@ export default function Index() {
     <>
       <Hero />
       <StartHereRoadmap />
+      <PlatformBenefitsHighlight />
       <QuickStartSection />
       <IncomeFreedomCalculator />
       <SocialProofTicker />
