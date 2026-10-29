@@ -183,6 +183,7 @@ export default function DashboardPage() {
   const [slugSuccess, setSlugSuccess] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"phases" | "grid">("phases");
   const [copiedUrl, setCopiedUrl] = useState(false);
+  const [copiedDm, setCopiedDm] = useState(false);
   const justPaid = params.get("checkout") === "success";
   const tried = useRef(0);
 
@@ -501,6 +502,108 @@ export default function DashboardPage() {
                   <span>Open Site ↗</span>
                 </a>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* First $1,000 Income Quick-Win Playbook */}
+        {data && (
+          <div className="b3 hard mt-6 bg-sun/35 p-5 border-[2.5px] border-ink shadow-[4px_4px_0px_#000]">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b-2 border-ink pb-4">
+              <div>
+                <span className="inline-flex items-center gap-1.5 bg-ink text-sun px-2.5 py-0.5 text-[11px] font-black uppercase tracking-wider">
+                  <Sparkles className="h-3 w-3 text-mint" /> Your First $1,000 Income Playbook · 3 Connected Steps
+                </span>
+                <h3 className="display mt-1.5 text-2xl md:text-3xl">
+                  Turn <span className="underline decoration-ink decoration-2">{data.business.name}</span> Into Real Income This Week
+                </h3>
+                <p className="text-xs sm:text-sm font-bold text-ink/80 mt-0.5">
+                  Follow <strong>Action 1 ➔ Action 2 ➔ Action 3</strong> below to land your first paying customer and kick off your financial independence!
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  const shareUrl = `${typeof window !== "undefined" ? window.location.origin : "https://1clickbiz.run.place"}/sites/${data.business.slug}`;
+                  const dmText = `Hey! I just launched ${data.business.name} and opened a few Founding Client spots this week. You can check out our interactive quote calculator and book directly here: ${shareUrl}`;
+                  try {
+                    await navigator.clipboard.writeText(dmText);
+                    setCopiedDm(true);
+                    onboarding.mutate({ sharedSite: true });
+                    setTimeout(() => setCopiedDm(false), 3000);
+                  } catch {
+                    // ignore
+                  }
+                }}
+                className="btn btn-sm bg-ink text-sun font-black text-xs cursor-pointer shrink-0 shadow-[3px_3px_0px_#79e784]"
+              >
+                <Check className="h-3.5 w-3.5 text-mint" />
+                <span>{copiedDm ? "✓ Copied Launch Text + Link!" : "Copy Ready-to-Send Customer DM"}</span>
+              </button>
+            </div>
+
+            <div className="mt-4 grid gap-4 md:grid-cols-3">
+              <div className="bg-paper border-2 border-ink p-3.5 flex flex-col justify-between">
+                <div>
+                  <span className="inline-block bg-sun px-2 py-0.5 border border-ink text-[10px] font-black uppercase">
+                    Action 1 ➔ Leads to Action 2
+                  </span>
+                  <p className="font-black text-sm mt-1.5">
+                    1. Customize &amp; Publish Your Free Site
+                  </p>
+                  <p className="text-xs font-semibold text-ink/80 mt-1">
+                    Open your live website studio, iterate until it looks 100% right, and publish your free link or custom domain.
+                  </p>
+                </div>
+                <a
+                  href={`/sites/${data.business.slug}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 text-xs font-black underline text-ink inline-flex items-center gap-1"
+                >
+                  Open Live Website Builder ↗
+                </a>
+              </div>
+
+              <div className="bg-paper border-2 border-ink p-3.5 flex flex-col justify-between">
+                <div>
+                  <span className="inline-block bg-mint px-2 py-0.5 border border-ink text-[10px] font-black uppercase">
+                    Action 2 ➔ Leads to Action 3
+                  </span>
+                  <p className="font-black text-sm mt-1.5">
+                    2. Send 5 Founding-Offer Messages
+                  </p>
+                  <p className="text-xs font-semibold text-ink/80 mt-1">
+                    Click <strong>"Copy Ready-to-Send Customer DM"</strong> above or grab your ad/social hooks from Tools #08 &amp; #09 and share with 5 people today.
+                  </p>
+                </div>
+                <Link
+                  to={`/dashboard/social-generator?b=${bizId}`}
+                  className="mt-3 text-xs font-black underline text-ink inline-flex items-center gap-1"
+                >
+                  Grab 30-Day Social Posts →
+                </Link>
+              </div>
+
+              <div className="bg-paper border-2 border-ink p-3.5 flex flex-col justify-between">
+                <div>
+                  <span className="inline-block bg-ink text-sun px-2 py-0.5 border border-ink text-[10px] font-black uppercase">
+                    Action 3 ➔ Collect Income!
+                  </span>
+                  <p className="font-black text-sm mt-1.5">
+                    3. Close Leads with Vanguard-X™ &amp; Notebook
+                  </p>
+                  <p className="text-xs font-semibold text-ink/80 mt-1">
+                    Ask <strong>Vanguard-X™ Advisor</strong> for a custom closing script, then click any paragraph to save it into your slide-out <strong>Founder Notebook</strong>!
+                  </p>
+                </div>
+                <Link
+                  to={`/dashboard/ai-advisor?b=${bizId}`}
+                  className="mt-3 text-xs font-black underline text-emerald-900 inline-flex items-center gap-1"
+                >
+                  Ask Vanguard-X™ Advisor →
+                </Link>
+              </div>
             </div>
           </div>
         )}

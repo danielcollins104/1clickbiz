@@ -10,6 +10,7 @@ import {
   Layers,
   RefreshCw,
   Loader2,
+  TrendingUp,
 } from "lucide-react";
 import { BUNDLE_SLUG, PRODUCTS, type Product } from "../../api/catalog";
 import { useCart } from "../lib/cart";
@@ -125,13 +126,13 @@ export function SubscriptionPlans({ compact = false }: { compact?: boolean }) {
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
             <p className="mb-2 flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.2em]">
-              <Sparkles className="h-4 w-4" strokeWidth={3} /> Flexible Subscription Plans · Cancel Anytime
+              <Sparkles className="h-4 w-4" strokeWidth={3} /> Invest in Your Own Income Stream · Cancel Anytime
             </p>
             <h2 className="display text-5xl md:text-7xl">
-              One subscription. <mark className="bg-mint px-2">Whole business.</mark>
+              One subscription. <mark className="bg-mint px-2">Your own income.</mark>
             </h2>
             <p className="mt-3 max-w-2xl text-base font-bold text-muted md:text-lg">
-              Subscribe to all 13 connected AI launch engines on one predictable monthly plan, pick a 3-tool stage stack, or start with a single engine.
+              Landing just <strong>1 paying customer</strong> from your free live website &amp; ad campaigns pays for your membership many times over. Unlock all 13 AI income engines, pick a 3-tool stack, or start with a single engine.
             </p>
           </div>
 
@@ -163,6 +164,29 @@ export function SubscriptionPlans({ compact = false }: { compact?: boolean }) {
               </span>
             </button>
           </div>
+        </div>
+
+        {/* High-Conversion Buyer Value Banner */}
+        <div className="b3 hard mt-8 bg-ink text-paper p-4 md:p-5 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center bg-sun text-ink border-2 border-sun font-black">
+              <TrendingUp className="h-5 w-5" />
+            </span>
+            <div>
+              <p className="text-xs font-black uppercase tracking-wider text-mint">
+                Why 10,000+ Founders Choose All-Access to Build Their Income:
+              </p>
+              <p className="text-xs sm:text-sm font-bold text-cream mt-0.5">
+                You keep <strong>100% of the revenue</strong> your business generates—zero platform commissions, free live website &amp; web app hosting included forever, and a 14-day 100% money-back guarantee.
+              </p>
+            </div>
+          </div>
+          <a
+            href="#income-freedom-calculator"
+            className="bg-sun text-ink px-3.5 py-1.5 text-xs font-black uppercase border-2 border-sun no-underline hover:bg-mint shrink-0"
+          >
+            Calculate Your Monthly Income ↓
+          </a>
         </div>
 
         {subError && (
@@ -295,13 +319,13 @@ export function SubscriptionPlans({ compact = false }: { compact?: boolean }) {
           {/* Tier 2: Phase 1 All-Access Subscription (Featured Center) */}
           <div className="b3 hard relative flex flex-col justify-between bg-ink p-6 text-sun md:p-8 lg:-translate-y-3 shadow-[10px_10px_0px_#79e784]">
             <div className="absolute -top-4 left-6 flex items-center gap-1.5 border-[3px] border-ink bg-mint px-3 py-1 text-xs font-black uppercase tracking-wider text-ink shadow-[3px_3px_0px_#000]">
-              <Crown className="h-4 w-4 fill-ink" /> Most Popular · Best Value
+              <Crown className="h-4 w-4 fill-ink" /> Most Popular · Fastest Path to Income
             </div>
 
             <div>
               <div className="flex items-center justify-between gap-2 pt-2">
                 <span className="text-xs font-extrabold uppercase tracking-widest text-mint">
-                  All-Access Subscription
+                  All-Access Income Pass
                 </span>
                 <span className="border border-sun bg-sun px-2.5 py-0.5 text-xs font-black uppercase text-ink">
                   All 13 Engines
@@ -311,7 +335,7 @@ export function SubscriptionPlans({ compact = false }: { compact?: boolean }) {
                 Phase 1 — Complete Launch Pass
               </h3>
               <p className="mt-2 text-sm font-semibold text-cream/90">
-                Answer 8 questions once. All 13 AI engines build your idea, plan, name, brand, logo, live website, ads, social posts, funding leads, and CRM automatically.
+                Everything you need to start your own business and create your own income: all 13 AI engines build your idea, plan, name, brand, logo, live website &amp; web app, ads, social posts, funding leads, and CRM automatically.
               </p>
 
               <div className="mt-6 flex flex-wrap items-baseline justify-between gap-2 border-y-[3px] border-sun/40 py-4">
@@ -334,12 +358,12 @@ export function SubscriptionPlans({ compact = false }: { compact?: boolean }) {
               <ul className="mt-6 space-y-3 text-sm font-bold text-cream">
                 {[
                   "All 13 Phase 1 AI Launch Engines unlocked",
-                  "500 AI generations every month",
-                  "Automatic cross-tool pipeline (each tool feeds the next)",
-                  "Free hosted live business website (/sites/your-name)",
-                  "24/7 AI Business Advisor & Pitch Evaluator",
-                  "Built-in Customer CRM & Lead Capture",
-                  "14-Day 100% Money-Back Guarantee",
+                  "Generative AI Website & Interactive Web App Studio (Unlimited Iterations)",
+                  "Free Hosted Live Business Website (/sites/your-name) + Custom Domain",
+                  "Per-Facet Idea Card Approval & Simple Iteration",
+                  "Vanguard-X™ Sovereign AI Advisor + Slide-Out Founder Notebook",
+                  "Built-in Customer CRM, Grant Finder & 30-Day Ad/Social Suite",
+                  "14-Day 100% Money-Back Guarantee · Cancel in 1 Click",
                 ].map((feat) => (
                   <li key={feat} className="flex items-start gap-2.5">
                     <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center bg-mint text-ink b3">

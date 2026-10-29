@@ -10,6 +10,7 @@ import { QuickStartSection } from "../components/QuickStartSection";
 import { SocialProofTicker } from "../components/SocialProofTicker";
 import { SocialProof } from "../components/SocialProof";
 import { RoiCalculator } from "../components/RoiCalculator";
+import { IncomeFreedomCalculator } from "../components/IncomeFreedomCalculator";
 import { AboutCreator } from "../components/AboutCreator";
 import { SubscriptionPlans } from "../components/SubscriptionPlans";
 import { InteractiveDeliverableExplorer } from "../components/InteractiveDeliverableExplorer";
@@ -94,23 +95,26 @@ function Hero() {
           <div className="rise absolute bottom-8 left-4 z-30 max-w-[340px] md:bottom-14 md:left-8 md:max-w-md" style={{ animationDelay: "0.55s" }}>
             <div className="b3 hard bg-paper p-5">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-xs font-extrabold uppercase tracking-[0.2em]">Start in 60 Seconds</p>
-                <span className="bg-mint px-2 py-0.5 border border-ink text-[10px] font-black uppercase">13 AI Engines Ready</span>
+                <p className="text-xs font-extrabold uppercase tracking-[0.2em]">Own Your Income Today</p>
+                <span className="bg-mint px-2 py-0.5 border border-ink text-[10px] font-black uppercase">13 AI Income Engines</span>
               </div>
-              <p className="display mt-2 text-2xl md:text-3xl">Go from raw idea to live business today.</p>
+              <p className="display mt-2 text-2xl md:text-3xl">Build a business that pays you—not a boss.</p>
               <p className="mt-2 hidden text-sm font-semibold text-muted sm:block">
-                Pick a ready-made business below or answer 8 quick questions. We generate your business plan, brand name, logo, live website, ads, grants list, and customer CRM automatically.
+                Ready for real financial independence? Pick a proven business model below or answer 8 quick questions. Our 13 AI engines build your business plan, brand, vector logo, free live website, ads, grants list, and customer CRM in 60 seconds.
               </p>
               <div className="mt-4 flex flex-wrap gap-2.5">
                 <a
                   href="#quick-start-section"
                   className="btn btn-sm btn-yellow cursor-pointer font-black"
                 >
-                  <Rocket className="h-4 w-4 fill-ink" strokeWidth={2.5} /> Step 1: Launch Wizard ↓
+                  <Rocket className="h-4 w-4 fill-ink" strokeWidth={2.5} /> Step 1: Launch My Business ↓
                 </a>
-                <Link to={session ? "/dashboard" : "/start"} className="btn btn-sm bg-paper">
-                  {session ? "Open My Dashboard" : "8-Question Builder"} <ArrowRight className="h-4 w-4" strokeWidth={3} />
-                </Link>
+                <a
+                  href="#income-freedom-calculator"
+                  className="btn btn-sm bg-mint text-ink font-black"
+                >
+                  Calculate My Income ↓
+                </a>
               </div>
             </div>
           </div>
@@ -371,13 +375,16 @@ function Editorial() {
           </div>
         </div>
         <div className="md:col-span-7">
-          <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.2em]">Your AI Business Advisor</p>
-          <h2 className="display text-5xl md:text-7xl">A co-founder that already read your plan.</h2>
+          <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.2em]">Vanguard-X™ Sovereign AI Advisor + Founder Notebook</p>
+          <h2 className="display text-5xl md:text-7xl">An executive co-founder that already read your plan.</h2>
+          <p className="mt-4 text-sm sm:text-base font-bold text-ink/80 max-w-xl">
+            Ask anything about pricing, closing your first customers, or scaling your income—then <strong>click any paragraph of advice</strong> to save it straight into your slide-out <strong>Founder Notebook</strong>!
+          </p>
           <p className="mt-6 text-xs font-extrabold uppercase tracking-widest">Example conversation</p>
           <div className="mt-3 space-y-4">
             {[
-              ["You", "What should I charge for my first package?"],
-              ["Advisor", "Your plan prices the starter package at $120 and lists two competitors charging more. Try $149 for the first month. Want me to update your website and ads with it?"],
+              ["You", "What should I charge for my first package to hit $5,000/mo fast?"],
+              ["Vanguard-X™", "Your plan prices the starter package at $120 and lists two local competitors charging more. Launch a 'Founding Member' tier at $179/mo—you only need 28 clients to cross $5,000/mo. Click this text to save it to your Founder Notebook, or let me update your website & ads now!"],
             ].map(([who, msg]) => (
               <div key={who} className={`b3 max-w-lg p-4 ${who === "You" ? "bg-paper" : "hard ml-auto bg-ink text-sun"}`}>
                 <p className={`text-xs font-extrabold uppercase tracking-widest ${who === "You" ? "" : "text-mint"}`}>{who}</p>
@@ -387,7 +394,7 @@ function Editorial() {
           </div>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link to="/advisor" className="btn btn-yellow">
-              Launch Gemini Advisor <ArrowRight className="h-4 w-4" strokeWidth={3} />
+              Launch Vanguard-X™ Advisor <ArrowRight className="h-4 w-4" strokeWidth={3} />
             </Link>
             <Link to="/product/ai-advisor" className="btn btn-quiet">
               Advisor Details
@@ -536,6 +543,7 @@ export default function Index() {
       <Hero />
       <StartHereRoadmap />
       <QuickStartSection />
+      <IncomeFreedomCalculator />
       <SocialProofTicker />
       <InteractiveDeliverableExplorer />
       <Flow />
@@ -545,7 +553,7 @@ export default function Index() {
       <BundleBlock />
       <SocialProof />
       <AboutCreator />
-      <Ticker words={["Minimal input", "Maximum business", "One brand everywhere", "Cancel anytime"]} />
+      <Ticker words={["Own your income", "Financial independence", "13 AI engines", "Cancel anytime"]} />
     </>
   );
 }
