@@ -134,15 +134,26 @@ export function PlatformBenefitsHighlight({ compact = false }: { compact?: boole
       className={`border-b-[3px] border-ink bg-paper ${compact ? "py-12" : "py-20"} px-4 md:px-8`}
     >
       <div className="mx-auto max-w-[1400px]">
+        {/* Bright Red "You get:" Graphic Banner Above All the Benefit Boxes */}
+        <div className="mb-6 flex flex-col items-start">
+          <img
+            src="/images/you-get-red.svg"
+            alt="You get:"
+            className="h-20 sm:h-24 md:h-28 w-auto select-none"
+          />
+        </div>
+
         {/* Header */}
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div>
+          <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 border-2 border-ink bg-ink px-3.5 py-1.5 text-xs font-black uppercase tracking-widest text-sun shadow-[3px_3px_0px_#79e784]">
               <Sparkles className="h-4 w-4 text-mint" /> Why Founders Choose 1-Click Launch · 6 Signature Benefits
             </div>
-            <h2 className="display mt-4 text-5xl leading-[0.92] sm:text-6xl md:text-7xl">
+            <h2 className="display mt-4 text-4xl sm:text-5xl md:text-6xl leading-[1.15]">
               Everything Built to Launch Your{" "}
-              <mark className="bg-mint px-2 text-ink">Financial Independence.</mark>
+              <span className="inline-block bg-mint px-2.5 py-0.5 text-ink border-2 border-ink mt-1">
+                Financial Independence.
+              </span>
             </h2>
           </div>
 
@@ -170,7 +181,7 @@ export function PlatformBenefitsHighlight({ compact = false }: { compact?: boole
               key={pill.label}
               className="b3 bg-cream p-3 flex flex-col justify-between shadow-[3px_3px_0px_#000]"
             >
-              <span className="flex items-center gap-1.5 text-xs font-black text-ink leading-tight">
+              <span className="flex items-center gap-1.5 text-xs font-black text-ink leading-snug">
                 <span className="grid h-4 w-4 shrink-0 place-items-center bg-mint border border-ink">
                   <Check className="h-2.5 w-2.5 text-ink" strokeWidth={4} />
                 </span>
@@ -213,10 +224,10 @@ export function PlatformBenefitsHighlight({ compact = false }: { compact?: boole
                       <Icon className="h-5 w-5 text-ink" strokeWidth={2.5} />
                     </span>
                     <div>
-                      <h3 className="display text-2xl leading-tight text-ink">
+                      <h3 className="display text-xl sm:text-2xl leading-snug text-ink">
                         {b.title}
                       </h3>
-                      <p className="mt-0.5 text-xs font-extrabold uppercase tracking-wide text-emerald-800">
+                      <p className="mt-1 text-xs font-extrabold uppercase tracking-wide text-emerald-800">
                         {b.subtitle}
                       </p>
                     </div>
@@ -289,7 +300,7 @@ export function PlatformBenefitsHighlight({ compact = false }: { compact?: boole
             <span className="inline-flex items-center gap-1.5 bg-mint text-ink px-2.5 py-1 text-xs font-black uppercase tracking-widest border border-sun">
               <Rocket className="h-3.5 w-3.5" strokeWidth={2.5} /> Ready to Own Your Time &amp; Income?
             </span>
-            <h3 className="display mt-2 text-3xl sm:text-4xl text-sun">
+            <h3 className="display mt-2 text-2xl sm:text-4xl leading-snug text-sun">
               All 6 Signature Benefits Are Live in Your Workspace Right Now.
             </h3>
             <p className="mt-1.5 text-xs sm:text-sm font-bold text-cream/90">

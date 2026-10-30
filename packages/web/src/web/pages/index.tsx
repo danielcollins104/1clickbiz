@@ -74,8 +74,8 @@ function Hero() {
       </div>
 
       {/* headline */}
-      <div className="relative z-10 mx-auto max-w-[1400px] px-4 pt-6 md:px-8 md:pt-8">
-        <h1 className="display text-center text-[13.5vw] leading-[0.82] xl:text-[200px]">
+      <div className="relative z-10 mx-auto max-w-[1400px] px-4 pt-6 pb-2 md:px-8 md:pt-8">
+        <h1 className="display text-center text-[12vw] leading-[0.95] xl:text-[180px]">
           <span className="rise inline-block" style={{ animationDelay: "0.05s" }}>Launch</span>{" "}
           <span className="rise inline-block" style={{ animationDelay: "0.15s" }}>it</span>
         </h1>
@@ -84,31 +84,39 @@ function Hero() {
       <div className="relative">
         {/* ticker behind model */}
         <Ticker
-          className="relative z-10 -rotate-1 md:mt-2"
+          className="relative z-10 -rotate-1 my-2"
           words={["Idea", "Plan", "Name", "Brand", "Logo", "Website", "Ads", "Social", "Funding", "Customers", "Launched"]}
         />
 
-        {/* stage */}
-        <div className="relative mx-auto h-[560px] max-w-[1400px] md:h-[700px]">
-          <div className="dots absolute right-6 top-10 hidden h-48 w-48 opacity-30 md:block" />
-          <div className="absolute left-1/2 top-24 hidden h-[520px] w-[520px] -translate-x-1/2 rounded-full border-[3px] border-ink md:block" />
+        {/* stage — clean responsive layout with zero overlapping cards */}
+        <div className="relative mx-auto max-w-[1400px] px-4 py-8 md:px-8 lg:min-h-[620px] flex flex-col lg:block">
+          <div className="dots absolute right-6 top-10 hidden h-48 w-48 opacity-30 lg:block" />
+          <div className="absolute left-1/2 top-16 hidden h-[480px] w-[480px] -translate-x-1/2 rounded-full border-[3px] border-ink lg:block" />
 
-          <img
-            src="/images/hero-cutout.webp"
-            alt="Founder holding a laptop"
-            className="rise absolute bottom-0 left-1/2 z-20 h-[calc(100%+70px)] max-w-none -translate-x-1/2 object-contain md:h-[calc(100%+150px)]"
-            style={{ animationDelay: "0.35s" }}
-          />
+          {/* Center Hero Image */}
+          <div className="relative mx-auto h-[340px] sm:h-[420px] lg:absolute lg:bottom-0 lg:left-1/2 lg:z-20 lg:h-[580px] lg:-translate-x-1/2 pointer-events-none flex justify-center">
+            <img
+              src="/images/hero-cutout.webp"
+              alt="Founder holding a laptop"
+              className="rise h-full w-auto max-w-none object-contain"
+              style={{ animationDelay: "0.35s" }}
+            />
+          </div>
 
-          {/* left copy */}
-          <div className="rise absolute bottom-8 left-4 z-30 max-w-[340px] md:bottom-14 md:left-8 md:max-w-md" style={{ animationDelay: "0.55s" }}>
+          {/* Left Copy Card */}
+          <div
+            className="rise relative z-30 mt-4 lg:mt-0 lg:absolute lg:bottom-10 lg:left-8 lg:max-w-[400px] xl:max-w-md"
+            style={{ animationDelay: "0.55s" }}
+          >
             <div className="b3 hard bg-paper p-5">
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-xs font-extrabold uppercase tracking-[0.2em]">Own Your Income Today</p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs font-extrabold uppercase tracking-[0.15em]">Own Your Income Today</p>
                 <span className="bg-mint px-2 py-0.5 border border-ink text-[10px] font-black uppercase">13 AI Income Engines</span>
               </div>
-              <p className="display mt-2 text-2xl md:text-3xl">Build a business that pays you—not a boss.</p>
-              <p className="mt-2 hidden text-sm font-semibold text-muted sm:block">
+              <p className="display mt-2.5 text-2xl md:text-3xl leading-[1.12]">
+                Build a business that pays you—not a boss.
+              </p>
+              <p className="mt-2.5 text-sm font-semibold text-muted leading-relaxed">
                 Ready for real financial independence? Pick a proven business model below or answer 8 quick questions. Our 13 AI engines build your business plan, brand, vector logo, free live website, ads, grants list, and customer CRM in 60 seconds.
               </p>
               <div className="mt-4 flex flex-wrap gap-2.5">
@@ -128,30 +136,32 @@ function Hero() {
             </div>
           </div>
 
-          {/* floating product tags */}
+          {/* Top-Left Floating Product Tag (Desktop XL only so it never overlaps left copy card) */}
           {booking && (
             <Link
               to={`/product/${booking.slug}`}
-              className="rise absolute left-[6%] top-16 z-30 hidden w-48 no-underline md:block lg:left-[12%]"
+              className="rise absolute left-8 top-6 z-30 hidden w-48 no-underline xl:block"
               style={{ animationDelay: "0.7s" }}
             >
-              <div className="b3 hard rotate-[-4deg] bg-paper p-2.5 transition-transform hover:rotate-0">
+              <div className="b3 hard rotate-[-3deg] bg-paper p-2.5 transition-transform hover:rotate-0">
                 <ProductArt tone={booking.tone} icon={booking.icon} num={booking.num} size="sm" className="aspect-[4/3] w-full" />
                 <p className="mt-2 text-center text-xs font-extrabold uppercase">Step 01 · Idea Wizard</p>
                 <p className="text-center text-[10px] font-bold text-muted">Included in All-Access</p>
               </div>
             </Link>
           )}
+
+          {/* Right All-Access Card */}
           {bundle && (
             <button
               type="button"
               onClick={handleSubscribeAllAccess}
-              className="rise absolute bottom-24 right-4 z-30 hidden w-60 text-left no-underline sm:block md:right-8 lg:right-[8%] cursor-pointer"
+              className="rise relative z-30 mt-4 w-full sm:w-auto lg:mt-0 lg:absolute lg:bottom-14 lg:right-8 lg:w-64 text-left no-underline cursor-pointer"
               style={{ animationDelay: "0.85s" }}
             >
-              <div className="b3 hard rotate-[3deg] bg-ink p-4 text-sun transition-transform hover:rotate-0">
+              <div className="b3 hard lg:rotate-[2deg] bg-ink p-4 text-sun transition-transform hover:rotate-0">
                 <p className="text-xs font-extrabold uppercase tracking-widest text-mint">Most Popular Plan</p>
-                <p className="display mt-1 text-xl">All-Access · 13 Engines</p>
+                <p className="display mt-1 text-xl leading-snug">All-Access · 13 Engines</p>
                 <p className="mt-1 text-[11px] font-semibold text-cream/80">500 AI gens/mo + Free hosted site</p>
                 <div className="mt-2 flex items-end justify-between border-t border-sun/20 pt-2">
                   <span className="display text-3xl">{money(bundle.price)}<span className="font-sans text-xs normal-case">/mo</span></span>
@@ -164,7 +174,7 @@ function Hero() {
           )}
 
           {/* side index */}
-          <div className="absolute right-4 top-1/3 z-30 hidden flex-col gap-2 xl:flex">
+          <div className="absolute right-4 top-1/3 z-30 hidden flex-col gap-2 2xl:flex">
             <span className="h-10 w-3 bg-ink" />
             <span className="h-3 w-3 bg-ink" />
             <span className="h-3 w-3 bg-ink" />
@@ -231,7 +241,7 @@ function StartHereRoadmap() {
             <span className="inline-flex items-center gap-1.5 bg-ink text-sun px-3 py-1 text-xs font-black uppercase tracking-widest border border-ink">
               <Sparkles className="h-3.5 w-3.5 text-mint" /> Day 1 of Your Financial Independence · 4 Simple Steps
             </span>
-            <h2 className="display mt-3 text-4xl sm:text-5xl md:text-6xl leading-none">
+            <h2 className="display mt-3 text-4xl sm:text-5xl md:text-6xl leading-[1.12]">
               Your Guided Path to Real Business Income
             </h2>
           </div>
@@ -261,7 +271,7 @@ function StartHereRoadmap() {
                     <span className={`grid h-9 w-9 shrink-0 place-items-center border-2 border-ink ${s.bg}`}>
                       <Icon className="h-5 w-5 text-ink" strokeWidth={2.5} />
                     </span>
-                    <h3 className="display text-xl leading-tight">{s.title}</h3>
+                    <h3 className="display text-xl leading-snug">{s.title}</h3>
                   </div>
                   <p className="mt-3 text-xs sm:text-sm font-semibold text-ink/80 leading-relaxed">
                     {s.desc}
@@ -303,11 +313,21 @@ function Flow() {
   const bySlug = new Map((data?.products ?? []).map((p) => [p.slug, p]));
   return (
     <section className="mx-auto max-w-[1400px] px-4 py-20 md:px-8">
+      <div className="mb-5">
+        <img
+          src="/images/you-get-red.svg"
+          alt="You get:"
+          className="h-20 sm:h-24 md:h-28 w-auto select-none"
+        />
+      </div>
       <div className="grid gap-8 md:grid-cols-12 md:items-end">
         <div className="md:col-span-8">
           <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.2em]">How Phase 1 builds itself</p>
-          <h2 className="display text-6xl md:text-8xl">
-            You answer. It <mark className="bg-mint px-2">builds.</mark>
+          <h2 className="display text-5xl sm:text-6xl md:text-7xl leading-[1.15]">
+            You answer. It{" "}
+            <span className="inline-block bg-mint px-2.5 py-0.5 border-2 border-ink mt-1">
+              builds.
+            </span>
           </h2>
         </div>
         <p className="text-lg font-semibold md:col-span-4">
@@ -385,7 +405,9 @@ function Editorial() {
         </div>
         <div className="md:col-span-7">
           <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.2em]">Solomon™ Sovereign AI Advisor + Founder Notebook</p>
-          <h2 className="display text-5xl md:text-7xl">An executive co-founder that already read your plan.</h2>
+          <h2 className="display text-4xl sm:text-5xl md:text-6xl leading-[1.12]">
+            An executive co-founder that already read your plan.
+          </h2>
           <p className="mt-4 text-sm sm:text-base font-bold text-ink/80 max-w-xl">
             Ask anything about pricing, closing your first customers, or scaling your income—then <strong>click any paragraph of advice</strong> to save it straight into your slide-out <strong>Founder Notebook</strong>!
           </p>
@@ -432,7 +454,9 @@ function BundleBlock() {
             <span className="chip border-sun bg-mint text-ink font-black">
               All-Access Subscription{sum > 0 && bundle ? ` · save ${money(sum - bundle.price)}/mo` : ""}
             </span>
-            <h2 className="display mt-4 text-6xl md:text-8xl">13 Engines. One Plan.</h2>
+            <h2 className="display mt-4 text-5xl sm:text-6xl md:text-7xl leading-[1.12]">
+              13 Engines. One Plan.
+            </h2>
             <p className="mt-4 max-w-md text-lg font-semibold text-cream">
               Subscribe once and unlock all 13 AI launch engines in one connected workspace. Your answers flow automatically from initial idea to live website and customer CRM.
             </p>
@@ -485,12 +509,19 @@ function BundleBlock() {
 
         {/* Upgraded 13-Tool Launch Suite Showcase */}
         <div className="mt-16 border-t-2 border-sun/30 pt-12">
+          <div className="mb-5">
+            <img
+              src="/images/you-get-red.svg"
+              alt="You get:"
+              className="h-20 sm:h-24 md:h-28 w-auto select-none"
+            />
+          </div>
           <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
               <p className="text-xs font-black uppercase tracking-widest text-mint flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5 fill-mint" /> Complete Ecosystem Included in Your Membership
               </p>
-              <h3 className="display text-3xl md:text-5xl text-sun mt-1">
+              <h3 className="display text-3xl md:text-5xl text-sun mt-1 leading-[1.12]">
                 All 13 Integrated AI Launch Engines
               </h3>
             </div>

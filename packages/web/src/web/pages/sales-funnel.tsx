@@ -278,9 +278,9 @@ export default function SalesFunnelPage() {
                 </span>
               </div>
 
-              <h1 className="display text-5xl sm:text-6xl md:text-7xl leading-[0.92] text-sun">
+              <h1 className="display text-4xl sm:text-5xl md:text-6xl leading-[1.18] text-sun">
                 Stop Building From Scratch.{" "}
-                <span className="text-paper underline decoration-mint decoration-4">
+                <span className="inline-block bg-mint text-ink px-2.5 py-0.5 border-2 border-sun my-1">
                   Own a Live, Income-Ready Business
                 </span>{" "}
                 in 60 Seconds.
@@ -294,6 +294,7 @@ export default function SalesFunnelPage() {
               </p>
 
               {/* Tangible VIP Value Stack Pills */}
+              <div className="pt-2"><img src="/images/you-get-red.svg" alt="You get:" className="h-16 sm:h-20 w-auto select-none" /></div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
                 {[
                   "✓ 13 Connected AI Engines",
@@ -412,7 +413,7 @@ export default function SalesFunnelPage() {
               <span className="inline-flex items-center gap-1.5 bg-ink text-sun px-3 py-1 text-xs font-black uppercase tracking-widest border border-ink">
                 <Sparkles className="h-3.5 w-3.5 text-mint" /> Interactive 4-Step Automated Sales Funnel
               </span>
-              <h2 className="display mt-3 text-4xl sm:text-6xl leading-none">
+              <h2 className="display mt-3 text-4xl sm:text-6xl leading-[1.15]">
                 Build &amp; Activate Your Income Blueprint in 4 Clicks
               </h2>
               <p className="mt-2 text-sm sm:text-base font-bold text-ink/80 max-w-2xl">
@@ -1167,7 +1168,7 @@ export default function SalesFunnelPage() {
                     </div>
                     <div className="bg-paper p-3.5 border-t-[3px] border-ink flex items-center justify-between">
                       <div>
-                        <p className="display text-xl leading-none">Daniel Collins</p>
+                        <p className="display text-xl leading-[1.15]">Daniel Collins</p>
                         <p className="text-[10px] font-black uppercase text-muted mt-0.5">
                           Founder &amp; Lead Architect
                         </p>

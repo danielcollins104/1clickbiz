@@ -435,13 +435,14 @@ export function InteractiveDeliverableExplorer() {
     <section id="interactive-demo" className="border-b-[3px] border-ink bg-paper py-20">
       <div id="live-preview" className="mx-auto max-w-[1400px] px-4 md:px-8">
         {/* Section Header */}
+        <div className="mb-5"><img src="/images/you-get-red.svg" alt="You get:" className="h-20 sm:h-24 md:h-28 w-auto select-none" /></div>
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div>
             <p className="mb-2 flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.2em]">
               <Eye className="h-4 w-4" strokeWidth={3} /> Interactive Deliverable Explorer · See What You Get
             </p>
-            <h2 className="display text-5xl md:text-7xl">
-              Inspect a <mark className="bg-sun px-2">complete build</mark> before you subscribe.
+            <h2 className="display text-4xl sm:text-5xl md:text-6xl leading-[1.15]">
+              Inspect a <span className="inline-block bg-sun px-2.5 py-0.5 border-2 border-ink my-1">complete build</span> before you subscribe.
             </h2>
             <p className="mt-3 max-w-2xl text-base font-bold text-muted md:text-lg">
               Pick a business example below (or type your own brand name) and click through all 4 stages to see how the 13 AI engines connect your plan, brand, live website, and CRM.

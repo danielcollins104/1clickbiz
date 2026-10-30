@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 140" width="580" height="140" role="img" aria-label="You get:">
+  <defs>
+    <linearGradient id="brightRedText" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff2a2a" />
+      <stop offset="50%" stop-color="#ff0000" />
+      <stop offset="100%" stop-color="#cc0000" />
+    </linearGradient>
+    <filter id="cardShadow" x="-5%" y="-5%" width="115%" height="125%">
+      <feDropShadow dx="6" dy="6" stdDeviation="0" flood-color="#131313" flood-opacity="1" />
+    </filter>
+    <filter id="redText3D" x="-10%" y="-10%" width="125%" height="130%">
+      <feDropShadow dx="5" dy="5" stdDeviation="0" flood-color="#131313" flood-opacity="1" />
+    </filter>
+  </defs>
+
+  <!-- Crisp High-Contrast Frame with Bright Red Border -->
+  <g filter="url(#cardShadow)">
+    <rect x="8" y="8" width="554" height="114" rx="8" fill="#ffffff" stroke="#ff0000" stroke-width="6" />
+    <rect x="8" y="8" width="554" height="114" rx="8" fill="none" stroke="#131313" stroke-width="3" />
+    <rect x="18" y="18" width="534" height="94" rx="4" fill="#fff5f5" stroke="#ff1a1a" stroke-width="2.5" stroke-dasharray="10 6" />
+  </g>
+
+  <!-- Bright Red Corner Stars / Dots -->
+  <circle cx="40" cy="65" r="9" fill="#ff0000" stroke="#131313" stroke-width="3" />
+  <circle cx="530" cy="65" r="9" fill="#ff0000" stroke="#131313" stroke-width="3" />
+
+  <!-- Giant Bright Red Image of Text: "You get:" -->
+  <text
+    x="285"
+    y="90"
+    text-anchor="middle"
+    font-family="'Archivo Black', 'Impact', 'Arial Black', sans-serif"
+    font-size="82"
+    font-weight="900"
+    letter-spacing="1"
+    fill="url(#brightRedText)"
+    stroke="#131313"
+    stroke-width="4"
+    paint-order="stroke fill"
+    filter="url(#redText3D)"
+  >
+    You get:
+  </text>
+</svg>

@@ -59,8 +59,8 @@ body {
 .display {
   font-family: var(--font-display);
   text-transform: uppercase;
-  letter-spacing: -0.03em;
-  line-height: 0.92;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
   font-weight: 900;
 }
 
