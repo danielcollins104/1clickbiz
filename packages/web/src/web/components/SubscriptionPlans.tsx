@@ -361,7 +361,7 @@ export function SubscriptionPlans({ compact = false }: { compact?: boolean }) {
                   "Generative AI Website & Interactive Web App Studio (Unlimited Iterations)",
                   "Free Hosted Live Business Website (/sites/your-name) + Custom Domain",
                   "Per-Facet Idea Card Approval & Simple Iteration",
-                  "Vanguard-X™ Sovereign AI Advisor + Slide-Out Founder Notebook",
+                  "StiltZ-Kin™ Sovereign AI Advisor + Slide-Out Founder Notebook",
                   "Built-in Customer CRM, Grant Finder & 30-Day Ad/Social Suite",
                   "14-Day 100% Money-Back Guarantee · Cancel in 1 Click",
                 ].map((feat) => (

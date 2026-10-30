@@ -23,7 +23,7 @@ const BANNERS: Record<string, { img: string; alt: string; line: string }> = {
   Plan: { img: "/images/cat-plan.webp", alt: "Notebook, calculator and chess piece on yellow", line: "Stage 01: Validated ideas, investor-ready business plan, legal checklist & funding grants." },
   Brand: { img: "/images/cat-brand.webp", alt: "Swatches, stamp and brush on green", line: "Stage 02: Brand name, voice guidelines, custom vector logo & typography system." },
   Market: { img: "/images/cat-market.webp", alt: "Megaphone and phone on black", line: "Stage 03: Live hosted website, high-converting ad creative, and 14-day social calendar." },
-  Run: { img: "/images/cat-run.webp", alt: "Rolodex, clipboard and desk bell", line: "Stage 04: Built-in customer CRM fed by your site and Vanguard-X™ Sovereign AI Advisor." },
+  Run: { img: "/images/cat-run.webp", alt: "Rolodex, clipboard and desk bell", line: "Stage 04: Built-in customer CRM fed by your site and StiltZ-Kin™ Sovereign AI Advisor." },
   Bundle: { img: "/images/dashboard-banner.webp", alt: "Three founders in black and yellow", line: "Phase 1 All-Access Subscription: All 13 AI engines connected on one simple monthly plan." },
 };
 

@@ -66,8 +66,8 @@ const TOOL_USER_TIPS: Record<string, { whatItDoes: string; howToUse: string }> =
     howToUse: "Add contacts manually or watch website inquiries land here automatically. Update each lead's status from New → Contacted → Won.",
   },
   "ai-advisor": {
-    whatItDoes: "Vanguard-X™ Sovereign AI Advisor — your 24/7 Tri-Core Autonomous Executive Co-Founder that has indexed your business plan, pricing, brand voice, and live website.",
-    howToUse: "Command Vanguard-X™ below—ask for a 7-day customer acquisition sprint, stress-test your pricing margins, or activate the Live Web Grant Grid & Geo Radar.",
+    whatItDoes: "StiltZ-Kin™ Sovereign AI Advisor — your 24/7 Tri-Core Autonomous Executive Co-Founder that has indexed your business plan, pricing, brand voice, and live website.",
+    howToUse: "Command StiltZ-Kin™ below—ask for a 7-day customer acquisition sprint, stress-test your pricing margins, or activate the Live Web Grant Grid & Geo Radar.",
   },
 };
 

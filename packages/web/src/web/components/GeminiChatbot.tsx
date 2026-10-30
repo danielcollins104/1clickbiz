@@ -36,7 +36,7 @@ interface Message {
 export const ROLES: Array<{
   id: RoleMode;
   label: string;
-  model: "vanguard-x-omni-9" | "vanguard-x-quantum-5" | "vanguard-x-hyper-lite";
+  model: "stiltz-kin-omni-9" | "stiltz-kin-quantum-5" | "stiltz-kin-hyper-lite";
   badge: string;
   description: string;
   defaultRole: string;
@@ -44,42 +44,42 @@ export const ROLES: Array<{
   {
     id: "general",
     label: "Growth & Operations",
-    model: "vanguard-x-quantum-5",
+    model: "stiltz-kin-quantum-5",
     badge: "Multi-Agent Core",
     description: "Autonomous execution: customer acquisition, 30-day launch sprints, operations & recurring revenue",
-    defaultRole: "Vanguard-X Lead Growth & Operations Commander",
+    defaultRole: "StiltZ-Kin Lead Growth & Operations Commander",
   },
   {
     id: "complex",
     label: "Executive Strategist",
-    model: "vanguard-x-omni-9",
+    model: "stiltz-kin-omni-9",
     badge: "Deep Reasoning Core",
     description: "Deep strategic simulation: unit economics, defensive moat architecture & 12-month financial modeling",
-    defaultRole: "Vanguard-X Sovereign Executive Strategist",
+    defaultRole: "StiltZ-Kin Sovereign Executive Strategist",
   },
   {
     id: "fast",
     label: "Rapid Velocity Coach",
-    model: "vanguard-x-hyper-lite",
+    model: "stiltz-kin-hyper-lite",
     badge: "Hyper-Speed Core",
     description: "Sub-second tactical output: high-converting hooks, instant pricing tiers, brand names & launch scripts",
-    defaultRole: "Vanguard-X High-Velocity Tactical Specialist",
+    defaultRole: "StiltZ-Kin High-Velocity Tactical Specialist",
   },
   {
     id: "investor",
     label: "Venture & Pitch Critic",
-    model: "vanguard-x-omni-9",
+    model: "stiltz-kin-omni-9",
     badge: "Deep Reasoning Core",
     description: "Institutional stress-testing: venture interrogation, grant positioning, risk mitigation & valuation",
-    defaultRole: "Vanguard-X Managing Venture Partner & Capital Critic",
+    defaultRole: "StiltZ-Kin Managing Venture Partner & Capital Critic",
   },
   {
     id: "marketing",
     label: "Revenue Architect",
-    model: "vanguard-x-quantum-5",
+    model: "stiltz-kin-quantum-5",
     badge: "Multi-Agent Core",
     description: "Conversion engineering: direct-response funnels, cold outreach sequences & irresistible offer design",
-    defaultRole: "Vanguard-X Chief Revenue & Brand Architect",
+    defaultRole: "StiltZ-Kin Chief Revenue & Brand Architect",
   },
 ];
 
@@ -116,16 +116,16 @@ const STARTER_PROMPTS = [
   },
 ];
 
-/** Normalizes any legacy backend model string into a Vanguard-X Neural Core identifier. */
+/** Normalizes any legacy backend model string into a StiltZ-Kin Neural Core identifier. */
 function formatVanguardModelName(rawModel: string | undefined, fallback: string): string {
   if (!rawModel || rawModel === "error") return fallback;
-  if (rawModel.startsWith("vanguard-x")) return rawModel;
-  if (rawModel.includes("argon") || rawModel.includes("pro")) return "vanguard-x-omni-9";
-  if (rawModel.includes("lite")) return "vanguard-x-hyper-lite";
-  return "vanguard-x-quantum-5";
+  if (rawModel.startsWith("stiltz-kin")) return rawModel; if (rawModel.startsWith("vanguard-x")) return rawModel.replace("vanguard-x", "stiltz-kin");
+  if (rawModel.includes("argon") || rawModel.includes("pro")) return "stiltz-kin-omni-9";
+  if (rawModel.includes("lite")) return "stiltz-kin-hyper-lite";
+  return "stiltz-kin-quantum-5";
 }
 
-/** Reads the founder's active business from localStorage so Vanguard-X tailors every answer to their business. */
+/** Reads the founder's active business from localStorage so StiltZ-Kin tailors every answer to their business. */
 function getActiveFounderBusinessContext(): {
   name: string;
   slug: string;
@@ -160,7 +160,7 @@ function getActiveFounderBusinessContext(): {
   };
 }
 
-/** Built-in Sovereign Executive Synthesis so Vanguard-X never hits a 405 error and always gives rich, actionable coaching. */
+/** Built-in Sovereign Executive Synthesis so StiltZ-Kin never hits a 405 error and always gives rich, actionable coaching. */
 export function synthesizeVanguardExecutiveReply(
   userPrompt: string,
   roleMode: RoleMode,
@@ -175,12 +175,12 @@ export function synthesizeVanguardExecutiveReply(
   if (groundingMode === "search" || q.includes("grant") || q.includes("fund") || q.includes("loan")) {
     return {
       text: [
-        `### ⚡ Vanguard-X™ Global Grant & Capital Grid Analysis for ${biz.name}`,
+        `### ⚡ StiltZ-Kin™ Global Grant & Capital Grid Analysis for ${biz.name}`,
         `I have cross-referenced **${biz.name}** (${biz.idea}) against active 2026 non-dilutive grants, microloans, and founder competitions:`,
         `1. **Amber Grant & Startup Founder Monthly Awards ($10,000 – $25,000)**\n   - **Why You Fit:** Rolling monthly selection with a streamlined 20-minute narrative application focused on traction and clear use of funds.\n   - **Action Today:** Copy your Executive Summary from Tool #02 (Business Plan) and submit before month-end.`,
         `2. **SBA Microloan & Community Advantage Capital ($5,000 – $50,000)**\n   - **Why You Fit:** Designed specifically for early-stage businesses in ${biz.location} launching with lean equipment and working capital.\n   - **Action Today:** Attach your 12-month financial projection table and your live \`/sites/${biz.slug}\` URL as proof of operational readiness.`,
         `3. **Verizon Small Business Digital Ready & National Founder Grants ($10,000)**\n   - **Why You Fit:** 100% non-dilutive cash grants unlocked after completing two short online founder modules.`,
-        `**Vanguard-X Tactical Recommendation:** Click any block above to save it to your **Founder Notebook**, apply to 2 rolling grants this week, and pre-sell your **Founding 5 VIP Package** so customer revenue funds your growth on Day 1.`,
+        `**StiltZ-Kin Tactical Recommendation:** Click any block above to save it to your **Founder Notebook**, apply to 2 rolling grants this week, and pre-sell your **Founding 5 VIP Package** so customer revenue funds your growth on Day 1.`,
       ].join("\n\n"),
       sources: [
         { title: "U.S. Small Business Administration (SBA) Funding Programs", url: "https://www.sba.gov/funding-programs", type: "web" },
@@ -193,7 +193,7 @@ export function synthesizeVanguardExecutiveReply(
   if (groundingMode === "maps" || q.includes("local") || q.includes("location") || q.includes("competitor")) {
     return {
       text: [
-        `### 📍 Vanguard-X™ Geospatial & Competitive Telemetry for ${biz.name}`,
+        `### 📍 StiltZ-Kin™ Geospatial & Competitive Telemetry for ${biz.name}`,
         `I have mapped the competitive landscape and local partnership corridors in **${biz.location}** for **${biz.name}**:`,
         `1. **Primary Competitor Vulnerability (Your Unfair Edge)**\n   - Traditional providers serving ${biz.customer} take **24–72 hours** just to return a phone call or quote.\n   - Because your live site (\`/sites/${biz.slug}\`) features an **Interactive Instant Quote & Booking Calculator**, you capture buyers the exact minute they have intent.`,
         `2. **3 High-Leverage Local Referral Partners to Contact This Week**\n   - **Complementary Specialists in ${biz.location}:** Partner with 3 non-competing businesses serving ${biz.customer} and offer a **15% referral commission** or co-branded VIP voucher.\n   - **Community & Local Hub Placement:** Share your interactive calculator link in local neighborhood and business groups.\n   - **Google Business Profile Fast-Track:** Link \`/sites/${biz.slug}\` to a verified Google Business Profile to rank in local 3-pack map searches within 14 days.`,
@@ -208,7 +208,7 @@ export function synthesizeVanguardExecutiveReply(
   if (roleMode === "complex" || roleMode === "investor" || q.includes("price") || q.includes("margin") || q.includes("break-even")) {
     return {
       text: [
-        `### 🧠 Vanguard-X™ Omni-9 Unit-Economics & Pricing Breakdown for ${biz.name}`,
+        `### 🧠 StiltZ-Kin™ Omni-9 Unit-Economics & Pricing Breakdown for ${biz.name}`,
         `Here is my executive financial stress-test for **"${userPrompt}"**:`,
         `1. **3-Tier Anchored Pricing Architecture (Target 82% Gross Margin)**\n   - **Tier 1 · Starter Sprint ($99 – $149):** Low-friction entry offer that eliminates buyer hesitation and covers 100% of your acquisition cost.\n   - **Tier 2 · Flagship Complete Package ($249 – $299 · Most Popular):** Your core profit engine where ~65% of customers land when anchored between Tier 1 and Tier 3.\n   - **Tier 3 · VIP Priority Retainer ($499+/mo):** White-glove recurring membership that compounds your monthly baseline revenue.`,
         `2. **12-Month Break-Even & Profit Velocity**\n   - With lean overhead (**under $350/mo**), winning just **2 Flagship clients** puts **${biz.name}** into net profit in **Week 1**.\n   - Scaling to **15 active retainer/repeat clients** at $299/mo generates **$4,485/mo ($53,820/yr annualized)** with zero full-time employees required.`,
@@ -221,7 +221,7 @@ export function synthesizeVanguardExecutiveReply(
   if (roleMode === "fast" || roleMode === "marketing" || q.includes("script") || q.includes("email") || q.includes("hook") || q.includes("name")) {
     return {
       text: [
-        `### ⚡ Vanguard-X™ High-Velocity Outreach & Conversion Scripts for ${biz.name}`,
+        `### ⚡ StiltZ-Kin™ High-Velocity Outreach & Conversion Scripts for ${biz.name}`,
         `Click any script below to save it directly into your **Slide-Out Founder Notebook** and customize it:`,
         `**Script #1 · The "Founding 5" Warm DM / Text (Highest Reply Rate)**\n"Hey [Name]! I just launched ${biz.name} and opened our new interactive online portal. I'm taking on 5 Founding Clients this week at 30% off in exchange for a quick testimonial once we deliver. Want me to send you the private link to check it out?"`,
         `**Script #2 · Local Partner Cross-Promotion Pitch**\n"Hi [Name] — love what you're building in ${biz.location}. We just launched ${biz.name} for ${biz.customer}, and I'd love to send our clients your way and offer your audience a VIP $50 credit. Open to a quick 5-minute swap this week?"`,
@@ -233,7 +233,7 @@ export function synthesizeVanguardExecutiveReply(
 
   return {
     text: [
-      `### 🚀 Vanguard-X™ Sovereign 7-Day Execution Playbook for ${biz.name}`,
+      `### 🚀 StiltZ-Kin™ Sovereign 7-Day Execution Playbook for ${biz.name}`,
       `I have analyzed your request (**"${userPrompt}"**) across **${biz.name}**'s business plan, pricing, and live website (\`/sites/${biz.slug}\`). Click any step below to save it as an editable note in your **Founder Notebook**:`,
       `**Days 1–2 · Launch the "Founding 5" Fast-Cash Offer**\nMessage 15 warm contacts or local prospects with a Founding Client VIP discount (30% off your Flagship Tier) in exchange for an honest Day-1 review. Goal: Lock in your first 2 paying customers in 48 hours.`,
       `**Days 3–4 · Turn Your Live Interactive Web App Into an Automated Closer**\nDirect every social bio, DM, and ad to \`/sites/${biz.slug}\` so prospects can slide your interactive quote calculator and lock in their package without back-and-forth calls.`,
@@ -258,8 +258,8 @@ export function GeminiChatbot({
       id: "welcome",
       role: "model",
       content:
-        "Greetings, Founder. I am Vanguard-X™, your Sovereign Executive AI Co-Founder.\n\nUnlike standard chatbots, my Tri-Core Neural Architecture has indexed your entire business model, pricing matrix, and live website—and is wired directly into our Global Grant & Market Grid and Geospatial Telemetry Radar.\n\n💡 Tip: Click on any paragraph or bullet point I generate to instantly save it to your Slide-Out Founder Notebook on the right!",
-      modelUsed: "vanguard-x-quantum-5",
+        "Greetings, Founder. I am StiltZ-Kin™, your Sovereign Executive AI Co-Founder.\n\nUnlike standard chatbots, my Tri-Core Neural Architecture has indexed your entire business model, pricing matrix, and live website—and is wired directly into our Global Grant & Market Grid and Geospatial Telemetry Radar.\n\n💡 Tip: Click on any paragraph or bullet point I generate to instantly save it to your Slide-Out Founder Notebook on the right!",
+      modelUsed: "stiltz-kin-quantum-5",
       groundingType: "none",
     },
   ]);
@@ -297,8 +297,8 @@ export function GeminiChatbot({
           cleanMsgs.map((m) => ({
             id: m.id,
             role: m.role as "user" | "model",
-            content: m.content,
-            modelUsed: formatVanguardModelName(m.modelUsed, "vanguard-x-quantum-5"),
+            content: m.content.replace(/Vanguard-X/g, "StiltZ-Kin"),
+            modelUsed: formatVanguardModelName(m.modelUsed, "stiltz-kin-quantum-5"),
             groundingType: m.groundingType as GroundingMode,
             sources: m.sources as any,
             createdAt: m.createdAt,
@@ -336,7 +336,7 @@ export function GeminiChatbot({
     openDrawerAfter = false
   ) => {
     addNote(snippetText, {
-      source: `Vanguard-X™ (${activeRoleConfig.label})`,
+      source: `StiltZ-Kin™ (${activeRoleConfig.label})`,
       openDrawer: openDrawerAfter,
     });
     setSavedSnippetKey(snippetKey);
@@ -383,7 +383,7 @@ export function GeminiChatbot({
         .filter((m) => m.id !== "welcome" && !m.content.startsWith("Error:"))
         .map((m) => ({
           role: m.role,
-          content: m.content,
+          content: m.content.replace(/Vanguard-X/g, "StiltZ-Kin"),
         }));
 
       let replyText = "";
@@ -414,7 +414,7 @@ export function GeminiChatbot({
           }
         }
       } catch {
-        // Static hosting or offline: handled seamlessly below by Vanguard-X Sovereign Engine
+        // Static hosting or offline: handled seamlessly below by StiltZ-Kin Sovereign Engine
       }
 
       if (!replyText) {
@@ -461,7 +461,7 @@ export function GeminiChatbot({
         id: "welcome-reset",
         role: "model",
         content:
-          "Vanguard-X™ neural session reset. Ask any question below—and click any paragraph in my reply to save it straight to your Slide-Out Founder Notebook!",
+          "StiltZ-Kin™ neural session reset. Ask any question below—and click any paragraph in my reply to save it straight to your Slide-Out Founder Notebook!",
         modelUsed: activeRoleConfig.model,
         groundingType: "none",
       },
@@ -470,7 +470,7 @@ export function GeminiChatbot({
 
   return (
     <div className="card flex flex-col h-[780px] max-h-[85vh] bg-paper shadow-2xl border-4 border-ink overflow-hidden">
-      {/* Vanguard-X Header */}
+      {/* StiltZ-Kin Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b-4 border-ink bg-sun p-4">
         <div className="flex items-center gap-3">
           <div className="grid h-10 w-10 place-items-center bg-ink text-sun b3">
@@ -478,7 +478,7 @@ export function GeminiChatbot({
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="display text-xl leading-none">Vanguard-X™ Sovereign Advisor</h2>
+              <h2 className="display text-xl leading-none">StiltZ-Kin™ Sovereign Advisor</h2>
               <span className="badge text-[10px] bg-ink text-mint font-extrabold uppercase px-2 py-0.5 b3">
                 {activeRoleConfig.model}
               </span>
@@ -529,7 +529,7 @@ export function GeminiChatbot({
             className={`btn btn-sm !px-2.5 !py-1 text-xs flex items-center gap-1.5 cursor-pointer ${
               showRoleConfig || customInstruction ? "bg-sun text-ink font-black ring-2 ring-ink" : "btn-quiet"
             }`}
-            title="Inspect or customize Vanguard-X executive directive"
+            title="Inspect or customize StiltZ-Kin executive directive"
           >
             <Brain className="h-3.5 w-3.5" strokeWidth={2.5} />
             <span>Directive</span>
@@ -542,7 +542,7 @@ export function GeminiChatbot({
             className={`btn btn-sm !px-2.5 !py-1 text-xs flex items-center gap-1.5 cursor-pointer ${
               grounding === "search" ? "bg-sky-400 text-ink font-black ring-2 ring-ink" : "btn-quiet"
             }`}
-            title="Connect Vanguard-X to the Live Global Web & Grant Intelligence Grid"
+            title="Connect StiltZ-Kin to the Live Global Web & Grant Intelligence Grid"
           >
             <Search className="h-3.5 w-3.5" strokeWidth={3} />
             <span>Web Grid</span>
@@ -555,7 +555,7 @@ export function GeminiChatbot({
             className={`btn btn-sm !px-2.5 !py-1 text-xs flex items-center gap-1.5 cursor-pointer ${
               grounding === "maps" ? "bg-emerald-400 text-ink font-black ring-2 ring-ink" : "btn-quiet"
             }`}
-            title="Connect Vanguard-X to Geospatial Commercial Telemetry"
+            title="Connect StiltZ-Kin to Geospatial Commercial Telemetry"
           >
             <MapPin className="h-3.5 w-3.5" strokeWidth={3} />
             <span>Geo Radar</span>
@@ -566,7 +566,7 @@ export function GeminiChatbot({
             type="button"
             onClick={clearChat}
             className="btn btn-sm btn-quiet !px-2 cursor-pointer"
-            title="Reset Vanguard-X session"
+            title="Reset StiltZ-Kin session"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -579,7 +579,7 @@ export function GeminiChatbot({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="font-extrabold uppercase text-[10px] tracking-wider text-muted">
-                Active Vanguard-X Neural Core:
+                Active StiltZ-Kin Neural Core:
               </span>
               <strong className="text-sm font-black">{activeRoleConfig.label}</strong>
               <span className="badge text-[10px] bg-ink text-mint px-2 py-0.5 font-bold">
@@ -626,14 +626,14 @@ export function GeminiChatbot({
               <>
                 <Search className="h-3.5 w-3.5 text-blue-600" />
                 <span>
-                  <strong>Vanguard-X™ Live Web &amp; Grant Intelligence Grid active:</strong> Retrieving real-time market &amp; funding citations.
+                  <strong>StiltZ-Kin™ Live Web &amp; Grant Intelligence Grid active:</strong> Retrieving real-time market &amp; funding citations.
                 </span>
               </>
             ) : (
               <>
                 <MapPin className="h-3.5 w-3.5 text-emerald-600" />
                 <span>
-                  <strong>Vanguard-X™ Geospatial Commercial Telemetry active:</strong> Scanning real locations, commercial corridors &amp; local competitors
+                  <strong>StiltZ-Kin™ Geospatial Commercial Telemetry active:</strong> Scanning real locations, commercial corridors &amp; local competitors
                   {location ? " (using your coordinates)" : ""}.
                 </span>
               </>
@@ -682,7 +682,7 @@ export function GeminiChatbot({
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-extrabold uppercase tracking-widest text-muted">
-                      {isUser ? "You (Founder)" : "Vanguard-X™"}
+                      {isUser ? "You (Founder)" : "StiltZ-Kin™"}
                     </span>
                     {!isUser && m.modelUsed && (
                       <span className="text-[10px] font-bold px-1.5 py-0.2 bg-ink text-mint border border-ink rounded">
@@ -801,12 +801,12 @@ export function GeminiChatbot({
                       {m.groundingType === "maps" ? (
                         <>
                           <MapPin className="h-3 w-3 text-emerald-600" />
-                          Vanguard-X™ Geospatial Telemetry Coordinates ({m.sources.length})
+                          StiltZ-Kin™ Geospatial Telemetry Coordinates ({m.sources.length})
                         </>
                       ) : (
                         <>
                           <Globe className="h-3 w-3 text-blue-600" />
-                          Vanguard-X™ Live Web Intelligence Citations ({m.sources.length})
+                          StiltZ-Kin™ Live Web Intelligence Citations ({m.sources.length})
                         </>
                       )}
                     </p>
@@ -840,12 +840,12 @@ export function GeminiChatbot({
               <Loader2 className="h-5 w-5 animate-spin text-ink" strokeWidth={3} />
               <span className="text-sm font-extrabold">
                 {grounding === "search"
-                  ? "Vanguard-X™ scanning live Global Web & Grant Grid…"
+                  ? "StiltZ-Kin™ scanning live Global Web & Grant Grid…"
                   : grounding === "maps"
-                  ? "Vanguard-X™ triangulating Geospatial Commercial Telemetry…"
+                  ? "StiltZ-Kin™ triangulating Geospatial Commercial Telemetry…"
                   : role === "complex"
-                  ? "Synthesizing with Vanguard-X Omni-9 Deep Strategic Core…"
-                  : "Vanguard-X™ formulating executive directive…"}
+                  ? "Synthesizing with StiltZ-Kin Omni-9 Deep Strategic Core…"
+                  : "StiltZ-Kin™ formulating executive directive…"}
               </span>
             </div>
           </div>
@@ -858,7 +858,7 @@ export function GeminiChatbot({
       {messages.length <= 2 && !loading && (
         <div className="px-4 py-2 bg-cream border-t-2 border-ink">
           <p className="text-[11px] font-extrabold uppercase text-muted mb-1.5">
-            Vanguard-X™ Executive Quick Commands
+            StiltZ-Kin™ Executive Quick Commands
           </p>
           <div className="flex flex-wrap gap-2">
             {STARTER_PROMPTS.map((sp, idx) => {
@@ -897,12 +897,12 @@ export function GeminiChatbot({
           className="input flex-1 !bg-white"
           placeholder={
             grounding === "search"
-              ? "Command Vanguard-X™ Web Grid (grants, market shifts, competitor intel)…"
+              ? "Command StiltZ-Kin™ Web Grid (grants, market shifts, competitor intel)…"
               : grounding === "maps"
-              ? "Command Vanguard-X™ Geo Radar (local competitors, suppliers, commercial zones)…"
+              ? "Command StiltZ-Kin™ Geo Radar (local competitors, suppliers, commercial zones)…"
               : role === "complex"
-              ? "Command Vanguard-X™ Omni-9 (unit economics, pricing matrices, moat strategy)…"
-              : "Ask Vanguard-X™ anything about your business, pricing, customers, or next steps…"
+              ? "Command StiltZ-Kin™ Omni-9 (unit economics, pricing matrices, moat strategy)…"
+              : "Ask StiltZ-Kin™ anything about your business, pricing, customers, or next steps…"
           }
           value={input}
           onChange={(e) => setInput(e.target.value)}

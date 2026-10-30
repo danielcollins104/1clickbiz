@@ -86,7 +86,7 @@ export function NotebookDrawer() {
         </button>
       </div>
 
-      {/* Floating Toast when a snippet is clicked & saved from Vanguard-X Advisor */}
+      {/* Floating Toast when a snippet is clicked & saved from StiltZ-Kin Advisor */}
       {lastSavedToast && !isOpen && (
         <div className="fixed bottom-20 right-6 z-50 flex items-center gap-3 bg-ink text-sun border-[3px] border-ink px-4 py-3 shadow-[4px_4px_0px_#79e784] animate-in fade-in slide-in-from-bottom-3">
           <Check className="h-4 w-4 text-mint shrink-0" strokeWidth={3} />
@@ -139,7 +139,7 @@ export function NotebookDrawer() {
                     </span>
                   </div>
                   <p className="text-xs font-bold text-ink/80 mt-0.5">
-                    Click any Vanguard-X™ feedback to save here • Freely edit any note below
+                    Click any StiltZ-Kin™ feedback to save here • Freely edit any note below
                   </p>
                 </div>
               </div>
@@ -197,7 +197,7 @@ export function NotebookDrawer() {
                   <Sparkles className="h-7 w-7 mx-auto text-ink" />
                   <p className="display text-xl">No notes yet</p>
                   <p className="text-xs font-bold text-muted max-w-xs mx-auto">
-                    Click any paragraph or insight inside Vanguard-X™ Advisor to save it here, or click &ldquo;New Blank Note&rdquo; above.
+                    Click any paragraph or insight inside StiltZ-Kin™ Advisor to save it here, or click &ldquo;New Blank Note&rdquo; above.
                   </p>
                 </div>
               ) : (

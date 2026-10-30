@@ -35,7 +35,7 @@ function loadInitialNotes(): NotebookNote[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) return parsed.map((n: any) => ({ ...n, title: (n.title || "").replace(/Vanguard-X/g, "StiltZ-Kin"), content: (n.content || "").replace(/Vanguard-X/g, "StiltZ-Kin"), source: (n.source || "").replace(/Vanguard-X/g, "StiltZ-Kin") }));
     }
   } catch {
     // ignore
@@ -46,8 +46,8 @@ function loadInitialNotes(): NotebookNote[] {
       id: "note-welcome",
       title: "Welcome to Your Founder Notebook",
       content:
-        "Click any paragraph or insight from Vanguard-X™ Advisor to instantly save it here as a new note. You can freely edit any note's title or text right inside this slide-out notebook!",
-      source: "Vanguard-X™ System",
+        "Click any paragraph or insight from StiltZ-Kin™ Advisor to instantly save it here as a new note. You can freely edit any note's title or text right inside this slide-out notebook!",
+      source: "StiltZ-Kin™ System",
       createdAt: now,
       updatedAt: now,
     },
@@ -96,7 +96,7 @@ export function NotebookProvider({ children }: { children: React.ReactNode }) {
       id: `note_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
       title: autoTitle,
       content: cleanContent,
-      source: options?.source || "Vanguard-X™ Advisor",
+      source: options?.source || "StiltZ-Kin™ Advisor",
       createdAt: now,
       updatedAt: now,
     };

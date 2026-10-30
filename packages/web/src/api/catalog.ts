@@ -99,9 +99,9 @@ export const PRODUCTS: Product[] = [
   {
     "slug": "ai-advisor",
     "num": "02",
-    "name": "Vanguard-X™ Sovereign AI Advisor",
+    "name": "StiltZ-Kin™ Sovereign AI Advisor",
     "tagline": "Autonomous multi-agent executive intelligence that knows your entire business.",
-    "description": "Powered by our Tri-Core Vanguard-X™ Neural Architecture (Omni-9, Quantum-5, and Hyper-Lite)—engineered beyond standard conversational LLMs. Vanguard-X™ indexes your business plan, pricing matrix, brand voice, and CRM leads, connects to our Live Global Grant & Market Grid and Geospatial Telemetry Radar, and can rewrite any of your assets on command.",
+    "description": "Powered by our Tri-Core StiltZ-Kin™ Neural Architecture (Omni-9, Quantum-5, and Hyper-Lite)—engineered beyond standard conversational LLMs. StiltZ-Kin™ indexes your business plan, pricing matrix, brand voice, and CRM leads, connects to our Live Global Grant & Market Grid and Geospatial Telemetry Radar, and can rewrite any of your assets on command.",
     "category": "Run",
     "price": 25,
     "tone": "green",
@@ -111,7 +111,7 @@ export const PRODUCTS: Product[] = [
     "youGive": "Any strategic, pricing, funding, or growth command",
     "youGet": "Executive playbooks, live grant/market telemetry & asset rewrites",
     "features": [
-      "Tri-Core Vanguard-X™ Neural Engine (Omni-9, Quantum-5, Hyper-Lite)",
+      "Tri-Core StiltZ-Kin™ Neural Engine (Omni-9, Quantum-5, Hyper-Lite)",
       "Live Global Web & Non-Dilutive Grant Intelligence Grid",
       "Geospatial Commercial & Competitor Telemetry Radar",
       "Indexed across all 13 of your business deliverables",

@@ -213,9 +213,9 @@ function StartHereRoadmap() {
     {
       num: "STEP 4",
       title: "Get Funding, Leads & Real Income!",
-      desc: "Share your live link, collect paying customer inquiries in your CRM, apply to matched grants, and ask Vanguard-X™ how to scale your income daily!",
+      desc: "Share your live link, collect paying customer inquiries in your CRM, apply to matched grants, and ask StiltZ-Kin™ how to scale your income daily!",
       nextHint: "🎉 Goal Reached: Financial Independence & Real Income!",
-      actionLabel: "Ask Vanguard-X™ Advisor →",
+      actionLabel: "Ask StiltZ-Kin™ Advisor →",
       to: "/advisor",
       badge: "Earn & Scale Daily",
       bg: "bg-cream",
@@ -384,7 +384,7 @@ function Editorial() {
           </div>
         </div>
         <div className="md:col-span-7">
-          <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.2em]">Vanguard-X™ Sovereign AI Advisor + Founder Notebook</p>
+          <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.2em]">StiltZ-Kin™ Sovereign AI Advisor + Founder Notebook</p>
           <h2 className="display text-5xl md:text-7xl">An executive co-founder that already read your plan.</h2>
           <p className="mt-4 text-sm sm:text-base font-bold text-ink/80 max-w-xl">
             Ask anything about pricing, closing your first customers, or scaling your income—then <strong>click any paragraph of advice</strong> to save it straight into your slide-out <strong>Founder Notebook</strong>!
@@ -393,7 +393,7 @@ function Editorial() {
           <div className="mt-3 space-y-4">
             {[
               ["You", "What should I charge for my first package to hit $5,000/mo fast?"],
-              ["Vanguard-X™", "Your plan prices the starter package at $120 and lists two local competitors charging more. Launch a 'Founding Member' tier at $179/mo—you only need 28 clients to cross $5,000/mo. Click this text to save it to your Founder Notebook, or let me update your website & ads now!"],
+              ["StiltZ-Kin™", "Your plan prices the starter package at $120 and lists two local competitors charging more. Launch a 'Founding Member' tier at $179/mo—you only need 28 clients to cross $5,000/mo. Click this text to save it to your Founder Notebook, or let me update your website & ads now!"],
             ].map(([who, msg]) => (
               <div key={who} className={`b3 max-w-lg p-4 ${who === "You" ? "bg-paper" : "hard ml-auto bg-ink text-sun"}`}>
                 <p className={`text-xs font-extrabold uppercase tracking-widest ${who === "You" ? "" : "text-mint"}`}>{who}</p>
@@ -403,7 +403,7 @@ function Editorial() {
           </div>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link to="/advisor" className="btn btn-yellow">
-              Launch Vanguard-X™ Advisor <ArrowRight className="h-4 w-4" strokeWidth={3} />
+              Launch StiltZ-Kin™ Advisor <ArrowRight className="h-4 w-4" strokeWidth={3} />
             </Link>
             <Link to="/product/ai-advisor" className="btn btn-quiet">
               Advisor Details
