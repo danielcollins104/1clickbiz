@@ -124,7 +124,7 @@ export function AboutCreator() {
               <div className="b3 border-[2px] border-ink bg-cream/70 p-3.5 shadow-[3px_3px_0px_#000]">
                 <div className="flex items-center gap-2 mb-1">
                   <CheckCircle2 className="h-4 w-4 text-emerald-700" strokeWidth={3} />
-                  <span className="text-xs font-black uppercase tracking-wider">StiltZ-Kin™ Sovereign AI</span>
+                  <span className="text-xs font-black uppercase tracking-wider">Solomon™ Sovereign AI</span>
                 </div>
                 <p className="text-xs font-bold text-muted">
                   24/7 executive business advisor + click-to-save Slide-Out Founder Notebook built right into your workspace.
@@ -164,7 +164,7 @@ export function AboutCreator() {
                 <Zap className="h-4 w-4" strokeWidth={3} /> Try Daniel's 1-Click Wizard
               </button>
               <Link to="/advisor" className="btn btn-quiet">
-                Consult StiltZ-Kin™ Advisor <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                Consult Solomon™ Advisor <ArrowRight className="h-4 w-4" strokeWidth={3} />
               </Link>
             </div>
           </div>

@@ -105,7 +105,7 @@ export function FundingViewer({ content: c }: ViewerProps) {
   const shown = type === "All" ? results : results.filter((r) => r.type === type);
   const when = c.searchedAt ? new Date(c.searchedAt).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : null;
 
-  // Live StiltZ-Kin Grant Grid State
+  // Live Solomon Grant Grid State
   const [searchQuery, setSearchQuery] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const [liveResult, setLiveResult] = useState<{ text: string; sources: Array<{ title: string; url: string }> } | null>(null);
@@ -130,10 +130,10 @@ export function FundingViewer({ content: c }: ViewerProps) {
           return;
         }
       }
-      throw new Error("Fallback to StiltZ-Kin Grant Grid");
+      throw new Error("Fallback to Solomon Grant Grid");
     } catch {
       setLiveResult({
-        text: `StiltZ-Kin™ Capital Grid matched "${q}" to 3 active non-dilutive funding programs:\n\n1. Amber Grant & National Founder Monthly Award ($10,000–$25,000) — Rolling monthly applications for early-stage founders.\n2. SBA Microloan & Community Advantage Capital (Up to $50,000) — Low-interest startup working capital through local CDFIs.\n3. Verizon Digital Ready Small Business Grant ($10,000) — Non-dilutive grant unlocked after completing two online founder courses.`,
+        text: `Solomon™ Capital Grid matched "${q}" to 3 active non-dilutive funding programs:\n\n1. Amber Grant & National Founder Monthly Award ($10,000–$25,000) — Rolling monthly applications for early-stage founders.\n2. SBA Microloan & Community Advantage Capital (Up to $50,000) — Low-interest startup working capital through local CDFIs.\n3. Verizon Digital Ready Small Business Grant ($10,000) — Non-dilutive grant unlocked after completing two online founder courses.`,
         sources: [
           { title: "SBA.gov — Federal Funding & Microloans", url: "https://www.sba.gov/funding-programs" },
           { title: "Grants.gov — Official Grant Search", url: "https://www.grants.gov" },
@@ -147,13 +147,13 @@ export function FundingViewer({ content: c }: ViewerProps) {
 
   return (
     <div className="space-y-6">
-      {/* Live StiltZ-Kin Grant Intelligence Bar */}
+      {/* Live Solomon Grant Intelligence Bar */}
       <div className="card bg-paper p-5 border-3 border-ink space-y-3">
         <div className="flex items-center gap-2">
           <div className="grid h-7 w-7 place-items-center bg-ink text-mint b3">
             <Cpu className="h-4 w-4" />
           </div>
-          <h4 className="display text-lg">StiltZ-Kin™ Live Grant &amp; Capital Intelligence Grid</h4>
+          <h4 className="display text-lg">Solomon™ Live Grant &amp; Capital Intelligence Grid</h4>
         </div>
         <p className="text-xs font-bold text-muted">
           Scan the live 2026 funding grid in real time for newly announced grants, city-specific subsidies, and non-dilutive startup capital.
@@ -177,7 +177,7 @@ export function FundingViewer({ content: c }: ViewerProps) {
         {liveResult && (
           <div className="b3 p-4 bg-cream border-2 border-ink space-y-3 mt-3">
             <p className="font-extrabold text-xs uppercase tracking-wider text-ink flex items-center gap-1">
-              <Sparkles className="h-3.5 w-3.5 text-blue-600" /> StiltZ-Kin™ Verified Capital Matches:
+              <Sparkles className="h-3.5 w-3.5 text-blue-600" /> Solomon™ Verified Capital Matches:
             </p>
             <p className="whitespace-pre-wrap text-sm leading-relaxed font-medium">{liveResult.text}</p>
             {liveResult.sources.length > 0 && (
@@ -432,7 +432,7 @@ export function CrmViewer({ bizId, bizSlug, bizName, statuses }: ViewerProps) {
   );
 }
 
-/* ---------------- 13 StiltZ-Kin Sovereign AI Advisor ---------------- */
+/* ---------------- 13 Solomon Sovereign AI Advisor ---------------- */
 
 type Step = { title: string; why: string; tool: string };
 
@@ -510,11 +510,11 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
 
   return (
     <div className="space-y-6">
-      {/* StiltZ-Kin Mode Selector */}
+      {/* Solomon Mode Selector */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-cream p-4 b3 border-3 border-ink">
         <div className="flex items-center gap-2">
           <Cpu className="h-5 w-5 text-ink" />
-          <span className="font-extrabold text-sm uppercase">StiltZ-Kin™ Sovereign Engine Mode:</span>
+          <span className="font-extrabold text-sm uppercase">Solomon™ Sovereign Engine Mode:</span>
         </div>
         <div className="flex flex-wrap gap-2">
           <button
@@ -522,14 +522,14 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
             onClick={() => setActiveMode("vanguard")}
             className={`btn btn-sm cursor-pointer ${activeMode === "vanguard" ? "btn-yellow font-black" : "btn-quiet"}`}
           >
-            StiltZ-Kin™ Executive Core (Live Web &amp; Geo Telemetry)
+            Solomon™ Executive Core (Live Web &amp; Geo Telemetry)
           </button>
           <button
             type="button"
             onClick={() => setActiveMode("copilot")}
             className={`btn btn-sm cursor-pointer ${activeMode === "copilot" ? "btn-yellow font-black" : "btn-quiet"}`}
           >
-            StiltZ-Kin™ Asset Rewriter Copilot
+            Solomon™ Asset Rewriter Copilot
           </button>
           <button
             type="button"
@@ -547,7 +547,7 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
         <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
           <div className="space-y-6">
             <div className="card bg-ink p-6 text-sun">
-              <p className="text-xs font-extrabold uppercase tracking-[0.2em]">StiltZ-Kin™ Executive Brief</p>
+              <p className="text-xs font-extrabold uppercase tracking-[0.2em]">Solomon™ Executive Brief</p>
               <p className="display mt-2 text-2xl leading-tight">{c.headline}</p>
             </div>
             <Section title="Your next 30 days">
@@ -572,7 +572,7 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
               </ol>
             </Section>
             <div className="card bg-cream p-5">
-              <p className="text-xs font-extrabold uppercase">StiltZ-Kin™ Risk Radar</p>
+              <p className="text-xs font-extrabold uppercase">Solomon™ Risk Radar</p>
               <p className="mt-1 font-bold">{c.watchOut}</p>
             </div>
           </div>
@@ -582,7 +582,7 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
               <div className="flex items-center gap-3">
                 <img src="/images/advisor.webp" alt="" className="b3 h-10 w-10 bg-sun object-cover" />
                 <div>
-                  <h3 className="display text-xl">Command StiltZ-Kin™ Asset Copilot</h3>
+                  <h3 className="display text-xl">Command Solomon™ Asset Copilot</h3>
                   <p className="text-xs font-bold">Click any paragraph in a reply to save it straight to your Slide-Out Notebook.</p>
                 </div>
               </div>
@@ -590,7 +590,7 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
             <div className="flex-1 space-y-4 overflow-y-auto p-5" style={{ maxHeight: 520 }}>
               {!copilotMessages.length && (
                 <div className="space-y-2">
-                  <p className="text-sm font-extrabold uppercase">Try commanding StiltZ-Kin™</p>
+                  <p className="text-sm font-extrabold uppercase">Try commanding Solomon™</p>
                   {STARTERS.map((s) => (
                     <button key={s} type="button" className="b3 block w-full bg-cream px-3 py-2 text-left text-sm font-bold hover:bg-sun cursor-pointer" onClick={() => send(s)}>
                       {s}
@@ -603,7 +603,7 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
                 return (
                   <div key={m.id} className={m.role === "user" ? "ml-10" : "mr-6"}>
                     <p className="mb-1 text-[10px] font-extrabold uppercase tracking-widest">
-                      {m.role === "user" ? "You" : "StiltZ-Kin™ Copilot"}
+                      {m.role === "user" ? "You" : "Solomon™ Copilot"}
                     </p>
                     <div className={`b3 px-4 py-3 ${m.role === "user" ? "bg-sun" : "bg-white"}`}>
                       {m.updatedTool && (
@@ -622,7 +622,7 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
                               <div
                                 key={key}
                                 onClick={() => {
-                                  addNote(block, { source: "StiltZ-Kin™ Copilot" });
+                                  addNote(block, { source: "Solomon™ Copilot" });
                                   setSavedCopilotKey(key);
                                   setTimeout(() => setSavedCopilotKey(null), 2000);
                                 }}
@@ -652,7 +652,7 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
               })}
               {busy && (
                 <p className="flex items-center gap-2 text-sm font-extrabold">
-                  <Loader2 className="h-4 w-4 animate-spin" strokeWidth={3} /> StiltZ-Kin™ synthesizing…
+                  <Loader2 className="h-4 w-4 animate-spin" strokeWidth={3} /> Solomon™ synthesizing…
                 </p>
               )}
               <div ref={end} />
@@ -664,7 +664,7 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
                 send(input);
               }}
             >
-              <input className="input" placeholder="Command StiltZ-Kin™ to analyze or rewrite any asset…" aria-label="Message" value={input} onChange={(e) => setInput(e.target.value)} />
+              <input className="input" placeholder="Command Solomon™ to analyze or rewrite any asset…" aria-label="Message" value={input} onChange={(e) => setInput(e.target.value)} />
               <button className="btn cursor-pointer" disabled={busy || !input.trim()} aria-label="Send">
                 {busy ? <Loader2 className="h-5 w-5 animate-spin" strokeWidth={3} /> : <Send className="h-5 w-5" strokeWidth={3} />}
               </button>

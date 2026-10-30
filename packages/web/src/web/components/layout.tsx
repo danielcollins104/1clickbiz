@@ -22,7 +22,7 @@ const NAV = [
   { to: "/start", label: "Start Wizard" },
   { to: "/dashboard", label: "My Dashboard" },
   { to: "/shop", label: "13 AI Tools" },
-  { to: "/advisor", label: "StiltZ-Kin Advisor" },
+  { to: "/advisor", label: "Solomon Advisor" },
   { to: "/pricing", label: "Pricing" },
 ];
 
@@ -505,7 +505,7 @@ function Footer() {
             <li><Link to="/pricing" className="no-underline hover:underline">Subscription Plans</Link></li>
             <li><Link to="/product/phase-1-launch" className="no-underline hover:underline">All-Access Pass ($99/mo)</Link></li>
             <li><Link to="/shop" className="no-underline hover:underline">All 13 AI Launch Engines</Link></li>
-            <li><Link to="/advisor" className="no-underline hover:underline">StiltZ-Kin™ Sovereign Advisor</Link></li>
+            <li><Link to="/advisor" className="no-underline hover:underline">Solomon™ Sovereign Advisor</Link></li>
             <li><Link to="/wishlist" className="no-underline hover:underline flex items-center gap-1.5"><Heart className="h-3.5 w-3.5 fill-rose-500 text-rose-500" /> Saved Tools</Link></li>
           </ul>
         </div>

@@ -58,16 +58,16 @@ export function PlatformBenefitsHighlight({ compact = false }: { compact?: boole
     {
       num: "BENEFIT 03",
       badge: "Tri-Core Neural Engine + Slide-Out Notebook",
-      title: "StiltZ-Kin™ Sovereign AI Advisor & Founder Notebook",
+      title: "Solomon™ Sovereign AI Advisor & Founder Notebook",
       subtitle: "Click any advice to save & freely edit in your slide-out drawer",
       description:
-        "Meet StiltZ-Kin™, our sovereign executive intelligence built specifically for founders. When StiltZ-Kin™ gives you a winning pricing or growth strategy, click directly on any paragraph to save it into your slide-out Founder Notebook—and edit your notes anytime.",
+        "Meet Solomon™, our sovereign executive intelligence built specifically for founders. When Solomon™ gives you a winning pricing or growth strategy, click directly on any paragraph to save it into your slide-out Founder Notebook—and edit your notes anytime.",
       highlights: [
         "Tri-Core Strategy, Revenue & Execution synthesis (no generic chat)",
         "1-click paragraph saving straight into your Slide-Out Notebook",
         "Freely edit note titles, action checklists & copy anywhere on the site",
       ],
-      ctaLabel: "Ask StiltZ-Kin™ Now →",
+      ctaLabel: "Ask Solomon™ Now →",
       ctaTo: "/advisor",
       notebookAction: true,
       accentBg: "bg-sun",
@@ -115,7 +115,7 @@ export function PlatformBenefitsHighlight({ compact = false }: { compact?: boole
       title: "13 Connected Income Engines & 100% Your Revenue",
       subtitle: "Answer 8 questions once—get your entire business in 60 seconds",
       description:
-        "Your intake answers flow automatically through all 13 AI engines: Idea Wizard, Name, 5-Year Business Plan, Brand Voice, Color/Font System, Vector Logos, Live Website, Ads, 30-Day Social, Legal Checklist, Funding Grants, Customer CRM, and StiltZ-Kin™.",
+        "Your intake answers flow automatically through all 13 AI engines: Idea Wizard, Name, 5-Year Business Plan, Brand Voice, Color/Font System, Vector Logos, Live Website, Ads, 30-Day Social, Legal Checklist, Funding Grants, Customer CRM, and Solomon™.",
       highlights: [
         "Keep 100% of every dollar you earn—zero platform commissions",
         "Replaces $15,000+ of agency, copywriting & web dev retainers",
@@ -161,7 +161,7 @@ export function PlatformBenefitsHighlight({ compact = false }: { compact?: boole
           {[
             { label: "Free Live Site + App Studio", sub: "Unlimited iterations + SSL" },
             { label: "Per-Facet ✓ Idea Approval", sub: "Lock what works, iterate rest" },
-            { label: "StiltZ-Kin™ Sovereign AI", sub: "Tri-Core co-founder brain" },
+            { label: "Solomon™ Sovereign AI", sub: "Tri-Core co-founder brain" },
             { label: "Slide-Out Founder Notebook", sub: "1-click save & free editing" },
             { label: "Income Freedom Simulator", sub: "First $1,000 Playbook" },
             { label: "Keep 100% of Your Revenue", sub: "Zero platform commissions" },
@@ -293,7 +293,7 @@ export function PlatformBenefitsHighlight({ compact = false }: { compact?: boole
               All 6 Signature Benefits Are Live in Your Workspace Right Now.
             </h3>
             <p className="mt-1.5 text-xs sm:text-sm font-bold text-cream/90">
-              Start with Step 1 for free, approve your ideal business card facets, build your creative live website, and let StiltZ-Kin™ guide you to your first paying customers!
+              Start with Step 1 for free, approve your ideal business card facets, build your creative live website, and let Solomon™ guide you to your first paying customers!
             </p>
           </div>
 

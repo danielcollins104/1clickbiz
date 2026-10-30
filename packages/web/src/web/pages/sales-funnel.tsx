@@ -84,7 +84,7 @@ const NICHE_MODELS = [
 const AUTOMATED_FAQS = [
   {
     q: "Do I need to wait for Daniel or anyone on the team to set up my account?",
-    a: "No! This entire funnel and onboarding pipeline is 100% automated. The second you click Start All-Access, your 13 AI engines, StiltZ-Kin™ Advisor, Slide-Out Founder Notebook, and free live website hosting are unlocked and provisioned automatically.",
+    a: "No! This entire funnel and onboarding pipeline is 100% automated. The second you click Start All-Access, your 13 AI engines, Solomon™ Advisor, Slide-Out Founder Notebook, and free live website hosting are unlocked and provisioned automatically.",
   },
   {
     q: "Do I need coding, design, or prior business experience?",
@@ -290,7 +290,7 @@ export default function SalesFunnelPage() {
                 Answer 3 quick questions in our automated funnel below. Watch our{" "}
                 <strong className="text-sun">13 connected AI engines</strong> validate your idea card facets, build your 5-year business plan, design your brand &amp; logo, publish your{" "}
                 <strong className="text-mint">free live website &amp; interactive web app</strong>, and pair you with{" "}
-                <strong className="text-sun">StiltZ-Kin™ Sovereign AI Advisor</strong>—automatically, 24/7, with zero waiting!
+                <strong className="text-sun">Solomon™ Sovereign AI Advisor</strong>—automatically, 24/7, with zero waiting!
               </p>
 
               {/* Tangible VIP Value Stack Pills */}
@@ -299,7 +299,7 @@ export default function SalesFunnelPage() {
                   "✓ 13 Connected AI Engines",
                   "✓ Free Custom Domain Hosting",
                   "✓ Per-Facet ✓ Idea Card Control",
-                  "✓ StiltZ-Kin™ Sovereign AI",
+                  "✓ Solomon™ Sovereign AI",
                   "✓ Slide-Out Founder Notebook",
                   "✓ Keep 100% of Your Revenue",
                 ].map((tag) => (
@@ -779,7 +779,7 @@ export default function SalesFunnelPage() {
                   </Link>
                 </div>
 
-                {/* Preview Card 3: StiltZ-Kin + Slide-Out Notebook */}
+                {/* Preview Card 3: Solomon + Slide-Out Notebook */}
                 <div className="b3 bg-cream p-5 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between gap-2 pb-2 border-b border-ink">
@@ -791,7 +791,7 @@ export default function SalesFunnelPage() {
                       </span>
                     </div>
                     <h4 className="display text-2xl mt-3">
-                      StiltZ-Kin™ + Slide-Out Notebook
+                      Solomon™ + Slide-Out Notebook
                     </h4>
                     <p className="text-xs font-bold text-ink/80 mt-1">
                       Your 24/7 sovereign executive co-founder already knows your plan, pricing, and local market.
@@ -861,7 +861,7 @@ export default function SalesFunnelPage() {
                       ["13 Connected Phase-1 AI Launch Engines (500 AI Gens/mo)", "$292/mo Value"],
                       ["Generative AI Live Website & Web App Builder + Free Custom Domain Hosting", "$99/mo Value"],
                       ["Per-Facet Idea Card Approval & Unlimited Simple Iteration", "$49/mo Value"],
-                      ["StiltZ-Kin™ Sovereign AI Advisor + Slide-Out Founder Notebook", "$97/mo Value"],
+                      ["Solomon™ Sovereign AI Advisor + Slide-Out Founder Notebook", "$97/mo Value"],
                       ["First $1,000 Income Playbook + Customer CRM + Grant Finder", "$149/mo Value"],
                       ["100% Revenue Ownership (Zero Platform Commissions Ever)", "Priceless"],
                     ].map(([item, val]) => (
@@ -1071,7 +1071,7 @@ export default function SalesFunnelPage() {
                         <span className="text-mint">Included</span>
                       </li>
                       <li className="flex items-center justify-between">
-                        <span>✓ StiltZ-Kin™ + Slide-Out Notebook</span>
+                        <span>✓ Solomon™ + Slide-Out Notebook</span>
                         <span className="text-mint">Included</span>
                       </li>
                       {quiz.includeFastTrackBonus && (
@@ -1192,7 +1192,7 @@ export default function SalesFunnelPage() {
                   Hi, I'm <strong>Daniel Collins</strong>. I saw too many smart, driven people stuck working for someone else because launching a business felt like a maze of expensive web developers, branding agencies, and disconnected AI tools.
                 </p>
                 <p className="text-sm sm:text-base font-semibold text-ink/90 leading-relaxed">
-                  That's why I engineered <strong>1 Click Business</strong> to run 100% automatically for you. From per-facet checkmark approval on your idea cards, to our generative AI live website &amp; web app studio with free custom domain hosting, to <strong>StiltZ-Kin™ Sovereign AI Advisor</strong> and your slide-out <strong>Founder Notebook</strong>—every piece works together so you can focus on landing customers and keeping <strong>100% of the income you make</strong>.
+                  That's why I engineered <strong>1 Click Business</strong> to run 100% automatically for you. From per-facet checkmark approval on your idea cards, to our generative AI live website &amp; web app studio with free custom domain hosting, to <strong>Solomon™ Sovereign AI Advisor</strong> and your slide-out <strong>Founder Notebook</strong>—every piece works together so you can focus on landing customers and keeping <strong>100% of the income you make</strong>.
                 </p>
 
                 <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -1204,7 +1204,7 @@ export default function SalesFunnelPage() {
                     <Rocket className="h-4 w-4 fill-ink" /> Claim Your All-Access Pass With My 14-Day Guarantee →
                   </a>
                   <Link to="/advisor" className="btn btn-quiet font-black text-xs sm:text-sm">
-                    <MessageSquare className="h-4 w-4" /> Ask StiltZ-Kin™ Advisor Anything
+                    <MessageSquare className="h-4 w-4" /> Ask Solomon™ Advisor Anything
                   </Link>
                 </div>
               </div>
@@ -1249,7 +1249,7 @@ export default function SalesFunnelPage() {
               Ready to Launch Your Business in 1 Click?
             </h3>
             <p className="mt-2 text-sm sm:text-base font-bold text-cream/90 max-w-xl mx-auto">
-              Click below for instant, unattended 24/7 access to all 13 AI engines, your free live website studio, StiltZ-Kin™ Advisor, and your Slide-Out Founder Notebook.
+              Click below for instant, unattended 24/7 access to all 13 AI engines, your free live website studio, Solomon™ Advisor, and your Slide-Out Founder Notebook.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-4">
               <button

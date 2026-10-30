@@ -104,7 +104,7 @@ const LAUNCH_PHASES = [
   {
     step: "PHASE 4",
     title: "Make It Legal, Get Funded & Earn Real Income!",
-    subtitle: "Check off your legal setup, apply for grants, manage incoming customer inquiries in your CRM, and ask StiltZ-Kin™ how to grow your income daily.",
+    subtitle: "Check off your legal setup, apply for grants, manage incoming customer inquiries in your CRM, and ask Solomon™ how to grow your income daily.",
     nextHint: "🎉 Goal Reached: Your Business Is Live & Built for Financial Independence!",
     bg: "bg-paper",
     slugs: ["launch-checklist", "funding-finder", "customer-crm", "ai-advisor"],
@@ -591,17 +591,17 @@ export default function DashboardPage() {
                     Action 3 ➔ Collect Income!
                   </span>
                   <p className="font-black text-sm mt-1.5">
-                    3. Close Leads with StiltZ-Kin™ &amp; Notebook
+                    3. Close Leads with Solomon™ &amp; Notebook
                   </p>
                   <p className="text-xs font-semibold text-ink/80 mt-1">
-                    Ask <strong>StiltZ-Kin™ Advisor</strong> for a custom closing script, then click any paragraph to save it into your slide-out <strong>Founder Notebook</strong>!
+                    Ask <strong>Solomon™ Advisor</strong> for a custom closing script, then click any paragraph to save it into your slide-out <strong>Founder Notebook</strong>!
                   </p>
                 </div>
                 <Link
                   to={`/dashboard/ai-advisor?b=${bizId}`}
                   className="mt-3 text-xs font-black underline text-emerald-900 inline-flex items-center gap-1"
                 >
-                  Ask StiltZ-Kin™ Advisor →
+                  Ask Solomon™ Advisor →
                 </Link>
               </div>
             </div>

@@ -19,10 +19,10 @@ export default function AdvisorPage() {
               <Cpu className="h-3.5 w-3.5 text-mint" /> Sovereign Multi-Agent Executive Core
             </span>
             <span className="inline-flex items-center gap-1 bg-mint text-ink border border-ink px-2 py-0.5 text-[11px] font-black uppercase">
-              StiltZ-Kin™ Neural Engine v9.4
+              Solomon™ Neural Engine v9.4
             </span>
           </div>
-          <h1 className="display text-4xl md:text-5xl">StiltZ-Kin™ Sovereign Business Advisor</h1>
+          <h1 className="display text-4xl md:text-5xl">Solomon™ Sovereign Business Advisor</h1>
           <p className="mt-2 text-base font-bold text-muted max-w-3xl">
             Autonomous multi-agent executive intelligence engineered specifically for founders—combining deep financial &amp; strategic reasoning with our real-time Global Web Intelligence Grid and Geospatial Commercial Radar.
           </p>
@@ -52,7 +52,7 @@ export default function AdvisorPage() {
             </div>
           ) : (
             <div className="flex flex-col gap-1">
-              <p className="text-xs font-bold text-muted">Sign in to sync StiltZ-Kin™ memory across devices</p>
+              <p className="text-xs font-bold text-muted">Sign in to sync Solomon™ memory across devices</p>
               <button
                 type="button"
                 onClick={() => signInWithGoogle()}
@@ -74,7 +74,7 @@ export default function AdvisorPage() {
           <div>
             <h4 className="font-black text-sm">Tri-Core Sovereign Architecture</h4>
             <p className="text-xs font-medium text-muted mt-0.5">
-              Powered by <code>stiltz-kin-omni-9</code> for deep venture &amp; margin modeling, <code>stiltz-kin-quantum-5</code> for growth execution, and <code>stiltz-kin-hyper-lite</code> for instant synthesis.
+              Powered by <code>solomon-omni-9</code> for deep venture &amp; margin modeling, <code>solomon-quantum-5</code> for growth execution, and <code>solomon-hyper-lite</code> for instant synthesis.
             </p>
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function AdvisorPage() {
         </div>
       </div>
 
-      {/* Main StiltZ-Kin Interface */}
+      {/* Main Solomon Interface */}
       <GeminiChatbot />
     </div>
   );
