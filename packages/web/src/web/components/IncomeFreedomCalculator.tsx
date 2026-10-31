@@ -9,7 +9,7 @@ import {
   Clock,
   ArrowRight,
   ShieldCheck,
-  Zap,
+  Pencil,
 } from "lucide-react";
 import { PRESETS } from "./QuickStartModal";
 import { useCreateBusiness, useSession } from "../queries/business";
@@ -118,6 +118,23 @@ const INCOME_PATHS: IncomePath[] = [
     firstSaleTip:
       "Invite 10 people to a '14-Day Kickstart Challenge' hosted right on your free live website.",
   },
+  {
+    id: "custom",
+    presetId: "custom",
+    name: "Custom (My Own Business Idea)",
+    icon: "✨",
+    badge: "Custom Business Model",
+    unitName: "customers / sales per month",
+    avgPricePerClient: 350,
+    minClients: 1,
+    maxClients: 100,
+    defaultClients: 15,
+    hoursPerClient: 2,
+    whyItWorks:
+      "Our 13 AI engines adapt to any custom product, service, or local business—automatically building your tailored pricing, brand, and live website.",
+    firstSaleTip:
+      "Launch your free live website with an interactive quote/booking form and share your Founding Offer with your first 10 prospects.",
+  },
 ];
 
 export function IncomeFreedomCalculator() {
@@ -127,12 +144,18 @@ export function IncomeFreedomCalculator() {
 
   const [selectedPathId, setSelectedPathId] = useState<string>(INCOME_PATHS[0]!.id);
   const [clientCount, setClientCount] = useState<number>(INCOME_PATHS[0]!.defaultClients);
+  const [customIdeaText, setCustomIdeaText] = useState<string>("");
+  const [customPricePerSale, setCustomPricePerSale] = useState<number>(350);
   const [isLaunching, setIsLaunching] = useState(false);
 
   const activePath =
     INCOME_PATHS.find((p) => p.id === selectedPathId) ?? INCOME_PATHS[0]!;
+  const isCustom = activePath.id === "custom";
+  const effectivePricePerClient = isCustom
+    ? Math.max(10, customPricePerSale)
+    : activePath.avgPricePerClient;
 
-  const monthlyIncome = Math.round(clientCount * activePath.avgPricePerClient);
+  const monthlyIncome = Math.round(clientCount * effectivePricePerClient);
   const yearlyIncome = monthlyIncome * 12;
   const estHoursPerWeek = Math.max(
     4,
@@ -163,7 +186,15 @@ export function IncomeFreedomCalculator() {
       }
       const matchedPreset =
         PRESETS.find((p) => p.id === activePath.presetId) ?? PRESETS[0]!;
-      const res = await createBusiness.mutateAsync(matchedPreset.intake);
+      const intakeToLaunch =
+        isCustom && customIdeaText.trim()
+          ? {
+              ...matchedPreset.intake,
+              idea: `${customIdeaText.trim()} (Target package price: $${effectivePricePerClient})`,
+            }
+          : matchedPreset.intake;
+
+      const res = await createBusiness.mutateAsync(intakeToLaunch);
       setTimeout(() => {
         setIsLaunching(false);
         navigate(`/dashboard?b=${res.id}`);
@@ -186,11 +217,11 @@ export function IncomeFreedomCalculator() {
             <span className="inline-flex items-center gap-2 bg-mint text-ink px-3 py-1 text-xs font-black uppercase tracking-widest border-2 border-ink shadow-[3px_3px_0px_#fde047]">
               <Sparkles className="h-3.5 w-3.5 fill-ink" /> Interactive Financial Independence Simulator
             </span>
-            <h2 className="display mt-4 text-4xl sm:text-6xl md:text-7xl text-sun leading-none">
+            <h2 className="display mt-4 text-4xl sm:text-6xl md:text-7xl text-sun leading-[1.12]">
               See How Fast Your New Business Replaces Your Paycheck.
             </h2>
             <p className="mt-3 max-w-3xl text-base sm:text-lg font-bold text-cream/85">
-              You don’t need hundreds of customers to change your life. Pick a business model below and slide the customer counter to see how few sales it takes to create <strong>your own independent income stream</strong>.
+              You don’t need hundreds of customers to change your life. Pick a business model below (or choose <strong>Custom</strong>) and slide the customer counter to see how few sales it takes to create <strong>your own independent income stream</strong>.
             </p>
           </div>
 
@@ -209,9 +240,27 @@ export function IncomeFreedomCalculator() {
           {/* Left Column: Pick Business Path + Slider */}
           <div className="lg:col-span-7 bg-paper text-ink border-[3px] border-sun p-6 md:p-8 shadow-[8px_8px_0px_#fde047] flex flex-col justify-between space-y-6">
             <div>
-              <span className="block text-xs font-black uppercase tracking-widest text-muted mb-3">
-                1. Pick Your Income Vehicle:
-              </span>
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                <span className="text-xs font-black uppercase tracking-widest text-muted">
+                  1. Pick Your Income Vehicle:
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleSelectPath(INCOME_PATHS.find((p) => p.id === "custom")!)}
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-black uppercase border-2 border-ink cursor-pointer transition-all ${
+                    isCustom
+                      ? "bg-ink text-sun shadow-[2px_2px_0px_#79e784]"
+                      : "bg-mint text-ink hover:bg-sun"
+                  }`}
+                >
+                  <Pencil className="h-3 w-3" /> + Custom Business
+                </button>
+              </div>
+
+              <p className="display text-lg sm:text-xl text-ink mb-3">
+                My business is most like (choose a business below)
+              </p>
+
               <div className="grid gap-2.5 sm:grid-cols-2">
                 {INCOME_PATHS.map((path) => {
                   const active = path.id === activePath.id;
@@ -223,6 +272,8 @@ export function IncomeFreedomCalculator() {
                       className={`text-left p-3.5 border-[2.5px] border-ink transition-all cursor-pointer flex items-start gap-3 ${
                         active
                           ? "bg-sun shadow-[4px_4px_0px_#000] -translate-y-0.5"
+                          : path.id === "custom"
+                          ? "bg-mint/25 hover:bg-mint/40 border-dashed"
                           : "bg-cream/60 hover:bg-cream"
                       }`}
                     >
@@ -235,13 +286,67 @@ export function IncomeFreedomCalculator() {
                           {path.name}
                         </p>
                         <p className="text-[11px] font-bold text-ink/70 mt-0.5">
-                          Avg. {money(path.avgPricePerClient)} per sale/client
+                          {path.id === "custom"
+                            ? `Custom price (${money(customPricePerSale)} per sale/client)`
+                            : `Avg. ${money(path.avgPricePerClient)} per sale/client`}
                         </p>
                       </div>
                     </button>
                   );
                 })}
               </div>
+
+              {/* Custom Business Idea & Custom Price Inputs when 'Custom' is chosen */}
+              {isCustom && (
+                <div className="mt-4 border-[2.5px] border-ink bg-mint/25 p-4 space-y-3 shadow-[3px_3px_0px_#000] animate-in fade-in duration-150">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-black uppercase tracking-wider text-ink">
+                      ✨ Customize Your Own Business Vehicle
+                    </span>
+                    <span className="bg-ink text-sun px-2 py-0.5 text-[10px] font-black uppercase">
+                      Custom Mode Active
+                    </span>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-12">
+                    <div className="sm:col-span-7">
+                      <label
+                        htmlFor="custom-income-idea"
+                        className="block text-[11px] font-black uppercase tracking-wider text-ink"
+                      >
+                        Describe your custom business or idea:
+                      </label>
+                      <input
+                        id="custom-income-idea"
+                        type="text"
+                        value={customIdeaText}
+                        onChange={(e) => setCustomIdeaText(e.target.value)}
+                        placeholder="e.g., Mobile dog grooming, custom woodworking, AI bookkeeping…"
+                        className="input mt-1 bg-paper text-sm font-bold"
+                      />
+                    </div>
+                    <div className="sm:col-span-5">
+                      <label
+                        htmlFor="custom-income-price"
+                        className="block text-[11px] font-black uppercase tracking-wider text-ink"
+                      >
+                        Avg. Price Per Sale / Client ($):
+                      </label>
+                      <input
+                        id="custom-income-price"
+                        type="number"
+                        min={10}
+                        max={25000}
+                        step={10}
+                        value={customPricePerSale}
+                        onChange={(e) =>
+                          setCustomPricePerSale(Math.max(10, Number(e.target.value) || 10))
+                        }
+                        className="input mt-1 bg-paper text-sm font-black"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Interactive Slider */}
@@ -270,7 +375,7 @@ export function IncomeFreedomCalculator() {
 
               <div className="flex justify-between text-[11px] font-black uppercase text-muted">
                 <span>Starter ({activePath.minClients} {activePath.unitName})</span>
-                <span> Sweet Spot ({activePath.defaultClients})</span>
+                <span>Sweet Spot ({activePath.defaultClients})</span>
                 <span>Scale ({activePath.maxClients} {activePath.unitName})</span>
               </div>
             </div>
@@ -312,7 +417,7 @@ export function IncomeFreedomCalculator() {
                 <p className="text-xs font-black uppercase tracking-widest text-mint">
                   Projected Monthly Business Income
                 </p>
-                <p className="display text-5xl sm:text-6xl md:text-7xl text-sun mt-1 leading-none">
+                <p className="display text-5xl sm:text-6xl md:text-7xl text-sun mt-1 leading-[1.08]">
                   ${monthlyIncome.toLocaleString()}
                   <span className="font-sans text-lg font-black text-cream/80">/mo</span>
                 </p>

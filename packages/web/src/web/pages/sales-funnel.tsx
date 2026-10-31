@@ -581,7 +581,7 @@ export default function SalesFunnelPage() {
                   {/* Step 1B: Choose Business Model */}
                   <div>
                     <p className="text-xs font-black uppercase tracking-wider mb-2">
-                      2. Pick Your High-Margin Business Style:
+                      2. Pick Your Income Vehicle — My business is most like (choose a business below):
                     </p>
                     <div className="grid gap-3 sm:grid-cols-2">
                       {NICHE_MODELS.map((m) => {
