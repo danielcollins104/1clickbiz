@@ -36,15 +36,15 @@ export function AboutCreator() {
 
               {/* Main Portrait Card */}
               <div className="relative b3 border-[3px] border-ink bg-ink overflow-hidden shadow-[8px_8px_0px_#000]">
-                <div className="relative aspect-[9/13] overflow-hidden bg-ink">
+                <div className="relative aspect-[4/5] overflow-hidden bg-ink">
                   <img
-                    src="/assets/aistudio/GlanceAi_1918294047_e107fa5b.png"
+                    src="/images/creator-daniel-collins.jpg"
                     alt="Daniel Collins, Creator of 1 Click Business"
-                    className="w-full h-full object-cover object-[center_55%] hover:scale-105 transition-transform duration-700"
+                    className="w-full h-full object-cover object-[center_20%] hover:scale-105 transition-transform duration-700"
                   />
-                  {/* Atmospheric Night Session Tag */}
+                  {/* Creator Tag */}
                   <div className="absolute top-3 right-3 bg-ink/85 border border-sun/70 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
-                    Night Shift · Builder Mode
+                    Founder &amp; Builder
                   </div>
                 </div>
 

@@ -351,9 +351,9 @@ export default function SalesFunnelPage() {
                   <div className="grid grid-cols-12 border-b-[3px] border-sun">
                     <div className="col-span-5 relative aspect-[3/4] overflow-hidden border-r-[3px] border-sun bg-ink">
                       <img
-                        src="/assets/aistudio/GlanceAi_1918294047_e107fa5b.png"
+                        src="/images/creator-daniel-collins.jpg"
                         alt="Daniel Collins — Creator of 1 Click Business"
-                        className="h-full w-full object-cover object-[center_55%]"
+                        className="h-full w-full object-cover object-[center_20%]"
                       />
                       <span className="absolute bottom-2 left-2 bg-ink/90 border border-sun px-2 py-0.5 text-[10px] font-black uppercase text-sun">
                         Daniel Collins
@@ -1161,9 +1161,9 @@ export default function SalesFunnelPage() {
                   <div className="relative b3 border-[3px] border-ink bg-ink overflow-hidden">
                     <div className="aspect-[4/5] overflow-hidden">
                       <img
-                        src="/assets/aistudio/GlanceAi_1918294047_e107fa5b.png"
+                        src="/images/creator-daniel-collins.jpg"
                         alt="Daniel Collins — Creator & Founder of 1 Click Business"
-                        className="h-full w-full object-cover object-[center_55%]"
+                        className="h-full w-full object-cover object-[center_20%]"
                       />
                     </div>
                     <div className="bg-paper p-3.5 border-t-[3px] border-ink flex items-center justify-between">
