@@ -14,6 +14,12 @@ import {
   Eye,
 } from "lucide-react";
 import { useQuickStart } from "../context/QuickStartContext";
+import {
+  buildCuttingEdgeVectorSvg,
+  LOGO_STYLE_DIRECTIONS,
+  type LogoStyleId,
+  type LogoPalette,
+} from "../lib/ai-logo-engine";
 
 interface DemoBusiness {
   id: string;
@@ -23,6 +29,8 @@ interface DemoBusiness {
   slug: string;
   tagline: string;
   category: string;
+  logoStyleId: LogoStyleId;
+  logoPrompt: string;
   plan: {
     summary: string;
     targetCustomer: string;
@@ -66,6 +74,8 @@ const DEMO_BUSINESSES: DemoBusiness[] = [
     slug: "signalstack-ai",
     tagline: "Done-for-you AI lead capture & workflow automation for local service businesses.",
     category: "B2B Agency",
+    logoStyleId: "isometric-3d",
+    logoPrompt: "3D isometric AI neural network cube prism and lightning bolt",
     plan: {
       summary:
         "SignalStack AI installs 24/7 SMS/web lead-response agents and automated appointment booking for local dental practices, HVAC companies, and home remodelers.",
@@ -145,6 +155,8 @@ const DEMO_BUSINESSES: DemoBusiness[] = [
     slug: "hearth-and-crumb",
     tagline: "Small-batch organic sourdough boxes delivered warm to your porch every Friday.",
     category: "Local Food & Subscription",
+    logoStyleId: "luxury-crest",
+    logoPrompt: "artisan sourdough bakery heritage crest and wheat coffee seal",
     plan: {
       summary:
         "A neighborhood micro-bakery operating on a pre-paid weekly bread box subscription model plus high-margin corporate morning catering.",
@@ -224,6 +236,8 @@ const DEMO_BUSINESSES: DemoBusiness[] = [
     slug: "verdant-refill",
     tagline: "Zero-waste concentrated home & personal care essentials in forever glass bottles.",
     category: "DTC E-Commerce",
+    logoStyleId: "negative-space",
+    logoPrompt: "minimalist botanical leaf and eco rising sun emblem",
     plan: {
       summary:
         "Direct-to-consumer refillable home cleaning and botanical hand soap tablets paired with weighty architectural glass dispensers.",
@@ -303,6 +317,8 @@ const DEMO_BUSINESSES: DemoBusiness[] = [
     slug: "steadyhome-pro",
     tagline: "Subscription preventative home maintenance & vetted 24-hour handyman dispatch.",
     category: "Local Trade & Services",
+    logoStyleId: "neo-brutalist",
+    logoPrompt: "architectural home roofline and shield monogram",
     plan: {
       summary:
         "Recurring residential home care membership covering seasonal gutter, HVAC filter, dryer vent, and minor electrical/plumbing fixes.",
@@ -376,6 +392,39 @@ const DEMO_BUSINESSES: DemoBusiness[] = [
   },
 ];
 
+function getDemoLogoPalette(biz: DemoBusiness): LogoPalette {
+  const c0 = biz.brand.colors[0]?.hex || "#131313";
+  const c1 = biz.brand.colors[1]?.hex || "#FDE047";
+  const c2 = biz.brand.colors[2]?.hex || "#6EE7B7";
+  const c3 = biz.brand.colors[3]?.hex || "#FAF7F0";
+  return {
+    id: biz.id,
+    name: `${biz.brandName} Palette`,
+    primary: c1,
+    secondary: c0,
+    accent: c2,
+    background: c3,
+    text: c0,
+  };
+}
+
+function getDemoLogoDataUrl(
+  biz: DemoBusiness,
+  brandNameOverride?: string,
+  styleOverride?: LogoStyleId,
+  seedOffset = 0
+): string {
+  const svgCode = buildCuttingEdgeVectorSvg({
+    businessName: brandNameOverride || biz.brandName,
+    tagline: biz.category.toUpperCase(),
+    prompt: biz.logoPrompt,
+    styleId: styleOverride || biz.logoStyleId,
+    palette: getDemoLogoPalette(biz),
+    seed: 200 + seedOffset,
+  });
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svgCode)}`;
+}
+
 const STAGES = [
   { id: "plan", num: "01", label: "Plan & Validate", sub: "Idea, Plan, Unit Economics & Grants", icon: FileText },
   { id: "brand", num: "02", label: "Brand & Identity", sub: "Name, Voice, Colors & Logo", icon: Palette },
@@ -388,6 +437,7 @@ export function InteractiveDeliverableExplorer() {
   const [activeStage, setActiveStage] = useState<"plan" | "brand" | "market" | "run">("plan");
   const [customBrandOverride, setCustomBrandOverride] = useState<string>("");
   const [copiedSummary, setCopiedSummary] = useState(false);
+  const [selectedLogoVariant, setSelectedLogoVariant] = useState<number>(0);
 
   // Interactive unit economics sliders in Stage 1 so visitors get hands-on value
   const biz = DEMO_BUSINESSES.find((b) => b.id === selectedBizId) ?? DEMO_BUSINESSES[0]!;
@@ -406,10 +456,21 @@ export function InteractiveDeliverableExplorer() {
   const projectedMrr = unitPrice * monthlySales;
   const projectedArr = projectedMrr * 12;
 
+  const brandLogoVariants = LOGO_STYLE_DIRECTIONS.slice(0, 4).map((dir, idx) => ({
+    id: dir.id,
+    label: dir.label,
+    badge: dir.badge,
+    url: getDemoLogoDataUrl(biz, activeBrandName, dir.id, idx * 17),
+  }));
+
+  const primaryLogoUrl =
+    brandLogoVariants[selectedLogoVariant]?.url || getDemoLogoDataUrl(biz, activeBrandName);
+
   const handleSelectBiz = (id: string) => {
     setSelectedBizId(id);
     setPriceOverride(null);
     setSalesOverride(null);
+    setSelectedLogoVariant(0);
   };
 
   const handleCopyBlueprint = () => {
@@ -435,17 +496,23 @@ export function InteractiveDeliverableExplorer() {
     <section id="interactive-demo" className="border-b-[3px] border-ink bg-paper py-20">
       <div id="live-preview" className="mx-auto max-w-[1400px] px-4 md:px-8">
         {/* Section Header */}
-        <div className="mb-5"><img src="/images/you-get-red.svg" alt="You get:" className="h-20 sm:h-24 md:h-28 w-auto select-none" /></div>
+        <div className="mb-5">
+          <img
+            src="/images/you-get-red.svg"
+            alt="You get:"
+            className="h-20 sm:h-24 md:h-28 w-auto select-none"
+          />
+        </div>
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div>
             <p className="mb-2 flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.2em]">
-              <Eye className="h-4 w-4" strokeWidth={3} /> Interactive Deliverable Explorer · See What You Get
+              <Eye className="h-4 w-4" strokeWidth={3} /> Interactive Deliverable Explorer · Four Ideas, Made Real
             </p>
             <h2 className="display text-4xl sm:text-5xl md:text-6xl leading-[1.15]">
-              Inspect a <span className="inline-block bg-sun px-2.5 py-0.5 border-2 border-ink my-1">complete build</span> before you subscribe.
+              Four ideas, <span className="inline-block bg-sun px-2.5 py-0.5 border-2 border-ink my-1">made real.</span>
             </h2>
             <p className="mt-3 max-w-2xl text-base font-bold text-muted md:text-lg">
-              Pick a business example below (or type your own brand name) and click through all 4 stages to see how the 13 AI engines connect your plan, brand, live website, and CRM.
+              Inspect a complete build before you subscribe. Pick any of the 4 real business builds below (or type your own brand name) to explore its custom vector logo, plan, brand identity, live website, and CRM.
             </p>
           </div>
 
@@ -479,28 +546,80 @@ export function InteractiveDeliverableExplorer() {
           </div>
         </div>
 
-        {/* Step 1: Pick a Business Example Bar */}
-        <div className="mt-8 flex flex-wrap items-center gap-2.5 border-b-[3px] border-ink pb-5">
-          <span className="text-xs font-black uppercase tracking-wider text-muted mr-2">
-            1. Choose Example Business:
-          </span>
-          {DEMO_BUSINESSES.map((b) => {
-            const active = b.id === selectedBizId;
-            return (
-              <button
-                key={b.id}
-                type="button"
-                onClick={() => handleSelectBiz(b.id)}
-                className={`cursor-pointer border-[2.5px] border-ink px-4 py-2 text-xs font-black uppercase tracking-wide transition-all ${
-                  active
-                    ? "bg-ink text-sun shadow-[3px_3px_0px_#79e784] -translate-y-0.5"
-                    : "bg-cream text-ink hover:bg-sun"
-                }`}
-              >
-                {b.label}
-              </button>
-            );
-          })}
+        {/* Step 1: Four Ideas, Made Real — 4-Business Logo & Blueprint Cards */}
+        <div className="mt-8 border-b-[3px] border-ink pb-6">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-xs font-black uppercase tracking-wider text-ink">
+              1. Choose One of the Four Ideas Made Real (Each Includes Custom Vector Logo + All 13 Deliverables):
+            </span>
+            <span className="chip bg-mint text-ink text-[11px] font-black">
+              4 Complete Brand &amp; Logo Suites Ready to Inspect
+            </span>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {DEMO_BUSINESSES.map((b, idx) => {
+              const active = b.id === selectedBizId;
+              const cardBrandName =
+                active && customBrandOverride.trim() ? customBrandOverride.trim() : b.brandName;
+              const logoUrl = getDemoLogoDataUrl(b, cardBrandName, b.logoStyleId, idx * 29);
+              return (
+                <button
+                  key={b.id}
+                  type="button"
+                  onClick={() => handleSelectBiz(b.id)}
+                  className={`b3 cursor-pointer p-4 text-left transition-all flex flex-col justify-between ${
+                    active
+                      ? "bg-ink text-sun shadow-[5px_5px_0px_#79e784] -translate-y-1"
+                      : "bg-cream text-ink hover:bg-sun/40"
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center gap-3.5">
+                      <div className="h-16 w-16 shrink-0 overflow-hidden border-[2.5px] border-ink bg-white p-1 shadow-[2px_2px_0px_#000]">
+                        <img
+                          src={logoUrl}
+                          alt={`${cardBrandName} vector logo`}
+                          className="h-full w-full object-contain"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <span
+                          className={`inline-block border border-ink px-2 py-0.5 text-[10px] font-black uppercase ${
+                            active ? "bg-mint text-ink" : "bg-paper text-ink"
+                          }`}
+                        >
+                          {b.category}
+                        </span>
+                        <h3 className="display mt-1 text-xl leading-tight truncate">
+                          {cardBrandName}
+                        </h3>
+                        <p
+                          className={`text-[11px] font-extrabold truncate ${
+                            active ? "text-sun/85" : "text-muted"
+                          }`}
+                        >
+                          {b.label}
+                        </p>
+                      </div>
+                    </div>
+                    <p
+                      className={`mt-3 text-xs font-bold line-clamp-2 ${
+                        active ? "text-cream/90" : "text-ink/80"
+                      }`}
+                    >
+                      {b.tagline}
+                    </p>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between border-t border-current/20 pt-2.5 text-[11px] font-black uppercase">
+                    <span>Avg Ticket: ${b.plan.avgTicket}</span>
+                    <span className={active ? "text-mint" : "text-ink"}>
+                      {active ? "✓ Inspecting Build" : "Inspect Build →"}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Step 2: 4-Stage Interactive Pipeline Tabs */}
@@ -535,18 +654,27 @@ export function InteractiveDeliverableExplorer() {
         <div className="b3 hard mt-6 bg-cream p-6 md:p-8">
           {/* Top Bar inside Canvas */}
           <div className="flex flex-wrap items-center justify-between gap-4 border-b-[3px] border-ink pb-5">
-            <div>
-              <div className="flex flex-wrap items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-muted">
-                <span>{biz.category}</span>
-                <span aria-hidden="true">·</span>
-                <span>Startup Budget: {biz.plan.startupBudget}</span>
-                <span aria-hidden="true">·</span>
-                <span>Time to First Sale: {biz.plan.timeToFirstSale}</span>
+            <div className="flex items-center gap-4">
+              <div className="h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden border-[3px] border-ink bg-white p-1.5 shadow-[3px_3px_0px_#000]">
+                <img
+                  src={primaryLogoUrl}
+                  alt={`${activeBrandName} official logo`}
+                  className="h-full w-full object-contain"
+                />
               </div>
-              <h3 className="display mt-1 text-3xl md:text-5xl text-ink">
-                {activeBrandName}
-              </h3>
-              <p className="mt-1 text-sm font-bold text-ink/80">{biz.tagline}</p>
+              <div>
+                <div className="flex flex-wrap items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-muted">
+                  <span>{biz.category}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Startup Budget: {biz.plan.startupBudget}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>Time to First Sale: {biz.plan.timeToFirstSale}</span>
+                </div>
+                <h3 className="display mt-1 text-3xl md:text-5xl text-ink">
+                  {activeBrandName}
+                </h3>
+                <p className="mt-1 text-sm font-bold text-ink/80">{biz.tagline}</p>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
@@ -721,15 +849,55 @@ export function InteractiveDeliverableExplorer() {
               </div>
 
               <div className="space-y-5 lg:col-span-6">
+                {/* Custom Vector Logo Suite (4 Concepts) */}
+                <div className="b3 bg-paper p-5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-xs font-black uppercase tracking-widest text-muted">
+                      Engine #06 · Custom Vector Logo Suite (4 Variations)
+                    </p>
+                    <span className="border border-ink bg-mint px-2 py-0.5 text-[10px] font-black uppercase">
+                      Infinite-Scale SVG + HD PNG
+                    </span>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    {brandLogoVariants.map((v, idx) => {
+                      const active = selectedLogoVariant === idx;
+                      return (
+                        <button
+                          key={v.id}
+                          type="button"
+                          onClick={() => setSelectedLogoVariant(idx)}
+                          className={`b3 cursor-pointer overflow-hidden p-2 text-left transition-all ${
+                            active
+                              ? "bg-sun ring-2 ring-ink -translate-y-0.5"
+                              : "bg-cream hover:bg-paper"
+                          }`}
+                        >
+                          <div className="aspect-square w-full overflow-hidden border-2 border-ink bg-white p-1">
+                            <img
+                              src={v.url}
+                              alt={`${activeBrandName} — ${v.label}`}
+                              className="h-full w-full object-contain"
+                            />
+                          </div>
+                          <p className="mt-1.5 truncate text-[10px] font-black uppercase text-ink">
+                            0{idx + 1}. {v.badge}
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <div className="b3 bg-paper p-5">
                   <p className="text-xs font-black uppercase tracking-widest text-muted">
-                    Engine #06 · Color &amp; Typography System
+                    Engine #05 · Color &amp; Typography System
                   </p>
                   <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                     {biz.brand.colors.map((c) => (
                       <div key={c.hex} className="b3 overflow-hidden bg-cream">
                         <div
-                          className="h-16 w-full border-b-[3px] border-ink"
+                          className="h-14 w-full border-b-[3px] border-ink"
                           style={{ backgroundColor: c.hex }}
                         />
                         <div className="p-2">
@@ -773,9 +941,16 @@ export function InteractiveDeliverableExplorer() {
                 </div>
 
                 <div className="p-6">
-                  <span className="text-xs font-black uppercase tracking-widest text-muted">
-                    {activeBrandName}
-                  </span>
+                  <div className="flex items-center gap-2.5">
+                    <img
+                      src={primaryLogoUrl}
+                      alt={`${activeBrandName} site logo`}
+                      className="h-8 w-8 border border-ink bg-white object-contain p-0.5"
+                    />
+                    <span className="text-xs font-black uppercase tracking-widest text-muted">
+                      {activeBrandName}
+                    </span>
+                  </div>
                   <h4 className="display mt-2 text-3xl md:text-4xl leading-tight">
                     {biz.market.heroHeadline}
                   </h4>
@@ -864,7 +1039,7 @@ export function InteractiveDeliverableExplorer() {
               <div className="space-y-4 lg:col-span-5">
                 <div className="b3 hard bg-ink p-5 text-sun">
                   <p className="text-xs font-black uppercase tracking-widest text-mint">
-                    Engine #02 · AI Business Advisor Next Action
+                    Engine #02 · Solomon Next Action
                   </p>
                   <p className="mt-2 text-sm font-bold leading-relaxed text-cream">
                     "{biz.run.advisorTip}"
@@ -873,7 +1048,7 @@ export function InteractiveDeliverableExplorer() {
                     to="/advisor"
                     className="btn btn-sm btn-yellow mt-4 border-sun text-xs font-black text-ink"
                   >
-                    Ask the AI Business Advisor <ArrowRight className="h-3.5 w-3.5" />
+                    Ask Solomon <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </div>
 

@@ -180,7 +180,7 @@ export function LogoViewer({ content, choose, choosing, bizId, bizSlug, bizName 
   const [brandTitle, setBrandTitle] = useState(bizName || "1 Click Business");
   const [tagline, setTagline] = useState("AI LAUNCH STUDIO");
   const [aiPrompt, setAiPrompt] = useState("modern geometric icon mark with bold negative space");
-  const [renderMode, setRenderMode] = useState<LogoRenderMode>("hybrid");
+  const [renderMode, setRenderMode] = useState<LogoRenderMode>("vector-ai");
   const [palette, setPalette] = useState<LogoPalette>(CURATED_LOGO_PALETTES[0]!);
   const [geminiKey, setGeminiKey] = useState(() => localStorage.getItem("1cb_gemini_api_key") || "");
   const [showAdvancedKey, setShowAdvancedKey] = useState(false);
@@ -192,7 +192,17 @@ export function LogoViewer({ content, choose, choosing, bizId, bizSlug, bizName 
   const [concepts, setConcepts] = useState<GeneratedLogoConcept[]>(() => {
     const raw = (content.concepts ?? []) as any[];
     if (raw.length >= 3 && raw[0]?.svgCode) {
-      return raw as GeneratedLogoConcept[];
+      return (raw as GeneratedLogoConcept[]).map((c) => {
+        if (c.svgDataUrl && (!c.image?.url || c.image.url.includes("pollinations.ai"))) {
+          return {
+            ...c,
+            activeMode: "vector" as const,
+            engineBadge: "GenAI Neural Vector SVG",
+            image: { ...c.image, url: c.svgDataUrl },
+          };
+        }
+        return c;
+      });
     }
     return LOGO_STYLE_DIRECTIONS.map((st, idx) => {
       const svgCode = buildCuttingEdgeVectorSvg({

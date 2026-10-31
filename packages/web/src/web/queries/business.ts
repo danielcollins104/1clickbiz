@@ -404,6 +404,34 @@ function getLocalBusinesses(): StoredLocalBusiness[] {
             };
             mutated = true;
           }
+
+          const logoContent = b.assets?.["logo-generation"]?.content as
+            | { chosen?: number; concepts?: GeneratedLogoConcept[] }
+            | undefined;
+          const existingLogos = logoContent?.concepts;
+          if (
+            !existingLogos ||
+            existingLogos.length < 4 ||
+            existingLogos.some((c) => !c.svgDataUrl || c.image?.url?.includes("pollinations.ai"))
+          ) {
+            const upgradedLogos = buildInitialLogoConcepts(
+              b.name,
+              b.intake?.idea || `${b.name} — Modern AI-Powered Business`
+            );
+            if (!b.assets) b.assets = {};
+            b.assets["logo-generation"] = {
+              tool: "logo-generation",
+              status: "done",
+              error: null,
+              version: (b.assets["logo-generation"]?.version ?? 1) + 1,
+              updatedAt: new Date().toISOString(),
+              content: {
+                chosen: typeof logoContent?.chosen === "number" ? logoContent.chosen : 0,
+                concepts: upgradedLogos,
+              },
+            };
+            mutated = true;
+          }
         }
         if (mutated) {
           try {

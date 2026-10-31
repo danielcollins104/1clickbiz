@@ -410,8 +410,7 @@ export async function generateCuttingEdgeLogoSuite(opts: {
         seed: baseSeed + idx * 137,
       });
 
-      const useDiffusion =
-        opts.renderMode === "diffusion-ai" || (opts.renderMode === "hybrid" && idx % 2 === 1);
+      const useDiffusion = opts.renderMode === "diffusion-ai";
 
       return {
         id: `logo-${st.id}-${baseSeed + idx}`,
