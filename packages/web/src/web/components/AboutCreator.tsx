@@ -28,27 +28,41 @@ export function AboutCreator() {
 
         {/* Main Creator Showcase Grid */}
         <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-          {/* Creator Portrait Column */}
+          {/* Creator Dual-Photo Column: 1 Portrait + 1 By the Fire */}
           <div className="lg:col-span-5">
-            <div className="relative mx-auto max-w-md lg:max-w-none">
+            <div className="relative mx-auto max-w-lg lg:max-w-none">
               {/* Backing decorative frame */}
               <div className="absolute -bottom-3 -right-3 h-full w-full bg-sun border-[3px] border-ink" />
 
-              {/* Main Portrait Card */}
+              {/* Dual Portrait + Fireside Card */}
               <div className="relative b3 border-[3px] border-ink bg-ink overflow-hidden shadow-[8px_8px_0px_#000]">
-                <div className="relative aspect-[4/5] overflow-hidden bg-ink">
-                  <img
-                    src="/images/creator-daniel-collins.jpg"
-                    alt="Daniel Collins, Creator of 1 Click Business"
-                    className="w-full h-full object-cover object-[center_20%] hover:scale-105 transition-transform duration-700"
-                  />
-                  {/* Creator Tag */}
-                  <div className="absolute top-3 right-3 bg-ink/85 border border-sun/70 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
-                    Founder &amp; Builder
+                <div className="grid grid-cols-1 sm:grid-cols-2">
+                  {/* Photo 1: Outdoor Portrait */}
+                  <div className="relative aspect-[3/4] overflow-hidden bg-ink border-b-[3px] sm:border-b-0 sm:border-r-[3px] border-ink">
+                    <img
+                      src="/images/creator-daniel-collins.jpg"
+                      alt="Daniel Collins — Founder Portrait"
+                      className="w-full h-full object-cover object-[center_20%] hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute bottom-2.5 left-2.5 bg-ink/85 border border-sun/80 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
+                      Founder Portrait
+                    </div>
+                  </div>
+
+                  {/* Photo 2: By the Fire */}
+                  <div className="relative aspect-[3/4] overflow-hidden bg-ink">
+                    <img
+                      src="/images/creator-daniel-collins-fire.png"
+                      alt="Daniel Collins by the fire — Night Shift Builder Mode"
+                      className="w-full h-full object-cover object-[center_55%] hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute bottom-2.5 right-2.5 bg-ink/85 border border-sun/80 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
+                      Night Shift · By the Fire
+                    </div>
                   </div>
                 </div>
 
-                {/* Founder Info Section Below Photo */}
+                {/* Founder Info Section Below Photos */}
                 <div className="border-t-[3px] border-ink bg-paper p-5">
                   <div className="flex items-center justify-between">
                     <div>

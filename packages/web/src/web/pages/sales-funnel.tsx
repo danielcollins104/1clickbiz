@@ -1154,17 +1154,32 @@ export default function SalesFunnelPage() {
         <div className="mx-auto max-w-[1200px]">
           <div className="b3 hard bg-cream p-6 md:p-10">
             <div className="grid gap-8 md:grid-cols-12 md:items-center">
-              {/* Founder Photo Card */}
-              <div className="md:col-span-4">
-                <div className="relative mx-auto max-w-[280px]">
+              {/* Founder Dual Photo Card: 1 Portrait + 1 By the Fire */}
+              <div className="md:col-span-5">
+                <div className="relative mx-auto max-w-[440px]">
                   <div className="absolute -bottom-2.5 -right-2.5 h-full w-full bg-sun border-[3px] border-ink" />
                   <div className="relative b3 border-[3px] border-ink bg-ink overflow-hidden">
-                    <div className="aspect-[4/5] overflow-hidden">
-                      <img
-                        src="/images/creator-daniel-collins.jpg"
-                        alt="Daniel Collins — Creator & Founder of 1 Click Business"
-                        className="h-full w-full object-cover object-[center_20%]"
-                      />
+                    <div className="grid grid-cols-2">
+                      <div className="relative aspect-[3/4] overflow-hidden border-r-[3px] border-ink">
+                        <img
+                          src="/images/creator-daniel-collins.jpg"
+                          alt="Daniel Collins — Founder Portrait"
+                          className="h-full w-full object-cover object-[center_20%]"
+                        />
+                        <span className="absolute bottom-2 left-2 bg-ink/85 border border-sun px-2 py-0.5 text-[9px] font-black uppercase text-sun">
+                          Portrait
+                        </span>
+                      </div>
+                      <div className="relative aspect-[3/4] overflow-hidden">
+                        <img
+                          src="/images/creator-daniel-collins-fire.png"
+                          alt="Daniel Collins by the fire"
+                          className="h-full w-full object-cover object-[center_55%]"
+                        />
+                        <span className="absolute bottom-2 right-2 bg-ink/85 border border-sun px-2 py-0.5 text-[9px] font-black uppercase text-sun">
+                          By the Fire
+                        </span>
+                      </div>
                     </div>
                     <div className="bg-paper p-3.5 border-t-[3px] border-ink flex items-center justify-between">
                       <div>
@@ -1182,7 +1197,7 @@ export default function SalesFunnelPage() {
               </div>
 
               {/* Short About Me Copy */}
-              <div className="md:col-span-8 space-y-4">
+              <div className="md:col-span-7 space-y-4">
                 <div className="inline-flex items-center gap-2 bg-ink text-sun px-3 py-1 text-xs font-black uppercase tracking-widest">
                   <Star className="h-3.5 w-3.5 text-sun fill-sun" /> About Me · A Personal Note From Daniel Collins
                 </div>
