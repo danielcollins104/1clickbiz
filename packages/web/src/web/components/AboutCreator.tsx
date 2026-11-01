@@ -40,7 +40,10 @@ export function AboutCreator() {
                   {/* Photo 1: Outdoor Portrait */}
                   <div className="relative aspect-[3/4] overflow-hidden bg-ink border-r-[3px] border-ink">
                     <img
-                      src="/images/creator-daniel-collins.jpg"
+                      src="/images/creator-daniel-collins.webp"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
+                      }}
                       alt="Daniel Collins — Founder Portrait"
                       loading="lazy"
                       decoding="async"
@@ -54,7 +57,10 @@ export function AboutCreator() {
                   {/* Photo 2: By the Fire */}
                   <div className="relative aspect-[3/4] overflow-hidden bg-ink">
                     <img
-                      src="/images/creator-daniel-collins-fire.png"
+                      src="/images/creator-daniel-collins-fire.webp"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins-fire.png";
+                      }}
                       alt="Daniel Collins by the fire — Night Shift Builder Mode"
                       loading="lazy"
                       decoding="async"

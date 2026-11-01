@@ -328,17 +328,27 @@ function MobileBottomNav() {
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
+    let ticking = false;
+    let visible = true;
     const handleScroll = () => {
-      const currentY = window.scrollY;
-      const delta = currentY - lastScrollY;
-      if (currentY < 60) {
-        setIsNavBarVisible(true);
-      } else if (delta > 14) {
-        setIsNavBarVisible(false);
-      } else if (delta < -10) {
-        setIsNavBarVisible(true);
-      }
-      lastScrollY = currentY;
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        const currentY = window.scrollY;
+        const delta = currentY - lastScrollY;
+        if (currentY < 60 && !visible) {
+          visible = true;
+          setIsNavBarVisible(true);
+        } else if (delta > 14 && visible && currentY >= 60) {
+          visible = false;
+          setIsNavBarVisible(false);
+        } else if (delta < -10 && !visible) {
+          visible = true;
+          setIsNavBarVisible(true);
+        }
+        lastScrollY = currentY;
+        ticking = false;
+      });
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);

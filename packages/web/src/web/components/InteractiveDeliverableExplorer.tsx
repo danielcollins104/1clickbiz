@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "wouter";
 import {
   Sparkles,
@@ -456,15 +456,34 @@ export function InteractiveDeliverableExplorer() {
   const projectedMrr = unitPrice * monthlySales;
   const projectedArr = projectedMrr * 12;
 
-  const brandLogoVariants = LOGO_STYLE_DIRECTIONS.slice(0, 4).map((dir, idx) => ({
-    id: dir.id,
-    label: dir.label,
-    badge: dir.badge,
-    url: getDemoLogoDataUrl(biz, activeBrandName, dir.id, idx * 17),
-  }));
+  const brandLogoVariants = useMemo(
+    () =>
+      LOGO_STYLE_DIRECTIONS.slice(0, 4).map((dir, idx) => ({
+        id: dir.id,
+        label: dir.label,
+        badge: dir.badge,
+        url: getDemoLogoDataUrl(biz, activeBrandName, dir.id, idx * 17),
+      })),
+    [biz, activeBrandName]
+  );
+
+  const demoCardLogos = useMemo(
+    () =>
+      DEMO_BUSINESSES.map((b, idx) => {
+        const active = b.id === selectedBizId;
+        const cardBrandName =
+          active && customBrandOverride.trim() ? customBrandOverride.trim() : b.brandName;
+        return {
+          id: b.id,
+          cardBrandName,
+          logoUrl: getDemoLogoDataUrl(b, cardBrandName, b.logoStyleId, idx * 29),
+        };
+      }),
+    [selectedBizId, customBrandOverride]
+  );
 
   const primaryLogoUrl =
-    brandLogoVariants[selectedLogoVariant]?.url || getDemoLogoDataUrl(biz, activeBrandName);
+    brandLogoVariants[selectedLogoVariant]?.url || brandLogoVariants[0]?.url || "";
 
   const handleSelectBiz = (id: string) => {
     setSelectedBizId(id);
@@ -559,9 +578,9 @@ export function InteractiveDeliverableExplorer() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {DEMO_BUSINESSES.map((b, idx) => {
               const active = b.id === selectedBizId;
-              const cardBrandName =
-                active && customBrandOverride.trim() ? customBrandOverride.trim() : b.brandName;
-              const logoUrl = getDemoLogoDataUrl(b, cardBrandName, b.logoStyleId, idx * 29);
+              const memoCard = demoCardLogos[idx];
+              const cardBrandName = memoCard?.cardBrandName || b.brandName;
+              const logoUrl = memoCard?.logoUrl || "";
               return (
                 <button
                   key={b.id}

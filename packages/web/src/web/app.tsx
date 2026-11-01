@@ -1,24 +1,26 @@
+import { lazy, Suspense } from "react";
 import { Link, Route, Switch } from "wouter";
 import Index from "./pages/index";
-import Shop from "./pages/shop";
-import ProductPage from "./pages/product";
-import CartPage from "./pages/cart";
-import WishlistPage from "./pages/wishlist";
-import LoginPage from "./pages/login";
-import StartPage from "./pages/start";
-import DashboardPage from "./pages/dashboard";
-import ToolPage from "./pages/tool";
-import AccountPage from "./pages/account";
-import LegalPage from "./pages/legal";
-import ResetPasswordPage from "./pages/reset-password";
-import AdminPage from "./pages/admin";
-import SitePage from "./pages/site";
-import AdvisorPage from "./pages/advisor";
-import SalesFunnelPage from "./pages/sales-funnel";
 import { Provider } from "./components/provider";
 import { Layout } from "./components/layout";
-import { ProtectedRoute } from "./components/protected-route";
+import { PageLoader, ProtectedRoute } from "./components/protected-route";
 import { AgentFeedback } from "@runablehq/website-runtime";
+
+const Shop = lazy(() => import("./pages/shop"));
+const ProductPage = lazy(() => import("./pages/product"));
+const CartPage = lazy(() => import("./pages/cart"));
+const WishlistPage = lazy(() => import("./pages/wishlist"));
+const LoginPage = lazy(() => import("./pages/login"));
+const StartPage = lazy(() => import("./pages/start"));
+const DashboardPage = lazy(() => import("./pages/dashboard"));
+const ToolPage = lazy(() => import("./pages/tool"));
+const AccountPage = lazy(() => import("./pages/account"));
+const LegalPage = lazy(() => import("./pages/legal"));
+const ResetPasswordPage = lazy(() => import("./pages/reset-password"));
+const AdminPage = lazy(() => import("./pages/admin"));
+const SitePage = lazy(() => import("./pages/site"));
+const AdvisorPage = lazy(() => import("./pages/advisor"));
+const SalesFunnelPage = lazy(() => import("./pages/sales-funnel"));
 
 function NotFound() {
   return (
@@ -40,41 +42,43 @@ function App() {
   return (
     <Provider>
       <Layout>
-        <Switch>
-          <Route path="/" component={Index} />
-          <Route path="/funnel" component={SalesFunnelPage} />
-          <Route path="/sales" component={SalesFunnelPage} />
-          <Route path="/shop" component={Shop} />
-          <Route path="/pricing" component={Shop} />
-          <Route path="/product/:slug">{(params) => <ProductPage key={params.slug} />}</Route>
-          <Route path="/cart" component={CartPage} />
-          <Route path="/subscribe" component={CartPage} />
-          <Route path="/wishlist" component={WishlistPage} />
-          <Route path="/login" component={LoginPage} />
-          <Route path="/terms"><LegalPage kind="terms" /></Route>
-          <Route path="/privacy"><LegalPage kind="privacy" /></Route>
-          <Route path="/refunds"><LegalPage kind="refunds" /></Route>
-          <Route path="/contact"><LegalPage kind="contact" /></Route>
-          <Route path="/reset-password" component={ResetPasswordPage} />
-          <Route path="/admin"><ProtectedRoute><AdminPage /></ProtectedRoute></Route>
-          <Route path="/start">
-            <ProtectedRoute><StartPage /></ProtectedRoute>
-          </Route>
-          <Route path="/dashboard">
-            <ProtectedRoute><DashboardPage /></ProtectedRoute>
-          </Route>
-          <Route path="/dashboard/:tool">
-            {(params) => (
-              <ProtectedRoute><ToolPage key={params.tool} slug={params.tool} /></ProtectedRoute>
-            )}
-          </Route>
-          <Route path="/account">
-            <ProtectedRoute><AccountPage /></ProtectedRoute>
-          </Route>
-          <Route path="/advisor" component={AdvisorPage} />
-          <Route path="/sites/:slug">{(params) => <SitePage key={params.slug} slug={params.slug} />}</Route>
-          <Route component={NotFound} />
-        </Switch>
+        <Suspense fallback={<PageLoader label="Loading" />}>
+          <Switch>
+            <Route path="/" component={Index} />
+            <Route path="/funnel" component={SalesFunnelPage} />
+            <Route path="/sales" component={SalesFunnelPage} />
+            <Route path="/shop" component={Shop} />
+            <Route path="/pricing" component={Shop} />
+            <Route path="/product/:slug">{(params) => <ProductPage key={params.slug} />}</Route>
+            <Route path="/cart" component={CartPage} />
+            <Route path="/subscribe" component={CartPage} />
+            <Route path="/wishlist" component={WishlistPage} />
+            <Route path="/login" component={LoginPage} />
+            <Route path="/terms"><LegalPage kind="terms" /></Route>
+            <Route path="/privacy"><LegalPage kind="privacy" /></Route>
+            <Route path="/refunds"><LegalPage kind="refunds" /></Route>
+            <Route path="/contact"><LegalPage kind="contact" /></Route>
+            <Route path="/reset-password" component={ResetPasswordPage} />
+            <Route path="/admin"><ProtectedRoute><AdminPage /></ProtectedRoute></Route>
+            <Route path="/start">
+              <ProtectedRoute><StartPage /></ProtectedRoute>
+            </Route>
+            <Route path="/dashboard">
+              <ProtectedRoute><DashboardPage /></ProtectedRoute>
+            </Route>
+            <Route path="/dashboard/:tool">
+              {(params) => (
+                <ProtectedRoute><ToolPage key={params.tool} slug={params.tool} /></ProtectedRoute>
+              )}
+            </Route>
+            <Route path="/account">
+              <ProtectedRoute><AccountPage /></ProtectedRoute>
+            </Route>
+            <Route path="/advisor" component={AdvisorPage} />
+            <Route path="/sites/:slug">{(params) => <SitePage key={params.slug} slug={params.slug} />}</Route>
+            <Route component={NotFound} />
+          </Switch>
+        </Suspense>
       </Layout>
       {/* Do not remove — off by default, activated by parent iframe via postMessage */}
       {import.meta.env.DEV && <AgentFeedback />}

@@ -7,7 +7,16 @@ import { FirebaseProvider } from "../context/FirebaseContext";
 import { QuickStartProvider } from "../context/QuickStartContext";
 import { NotebookProvider } from "../context/NotebookContext";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      gcTime: 300_000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 export function Provider({ children }: { children: React.ReactNode }) {
   // Completes a returning managed (Google) sign-in that used a full-page redirect instead of the popup.

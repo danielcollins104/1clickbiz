@@ -351,8 +351,13 @@ export default function SalesFunnelPage() {
                   <div className="grid grid-cols-12 border-b-[3px] border-sun">
                     <div className="col-span-5 relative aspect-[3/4] overflow-hidden border-r-[3px] border-sun bg-ink">
                       <img
-                        src="/images/creator-daniel-collins.jpg"
+                        src="/images/creator-daniel-collins.webp"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
+                        }}
                         alt="Daniel Collins — Creator of 1 Click Business"
+                        fetchPriority="high"
+                        decoding="async"
                         className="h-full w-full object-cover object-[center_20%]"
                       />
                       <span className="absolute bottom-2 left-2 bg-ink/90 border border-sun px-2 py-0.5 text-[10px] font-black uppercase text-sun">
@@ -361,11 +366,13 @@ export default function SalesFunnelPage() {
                     </div>
                     <div className="col-span-7 relative aspect-[4/3] sm:aspect-auto overflow-hidden bg-ink">
                       <img
-                        src="/images/funnel-hero-keyart.png"
+                        src="/images/funnel-hero-keyart.webp"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).src = "/images/bundle-kit.webp";
                         }}
                         alt="1-Click Business 13 AI Engines Command Center"
+                        fetchPriority="high"
+                        decoding="async"
                         className="h-full w-full object-cover"
                       />
                       <span className="absolute top-2 right-2 bg-sun text-ink border border-ink px-2 py-0.5 text-[10px] font-black uppercase">
@@ -910,11 +917,13 @@ export default function SalesFunnelPage() {
                   <div className="b3 border-[3px] border-sun bg-paper text-ink p-5 shadow-[8px_8px_0px_#79e784]">
                     <div className="aspect-[16/10] overflow-hidden border-2 border-ink bg-ink mb-4">
                       <img
-                        src="/images/funnel-vip-vault.png"
+                        src="/images/funnel-vip-vault.webp"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).src = "/images/bundle-kit.webp";
                         }}
                         alt="VIP Founder Business-in-a-Box Vault"
+                        loading="lazy"
+                        decoding="async"
                         className="h-full w-full object-cover"
                       />
                     </div>
@@ -1162,8 +1171,13 @@ export default function SalesFunnelPage() {
                     <div className="grid grid-cols-2">
                       <div className="relative aspect-[3/4] overflow-hidden border-r-[3px] border-ink">
                         <img
-                          src="/images/creator-daniel-collins.jpg"
+                          src="/images/creator-daniel-collins.webp"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
+                          }}
                           alt="Daniel Collins — Founder Portrait"
+                          loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-cover object-[center_20%]"
                         />
                         <span className="absolute bottom-2 left-2 bg-ink/85 border border-sun px-2 py-0.5 text-[9px] font-black uppercase text-sun">
@@ -1172,8 +1186,13 @@ export default function SalesFunnelPage() {
                       </div>
                       <div className="relative aspect-[3/4] overflow-hidden">
                         <img
-                          src="/images/creator-daniel-collins-fire.png"
+                          src="/images/creator-daniel-collins-fire.webp"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins-fire.png";
+                          }}
                           alt="Daniel Collins by the fire"
+                          loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-cover object-[center_55%]"
                         />
                         <span className="absolute bottom-2 right-2 bg-ink/85 border border-sun px-2 py-0.5 text-[9px] font-black uppercase text-sun">
