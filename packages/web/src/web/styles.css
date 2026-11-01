@@ -29,14 +29,23 @@
   --shadow-hard: 6px 6px 0 #131313;
   --font-sans: "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
   --font-display: "Archivo Black", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 }
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: rgba(19, 19, 19, 0.12);
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
+  max-width: 100vw;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -47,7 +56,18 @@ body {
   font-size: 1.0625rem;
   font-weight: 500;
   line-height: 1.5;
+  overflow-x: clip;
+  max-width: 100vw;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent horizontal overflow on small mobile screens while preserving desktop layout */
+main,
+section,
+header,
+footer {
+  max-width: 100vw;
 }
 
 ::selection {
@@ -55,124 +75,204 @@ body {
   color: #3b74ff;
 }
 
+/* Accessible keyboard focus ring for desktop & assistive tech (a11y-debugging) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #131313;
+  outline-offset: 2px;
+}
+
+/* Eliminate 300ms tap delay across Android & iOS touch devices */
+a,
+button,
+input,
+select,
+textarea,
+label {
+  touch-action: manipulation;
+}
+
 @layer components {
-.display {
-  font-family: var(--font-display);
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  line-height: 1.12;
-  font-weight: 900;
+  .display {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    font-weight: 900;
+    overflow-wrap: break-word;
+  }
+
+  .b3 {
+    border: var(--border-heavy);
+  }
+
+  .hard {
+    box-shadow: var(--shadow-hard);
+  }
+
+  @media (max-width: 639px) {
+    .hard {
+      box-shadow: 4px 4px 0 #131313;
+    }
+  }
+
+  .card {
+    background: var(--surface);
+    border: var(--border-heavy);
+    box-shadow: var(--shadow-hard);
+    transition:
+      transform 0.12s ease,
+      box-shadow 0.12s ease;
+  }
+
+  .card-lift:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 #131313;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--primary);
+    color: var(--on-primary);
+    border: var(--border-heavy);
+    padding: 0.8rem 1.4rem;
+    min-height: 48px;
+    font: inherit;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    box-shadow: var(--shadow-hard);
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition:
+      transform 0.08s ease,
+      box-shadow 0.08s ease;
+    white-space: nowrap;
+  }
+
+  /* Allow long CTA buttons to wrap gracefully on narrow mobile screens (<640px) */
+  @media (max-width: 639px) {
+    .btn {
+      white-space: normal;
+      line-height: 1.25;
+      padding: 0.75rem 1.05rem;
+      box-shadow: 4px 4px 0 #131313;
+    }
+  }
+
+  .btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 #131313;
+  }
+
+  .btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 #131313;
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-quiet {
+    background: #fff;
+    color: #131313;
+  }
+
+  .btn-yellow {
+    background: #8ec0ff;
+    color: #131313;
+  }
+
+  .btn-sm {
+    padding: 0.5rem 0.9rem;
+    min-height: 44px;
+    font-size: 0.8125rem;
+    box-shadow: 4px 4px 0 #131313;
+  }
+
+  @media (max-width: 639px) {
+    .btn-sm {
+      padding: 0.5rem 0.75rem;
+      min-height: 44px;
+      font-size: 0.78rem;
+      box-shadow: 3px 3px 0 #131313;
+    }
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: var(--border-heavy);
+    padding: 0.15rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: #fff;
+  }
+
+  .input {
+    width: 100%;
+    border: var(--border-heavy);
+    background: #fff;
+    padding: 0.8rem 0.9rem;
+    min-height: 48px;
+    font: inherit;
+    font-weight: 600;
+    outline: none;
+  }
+
+  .input:focus {
+    box-shadow: 4px 4px 0 #131313;
+  }
+
+  .ulink {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 4px;
+  }
 }
 
-.b3 {
-  border: var(--border-heavy);
+/* Apple iOS Safari & Android Chrome: prevent automatic viewport zoom on input focus (<768px) */
+@media (max-width: 767px) {
+  .input,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }
 
-.hard {
-  box-shadow: var(--shadow-hard);
-}
-
-.card {
-  background: var(--surface);
-  border: var(--border-heavy);
-  box-shadow: var(--shadow-hard);
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease;
-}
-
-.card-lift:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 9px 9px 0 #131313;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background: var(--primary);
-  color: var(--on-primary);
-  border: var(--border-heavy);
-  padding: 0.8rem 1.4rem;
-  font: inherit;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  box-shadow: var(--shadow-hard);
+/* Enlarged touch-friendly range slider thumbs on mobile/tablet coarse pointers */
+input[type="range"] {
+  height: 2rem;
   cursor: pointer;
-  text-decoration: none;
-  transition:
-    transform 0.08s ease,
-    box-shadow 0.08s ease;
-  white-space: nowrap;
 }
 
-.btn:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 8px 8px 0 #131313;
+/* Safe-area padding utilities for iPhone Home Indicator & Android Gesture Bar */
+.pb-safe {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
 }
 
-.btn:active {
-  transform: translate(3px, 3px);
-  box-shadow: 3px 3px 0 #131313;
-}
-
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.btn-quiet {
-  background: #fff;
-  color: #131313;
-}
-
-.btn-yellow {
-  background: #8ec0ff;
-  color: #131313;
-}
-
-.btn-sm {
-  padding: 0.45rem 0.9rem;
-  font-size: 0.8125rem;
-  box-shadow: 4px 4px 0 #131313;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  border: var(--border-heavy);
-  padding: 0.15rem 0.6rem;
-  font-size: 0.75rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  background: #fff;
-}
-
-.input {
-  width: 100%;
-  border: var(--border-heavy);
-  background: #fff;
-  padding: 0.8rem 0.9rem;
-  font: inherit;
-  font-weight: 600;
-  outline: none;
-}
-
-.input:focus {
-  box-shadow: 4px 4px 0 #131313;
-}
-
-.ulink {
-  text-decoration: underline;
-  text-decoration-thickness: 3px;
-  text-underline-offset: 4px;
-}
-
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 /* Marquee */
@@ -237,6 +337,21 @@ body {
   animation: slide-in 0.25s cubic-bezier(0.2, 0.9, 0.2, 1);
 }
 
+/* Respect user reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-track,
+  .rise,
+  .pop,
+  .drawer {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 .dots {
   background-image: radial-gradient(#131313 1.6px, transparent 1.6px);
   background-size: 14px 14px;
@@ -248,12 +363,4 @@ body {
     #131313 0 3px,
     transparent 3px 14px
   );
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track,
-  .rise {
-    animation: none;
-    opacity: 1;
-  }
 }

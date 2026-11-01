@@ -61,8 +61,8 @@ export function NotebookDrawer() {
 
   return (
     <>
-      {/* Slide-out Edge Tab on Right Side of Screen */}
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40">
+      {/* Slide-out Edge Tab on Right Side of Screen (Desktop/Tablet — on narrow mobile phones the Notebook icon is in the top bar) */}
+      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 hidden sm:block">
         <button
           type="button"
           onClick={() => openNotebook()}
@@ -124,7 +124,7 @@ export function NotebookDrawer() {
             className="absolute inset-0 bg-ink/50 backdrop-blur-[1px]"
             onClick={closeNotebook}
           />
-          <aside className="drawer absolute right-0 top-0 flex h-full w-full max-w-xl flex-col border-l-[4px] border-ink bg-paper shadow-2xl">
+          <aside className="drawer absolute right-0 top-0 flex h-full w-full max-w-xl flex-col border-l-[4px] border-ink bg-paper shadow-2xl pb-safe">
             {/* Drawer Header */}
             <div className="flex items-center justify-between border-b-[3px] border-ink bg-sun px-5 py-4">
               <div className="flex items-center gap-2.5">

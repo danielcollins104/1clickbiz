@@ -1,0 +1,44 @@
+{
+  "name": "1 Click Business — 13 AI Launch Engines",
+  "short_name": "1 Click Biz",
+  "description": "Launch a complete income-ready business in 1 click: AI idea wizard, 5-year plan, brand identity, vector logo, free hosted live website, ads, grants, CRM, and Solomon AI Advisor.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#3b74ff",
+  "theme_color": "#8ec0ff",
+  "categories": ["business", "productivity", "finance"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/og-image.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "60s Sales Funnel",
+      "short_name": "Funnel",
+      "description": "Build and activate your income blueprint in 4 clicks",
+      "url": "/funnel"
+    },
+    {
+      "name": "My Dashboard",
+      "short_name": "Dashboard",
+      "description": "Open your 13 AI launch engines",
+      "url": "/dashboard"
+    },
+    {
+      "name": "Solomon AI Advisor",
+      "short_name": "Solomon",
+      "description": "Consult Solomon and save notes to your Founder Notebook",
+      "url": "/advisor"
+    }
+  ]
+}

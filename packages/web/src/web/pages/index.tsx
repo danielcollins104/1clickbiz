@@ -94,10 +94,12 @@ function Hero() {
           <div className="absolute left-1/2 top-16 hidden h-[480px] w-[480px] -translate-x-1/2 rounded-full border-[3px] border-ink lg:block" />
 
           {/* Center Hero Image */}
-          <div className="relative mx-auto h-[340px] sm:h-[420px] lg:absolute lg:bottom-0 lg:left-1/2 lg:z-20 lg:h-[580px] lg:-translate-x-1/2 pointer-events-none flex justify-center">
+          <div className="relative mx-auto h-[290px] sm:h-[400px] lg:absolute lg:bottom-0 lg:left-1/2 lg:z-20 lg:h-[580px] lg:-translate-x-1/2 pointer-events-none flex justify-center">
             <img
               src="/images/hero-cutout.webp"
               alt="Founder holding a laptop"
+              fetchPriority="high"
+              decoding="async"
               className="rise h-full w-auto max-w-none object-contain"
               style={{ animationDelay: "0.35s" }}
             />
@@ -105,10 +107,10 @@ function Hero() {
 
           {/* Left Copy Card */}
           <div
-            className="rise relative z-30 mt-4 lg:mt-0 lg:absolute lg:bottom-10 lg:left-8 lg:max-w-[400px] xl:max-w-md"
+            className="rise relative z-30 mt-3 sm:mt-4 lg:mt-0 lg:absolute lg:bottom-10 lg:left-8 lg:max-w-[400px] xl:max-w-md"
             style={{ animationDelay: "0.55s" }}
           >
-            <div className="b3 hard bg-paper p-5">
+            <div className="b3 hard bg-paper p-4 sm:p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-xs font-extrabold uppercase tracking-[0.15em]">Own Your Income Today</p>
                 <span className="bg-mint px-2 py-0.5 border border-ink text-[10px] font-black uppercase">13 AI Income Engines</span>
@@ -116,19 +118,19 @@ function Hero() {
               <p className="display mt-2.5 text-2xl md:text-3xl leading-[1.12]">
                 Build a business that pays you—not a boss.
               </p>
-              <p className="mt-2.5 text-sm font-semibold text-muted leading-relaxed">
+              <p className="mt-2.5 text-xs sm:text-sm font-semibold text-muted leading-relaxed">
                 Ready for real financial independence? Pick a proven business model below or answer 8 quick questions. Our 13 AI engines build your business plan, brand, vector logo, free live website, ads, grants list, and customer CRM in 60 seconds.
               </p>
-              <div className="mt-4 flex flex-wrap gap-2.5">
+              <div className="mt-4 flex flex-col sm:flex-row flex-wrap gap-2.5">
                 <Link
                   to="/funnel"
-                  className="btn btn-sm btn-yellow cursor-pointer font-black"
+                  className="btn btn-sm btn-yellow w-full sm:w-auto cursor-pointer font-black"
                 >
-                  <Rocket className="h-4 w-4 fill-ink" strokeWidth={2.5} /> Start 60s Sales Funnel →
+                  <Rocket className="h-4 w-4 fill-ink shrink-0" strokeWidth={2.5} /> Start 60s Sales Funnel →
                 </Link>
                 <a
                   href="#income-freedom-calculator"
-                  className="btn btn-sm bg-mint text-ink font-black"
+                  className="btn btn-sm bg-mint text-ink w-full sm:w-auto font-black"
                 >
                   Calculate My Income ↓
                 </a>
@@ -378,15 +380,15 @@ function Flow() {
         ))}
       </div>
 
-      <div className="mt-12 grid max-w-3xl grid-cols-3 gap-4">
+      <div className="mt-10 sm:mt-12 grid max-w-3xl grid-cols-3 gap-2.5 sm:gap-4">
         {[
           ["13", "AI tools"],
           ["8", "questions"],
           ["1", "brand, used everywhere"],
         ].map(([n, l]) => (
-          <div key={l} className="b3 hard bg-paper p-4">
-            <p className="display text-2xl md:text-4xl">{n}</p>
-            <p className="text-xs font-extrabold uppercase">{l}</p>
+          <div key={l} className="b3 hard bg-paper p-3 sm:p-4">
+            <p className="display text-xl sm:text-2xl md:text-4xl">{n}</p>
+            <p className="text-[10px] sm:text-xs font-extrabold uppercase leading-tight mt-0.5">{l}</p>
           </div>
         ))}
       </div>
@@ -467,7 +469,7 @@ function BundleBlock() {
                 {sum > 0 && <p className="font-bold text-mint line-through decoration-[3px] text-sm">{money(sum)}/mo if subscribed separately</p>}
               </div>
             </div>
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
               <button
                 type="button"
                 disabled={!bundle}
@@ -478,12 +480,12 @@ function BundleBlock() {
                     navigate("/subscribe");
                   }
                 }}
-                className="btn btn-yellow border-sun cursor-pointer"
+                className="btn btn-yellow border-sun w-full sm:w-auto cursor-pointer"
                 style={{ boxShadow: "6px 6px 0 #79e784" }}
               >
-                <Zap className="h-5 w-5" strokeWidth={3} /> Start All-Access Subscription ($99/mo)
+                <Zap className="h-5 w-5 shrink-0" strokeWidth={3} /> Start All-Access Subscription ($99/mo)
               </button>
-              <Link to="/product/phase-1-launch" className="btn border-sun" style={{ boxShadow: "6px 6px 0 #3b74ff" }}>
+              <Link to="/product/phase-1-launch" className="btn border-sun w-full sm:w-auto" style={{ boxShadow: "6px 6px 0 #3b74ff" }}>
                 See Full Plan Specs
               </Link>
             </div>

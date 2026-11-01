@@ -6,46 +6,48 @@ export function AboutCreator() {
   const { openQuickStart } = useQuickStart();
 
   return (
-    <section className="border-b-[3px] border-ink bg-paper py-20 px-4 md:px-8">
+    <section className="border-b-[3px] border-ink bg-paper py-14 sm:py-20 px-4 md:px-8">
       <div className="mx-auto max-w-[1400px]">
         {/* Section Header */}
-        <div className="mb-12 flex flex-col items-start justify-between gap-4 border-b-[3px] border-ink pb-8 md:flex-row md:items-end">
+        <div className="mb-8 sm:mb-12 flex flex-col items-start justify-between gap-4 border-b-[3px] border-ink pb-6 sm:pb-8 md:flex-row md:items-end">
           <div>
             <div className="inline-flex items-center gap-2 border-[2px] border-ink bg-sun px-3 py-1 text-xs font-black uppercase tracking-wider text-ink shadow-[2px_2px_0px_#000]">
               <Sparkles className="h-3.5 w-3.5 fill-ink" />
               <span>Our Creator &amp; Vision</span>
             </div>
-            <h2 className="display mt-3 text-5xl md:text-7xl">Meet Daniel Collins.</h2>
-            <p className="mt-2 text-base font-bold text-muted md:text-lg">
+            <h2 className="display mt-3 text-4xl sm:text-5xl md:text-7xl">Meet Daniel Collins.</h2>
+            <p className="mt-2 text-sm sm:text-base font-bold text-muted md:text-lg">
               Founder, architect, and developer behind the 1 Click Business ecosystem.
             </p>
           </div>
           <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider">
-            <span className="inline-block h-3 w-3 rounded-full bg-mint border border-ink animate-pulse" />
+            <span className="inline-block h-3 w-3 shrink-0 rounded-full bg-mint border border-ink animate-pulse" />
             <span>Built for Financial Independence · 10,000+ Launches Target</span>
           </div>
         </div>
 
         {/* Main Creator Showcase Grid */}
-        <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+        <div className="grid gap-10 sm:gap-12 lg:grid-cols-12 lg:items-center">
           {/* Creator Dual-Photo Column: 1 Portrait + 1 By the Fire */}
           <div className="lg:col-span-5">
             <div className="relative mx-auto max-w-lg lg:max-w-none">
               {/* Backing decorative frame */}
-              <div className="absolute -bottom-3 -right-3 h-full w-full bg-sun border-[3px] border-ink" />
+              <div className="absolute -bottom-2.5 -right-2.5 sm:-bottom-3 sm:-right-3 h-full w-full bg-sun border-[3px] border-ink" />
 
               {/* Dual Portrait + Fireside Card */}
-              <div className="relative b3 border-[3px] border-ink bg-ink overflow-hidden shadow-[8px_8px_0px_#000]">
-                <div className="grid grid-cols-1 sm:grid-cols-2">
+              <div className="relative b3 border-[3px] border-ink bg-ink overflow-hidden shadow-[6px_6px_0px_#000] sm:shadow-[8px_8px_0px_#000]">
+                <div className="grid grid-cols-2">
                   {/* Photo 1: Outdoor Portrait */}
-                  <div className="relative aspect-[3/4] overflow-hidden bg-ink border-b-[3px] sm:border-b-0 sm:border-r-[3px] border-ink">
+                  <div className="relative aspect-[3/4] overflow-hidden bg-ink border-r-[3px] border-ink">
                     <img
                       src="/images/creator-daniel-collins.jpg"
                       alt="Daniel Collins — Founder Portrait"
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover object-[center_20%] hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute bottom-2.5 left-2.5 bg-ink/85 border border-sun/80 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
-                      Founder Portrait
+                    <div className="absolute bottom-2 left-2 bg-ink/85 border border-sun/80 px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
+                      Portrait
                     </div>
                   </div>
 
@@ -54,10 +56,12 @@ export function AboutCreator() {
                     <img
                       src="/images/creator-daniel-collins-fire.png"
                       alt="Daniel Collins by the fire — Night Shift Builder Mode"
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover object-[center_55%] hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute bottom-2.5 right-2.5 bg-ink/85 border border-sun/80 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
-                      Night Shift · By the Fire
+                    <div className="absolute bottom-2 right-2 bg-ink/85 border border-sun/80 px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
+                      By the Fire
                     </div>
                   </div>
                 </div>

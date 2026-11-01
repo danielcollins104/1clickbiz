@@ -1,6 +1,23 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Asterisk, BookOpen, CreditCard, Heart, LayoutDashboard, Menu, MousePointerClick, Sparkles, Trash2, UserRound, X, Zap, Check } from "lucide-react";
+import {
+  Asterisk,
+  BookOpen,
+  CreditCard,
+  Heart,
+  Home,
+  LayoutDashboard,
+  Menu,
+  MessageSquare,
+  MousePointerClick,
+  Rocket,
+  Sparkles,
+  Trash2,
+  UserRound,
+  X,
+  Zap,
+  Check,
+} from "lucide-react";
 import { useCart } from "../lib/cart";
 import { useWishlist } from "../lib/wishlist";
 import { useQuickStart } from "../context/QuickStartContext";
@@ -28,14 +45,14 @@ const NAV = [
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
-    <Link to="/" className={`flex items-center gap-2 no-underline ${className}`}>
+    <Link to="/" className={`flex items-center gap-2 no-underline shrink-0 ${className}`}>
       <span className="grid h-9 w-9 place-items-center bg-ink text-sun b3">
         <MousePointerClick className="h-5 w-5" strokeWidth={3} />
       </span>
-      <span className="display text-lg leading-none">
+      <span className="display text-base sm:text-lg leading-none">
         1 Click
         <br />
-        <span className="text-sm">Business</span>
+        <span className="text-xs sm:text-sm">Business</span>
       </span>
     </Link>
   );
@@ -54,42 +71,51 @@ function Header() {
   useEffect(() => setMenu(false), [location]);
 
   return (
-    <header className="sticky top-0 z-40 border-b-[3px] border-ink bg-sun">
-      <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 md:px-8">
+    <header className="sticky top-0 z-40 border-b-[3px] border-ink bg-sun pt-safe">
+      <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-2 px-3 sm:gap-4 sm:px-4 md:px-8">
         <Logo />
-        <nav className="hidden items-center gap-1 md:flex">
-          {NAV.map((n) => (
-            <Link
-              key={n.label}
-              to={n.to}
-              className="px-3 py-1.5 text-sm font-extrabold uppercase tracking-wide no-underline hover:bg-ink hover:text-sun"
-            >
-              {n.label}
-            </Link>
-          ))}
+        <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Main navigation">
+          {NAV.map((n) => {
+            const active = location === n.to;
+            return (
+              <Link
+                key={n.label}
+                to={n.to}
+                className={`px-2.5 xl:px-3 py-1.5 text-xs xl:text-sm font-extrabold uppercase tracking-wide no-underline transition-colors ${
+                  active ? "bg-ink text-sun" : "hover:bg-ink hover:text-sun"
+                }`}
+              >
+                {n.label}
+              </Link>
+            );
+          })}
         </nav>
-        <div className="flex items-center gap-2.5 sm:gap-3">
-          {/* Quick Start 1-Click Wizard Floating Action Button in Header */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
+          {/* Quick Start 1-Click Wizard Action Button in Header */}
           <button
             type="button"
             onClick={() => openQuickStart()}
-            className="group relative flex items-center gap-1.5 bg-ink text-sun px-2.5 sm:px-3 py-1.5 b3 border-2 border-ink shadow-[2.5px_2.5px_0px_#000] hover:bg-mint hover:text-ink hover:border-ink hover:shadow-[1px_1px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] transition-all cursor-pointer"
+            className="group relative flex min-h-[42px] items-center gap-1.5 bg-ink text-sun px-2.5 sm:px-3 py-1.5 b3 border-2 border-ink shadow-[2.5px_2.5px_0px_#000] hover:bg-mint hover:text-ink hover:border-ink hover:shadow-[1px_1px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] transition-all cursor-pointer"
             title="Open Quick Start 1-Click Business Generation Wizard"
             aria-label="Quick Start 1-Click Business Wizard"
           >
-            <Zap className="h-4 w-4 fill-sun text-sun group-hover:fill-ink group-hover:text-ink animate-pulse" strokeWidth={2.5} />
-            <span className="font-black text-xs uppercase tracking-wider">Quick Start</span>
+            <Zap className="h-4 w-4 fill-sun text-sun group-hover:fill-ink group-hover:text-ink animate-pulse shrink-0" strokeWidth={2.5} />
+            <span className="font-black text-[11px] sm:text-xs uppercase tracking-wider">1-Click</span>
             <span className="hidden xl:inline-block bg-mint text-ink text-xs font-black px-1.5 py-0.5 border border-ink">
-              1-CLICK
+              START
             </span>
           </button>
 
-          {adminStatus?.allowed && <Link to="/admin" className="ulink hidden md:inline font-extrabold text-xs">Admin</Link>}
+          {adminStatus?.allowed && (
+            <Link to="/admin" className="ulink hidden md:inline font-extrabold text-xs">
+              Admin
+            </Link>
+          )}
 
           {/* Firebase / Account Status Controls */}
           {firebaseUser || session?.user ? (
-            <div className="hidden sm:flex items-center gap-2 bg-paper px-2 py-1 b3 border-2 border-ink">
-              {(firebaseUser?.photoURL || session?.user?.image) ? (
+            <div className="hidden md:flex items-center gap-2 bg-paper px-2 py-1 b3 border-2 border-ink">
+              {firebaseUser?.photoURL || session?.user?.image ? (
                 <img
                   src={firebaseUser?.photoURL || session?.user?.image || ""}
                   alt=""
@@ -97,11 +123,19 @@ function Header() {
                 />
               ) : (
                 <span className="grid h-6 w-6 place-items-center bg-sun text-ink text-xs font-bold b3">
-                  {((firebaseUser?.displayName || session?.user?.name || firebaseUser?.email || session?.user?.email || "U")[0]).toUpperCase()}
+                  {(
+                    (firebaseUser?.displayName ||
+                      session?.user?.name ||
+                      firebaseUser?.email ||
+                      session?.user?.email ||
+                      "U")[0]
+                  ).toUpperCase()}
                 </span>
               )}
               <span className="text-xs font-bold truncate max-w-[100px]">
-                {firebaseUser?.displayName || session?.user?.name || (firebaseUser?.email || session?.user?.email)?.split("@")[0]}
+                {firebaseUser?.displayName ||
+                  session?.user?.name ||
+                  (firebaseUser?.email || session?.user?.email)?.split("@")[0]}
               </span>
               <button
                 type="button"
@@ -116,7 +150,7 @@ function Header() {
             <button
               type="button"
               onClick={() => signInWithGoogle()}
-              className="hidden lg:inline-flex btn btn-sm btn-quiet !px-2.5 text-xs font-bold items-center gap-1.5 cursor-pointer"
+              className="hidden xl:inline-flex btn btn-sm btn-quiet !px-2.5 text-xs font-bold items-center gap-1.5 cursor-pointer"
               title="Sign in with Google"
             >
               <span>Google Sign-in</span>
@@ -125,14 +159,14 @@ function Header() {
 
           {!isPending &&
             (session || firebaseUser ? (
-              <Link to="/dashboard" className="btn btn-sm btn-yellow !px-3">
+              <Link to="/dashboard" className="hidden sm:inline-flex btn btn-sm btn-yellow !px-3">
                 <LayoutDashboard className="h-5 w-5" strokeWidth={2.75} />
-                <span className="hidden sm:inline">Dashboard</span>
+                <span className="hidden md:inline">Dashboard</span>
               </Link>
             ) : (
-              <Link to="/login" className="btn btn-sm btn-yellow !px-3">
+              <Link to="/login" className="hidden sm:inline-flex btn btn-sm btn-yellow !px-3">
                 <UserRound className="h-5 w-5" strokeWidth={2.75} />
-                <span className="hidden sm:inline">Sign in</span>
+                <span className="hidden md:inline">Sign in</span>
               </Link>
             ))}
 
@@ -140,16 +174,16 @@ function Header() {
           <button
             type="button"
             onClick={() => openNotebook()}
-            className="btn btn-sm btn-quiet relative !px-3 cursor-pointer"
+            className="btn btn-sm btn-quiet relative !px-2.5 sm:!px-3 cursor-pointer"
             aria-label={`Open Founder Notebook, ${notes.length} notes`}
             title="Open Slide-Out Founder Notebook"
           >
             <BookOpen className="h-5 w-5" strokeWidth={2.75} />
-            <span className="hidden sm:inline">Notebook</span>
+            <span className="hidden md:inline">Notebook</span>
             {notes.length > 0 && (
               <span
                 key={notebookBump}
-                className="pop grid h-6 min-w-6 place-items-center bg-mint text-ink border border-ink px-1 text-xs font-black"
+                className="pop grid h-5 min-w-5 place-items-center bg-mint text-ink border border-ink px-1 text-[11px] font-black"
               >
                 {notes.length}
               </span>
@@ -159,56 +193,86 @@ function Header() {
           <button
             type="button"
             onClick={() => setWishlistOpen(true)}
-            className="btn btn-sm btn-quiet relative !px-3"
+            className="hidden sm:inline-flex btn btn-sm btn-quiet relative !px-3"
             aria-label={`Open wishlist, ${wishlistCount} items`}
             title="Saved Wishlist"
           >
-            <Heart className={`h-5 w-5 ${wishlistCount > 0 ? "fill-rose-500 text-rose-500" : ""}`} strokeWidth={2.75} />
-            <span className="hidden lg:inline">Wishlist</span>
+            <Heart
+              className={`h-5 w-5 ${wishlistCount > 0 ? "fill-rose-500 text-rose-500" : ""}`}
+              strokeWidth={2.75}
+            />
+            <span className="hidden xl:inline">Wishlist</span>
             {wishlistCount > 0 && (
-              <span key={wishlistBump} className="pop grid h-6 min-w-6 place-items-center bg-rose-500 px-1 text-xs text-white font-black">
+              <span
+                key={wishlistBump}
+                className="pop grid h-5 min-w-5 place-items-center bg-rose-500 px-1 text-[11px] text-white font-black"
+              >
                 {wishlistCount}
               </span>
             )}
           </button>
+
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="btn btn-sm btn-quiet relative !px-3 cursor-pointer"
+            className="btn btn-sm btn-quiet relative !px-2.5 sm:!px-3 cursor-pointer"
             aria-label={`Open subscription plan, ${count} selected`}
           >
             <CreditCard className="h-5 w-5" strokeWidth={2.75} />
             <span className="hidden sm:inline">{count > 0 ? "My Plan" : "Subscribe"}</span>
             {count > 0 && (
-              <span key={bump} className="pop grid h-6 min-w-6 place-items-center bg-ink px-1 text-xs text-sun">
+              <span
+                key={bump}
+                className="pop grid h-5 min-w-5 place-items-center bg-ink px-1 text-[11px] text-sun"
+              >
                 {count}
               </span>
             )}
           </button>
-          <button type="button" className="btn btn-sm btn-quiet !px-2 md:hidden" onClick={() => setMenu((m) => !m)} aria-label="Menu">
+
+          <button
+            type="button"
+            className="btn btn-sm btn-quiet !px-2.5 lg:hidden"
+            onClick={() => setMenu((m) => !m)}
+            aria-label={menu ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={menu}
+          >
             {menu ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>
+
+      {/* Mobile & Tablet Slide-Down Menu */}
       {menu && (
-        <nav className="flex flex-col border-t-[3px] border-ink bg-sun md:hidden">
+        <nav
+          className="flex max-h-[calc(100dvh-4rem)] flex-col overflow-y-auto border-t-[3px] border-ink bg-sun lg:hidden"
+          aria-label="Mobile navigation"
+        >
           <button
             type="button"
             onClick={() => {
               setMenu(false);
               openQuickStart();
             }}
-            className="display border-b-[3px] border-ink px-4 py-4 text-2xl no-underline flex items-center justify-between bg-sun hover:bg-mint transition-colors text-left w-full cursor-pointer"
+            className="display border-b-[3px] border-ink px-4 py-4 text-xl sm:text-2xl no-underline flex items-center justify-between bg-sun hover:bg-mint transition-colors text-left w-full cursor-pointer"
           >
             <span className="flex items-center gap-2">
-              <Zap className="h-6 w-6 fill-ink" />
+              <Zap className="h-6 w-6 fill-ink shrink-0" />
               <span>Quick Start Wizard</span>
             </span>
             <span className="chip bg-ink text-sun text-xs font-black">1-CLICK</span>
           </button>
-          {adminStatus?.allowed && <Link to="/admin" className="display border-b-[3px] border-ink px-4 py-4 text-2xl">Admin console</Link>}
+          {adminStatus?.allowed && (
+            <Link to="/admin" className="display border-b-[3px] border-ink px-4 py-4 text-xl sm:text-2xl">
+              Admin console
+            </Link>
+          )}
           {NAV.map((n) => (
-            <Link key={n.label} to={n.to} className="display border-b-[3px] border-ink px-4 py-4 text-2xl no-underline">
+            <Link
+              key={n.label}
+              to={n.to}
+              className="display border-b-[3px] border-ink px-4 py-4 text-xl sm:text-2xl no-underline"
+            >
               {n.label}
             </Link>
           ))}
@@ -218,20 +282,32 @@ function Header() {
               setMenu(false);
               openNotebook();
             }}
-            className="display border-b-[3px] border-ink px-4 py-4 text-2xl no-underline flex items-center justify-between text-left w-full cursor-pointer"
+            className="display border-b-[3px] border-ink px-4 py-4 text-xl sm:text-2xl no-underline flex items-center justify-between text-left w-full cursor-pointer"
           >
             <span className="flex items-center gap-2">
-              <BookOpen className="h-6 w-6" />
+              <BookOpen className="h-6 w-6 shrink-0" />
               <span>Founder Notebook</span>
             </span>
             <span className="chip bg-mint text-ink text-sm">{notes.length}</span>
           </button>
-          <Link to="/wishlist" className="display border-b-[3px] border-ink px-4 py-4 text-2xl no-underline flex items-center justify-between">
+          <Link
+            to="/wishlist"
+            className="display border-b-[3px] border-ink px-4 py-4 text-xl sm:text-2xl no-underline flex items-center justify-between"
+          >
             <span className="flex items-center gap-2">
-              <Heart className="h-6 w-6 fill-rose-500 text-rose-500" />
+              <Heart className="h-6 w-6 fill-rose-500 text-rose-500 shrink-0" />
               <span>Wishlist</span>
             </span>
             <span className="chip bg-ink text-sun text-sm">{wishlistCount}</span>
+          </Link>
+          <Link
+            to={session || firebaseUser ? "/dashboard" : "/login"}
+            className="display border-b-[3px] border-ink px-4 py-4 text-xl sm:text-2xl no-underline flex items-center justify-between bg-cream"
+          >
+            <span className="flex items-center gap-2">
+              <UserRound className="h-6 w-6 shrink-0" />
+              <span>{session || firebaseUser ? "My Account & Dashboard" : "Sign In / Create Account"}</span>
+            </span>
           </Link>
         </nav>
       )}
@@ -239,17 +315,106 @@ function Header() {
   );
 }
 
+/**
+ * Adaptive Mobile Bottom Navigation Bar (Material 3 Adaptive + Apple iOS HIG)
+ * - Optimized for thumb reach in portrait mobile mode (< md).
+ * - Automatically hides when scrolling down to maximize reading viewport, and reappears on scroll up.
+ * - Respects iOS Home Indicator & Android gesture bar safe-area insets.
+ */
+function MobileBottomNav() {
+  const [location] = useLocation();
+  const { openQuickStart } = useQuickStart();
+  const [isNavBarVisible, setIsNavBarVisible] = useState(true);
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      const delta = currentY - lastScrollY;
+      if (currentY < 60) {
+        setIsNavBarVisible(true);
+      } else if (delta > 14) {
+        setIsNavBarVisible(false);
+      } else if (delta < -10) {
+        setIsNavBarVisible(true);
+      }
+      lastScrollY = currentY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const items = [
+    { to: "/", label: "Home", icon: Home },
+    { to: "/funnel", label: "Funnel", icon: Rocket },
+    { action: () => openQuickStart(), label: "1-Click", icon: Zap, highlight: true },
+    { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/advisor", label: "Solomon", icon: MessageSquare },
+  ];
+
+  return (
+    <nav
+      aria-label="Mobile quick navigation"
+      className={`fixed bottom-0 left-0 right-0 z-40 border-t-[3px] border-ink bg-paper md:hidden transition-transform duration-200 ${
+        isNavBarVisible ? "translate-y-0" : "translate-y-full"
+      }`}
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+    >
+      <div className="grid grid-cols-5 items-stretch">
+        {items.map((item) => {
+          const Icon = item.icon;
+          const isActive = item.to ? location === item.to : false;
+
+          if (item.action) {
+            return (
+              <button
+                key={item.label}
+                type="button"
+                onClick={item.action}
+                className="flex min-h-[56px] flex-col items-center justify-center gap-0.5 border-x-2 border-ink bg-sun px-1 py-1.5 text-ink active:bg-mint cursor-pointer"
+                aria-label="Launch 1-Click Business Wizard"
+              >
+                <span className="grid h-6 w-6 place-items-center bg-ink text-sun border border-ink">
+                  <Icon className="h-3.5 w-3.5 fill-sun text-sun" strokeWidth={2.75} />
+                </span>
+                <span className="text-[10px] font-black uppercase tracking-tight leading-none mt-0.5">
+                  {item.label}
+                </span>
+              </button>
+            );
+          }
+
+          return (
+            <Link
+              key={item.label}
+              to={item.to!}
+              className={`flex min-h-[56px] flex-col items-center justify-center gap-1 px-1 py-1.5 no-underline transition-colors ${
+                isActive ? "bg-ink text-sun" : "text-ink hover:bg-cream"
+              }`}
+            >
+              <Icon className={`h-5 w-5 ${isActive ? "text-mint" : ""}`} strokeWidth={2.5} />
+              <span className="text-[10px] font-black uppercase tracking-tight leading-none">
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
 export function Ticker({ words, className = "" }: { words: string[]; className?: string }) {
   const row = [...words, ...words, ...words];
   return (
-    <div className={`overflow-hidden border-y-[3px] border-ink bg-ink py-3 text-sun ${className}`}>
+    <div className={`overflow-hidden border-y-[3px] border-ink bg-ink py-2.5 sm:py-3 text-sun ${className}`}>
       <div className="marquee-track">
         {[0, 1].map((k) => (
           <div key={k} className="flex shrink-0 items-center" aria-hidden={k === 1}>
             {row.map((w, i) => (
-              <span key={i} className="display flex items-center gap-6 pr-6 text-2xl md:text-3xl">
+              <span key={i} className="display flex items-center gap-4 sm:gap-6 pr-4 sm:pr-6 text-xl sm:text-2xl md:text-3xl">
                 {w}
-                <Asterisk className="h-7 w-7 text-mint" strokeWidth={3.5} />
+                <Asterisk className="h-6 w-6 sm:h-7 sm:w-7 text-mint" strokeWidth={3.5} />
               </span>
             ))}
           </div>
@@ -283,35 +448,35 @@ function CartDrawer() {
   return (
     <div className="fixed inset-0 z-50">
       <button type="button" aria-label="Close subscription drawer" className="absolute inset-0 bg-ink/60" onClick={() => setOpen(false)} />
-      <aside className="drawer absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l-[3px] border-ink bg-paper">
+      <aside className="drawer absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l-[3px] border-ink bg-paper pb-safe">
         <div className="flex items-center justify-between border-b-[3px] border-ink bg-sun px-5 py-4">
-          <h2 className="display text-3xl">Your Subscription</h2>
-          <button type="button" className="btn btn-sm btn-quiet !px-2" onClick={() => setOpen(false)} aria-label="Close">
+          <h2 className="display text-2xl sm:text-3xl">Your Subscription</h2>
+          <button type="button" className="btn btn-sm btn-quiet !px-2.5" onClick={() => setOpen(false)} aria-label="Close">
             <X className="h-5 w-5" strokeWidth={3} />
           </button>
         </div>
 
         {lines.length === 0 ? (
-          <div className="flex flex-1 flex-col justify-between p-6 overflow-y-auto">
+          <div className="flex flex-1 flex-col justify-between p-5 sm:p-6 overflow-y-auto">
             <div className="b3 hard bg-ink p-5 text-sun">
               <span className="border border-ink bg-mint px-2.5 py-0.5 text-xs font-black uppercase text-ink">
                 Most Popular · Save $115/mo
               </span>
-              <h3 className="display mt-3 text-3xl text-sun">
+              <h3 className="display mt-3 text-2xl sm:text-3xl text-sun">
                 Phase 1 — All-Access Pass
               </h3>
               <p className="mt-2 text-xs font-semibold text-cream/90 leading-relaxed">
                 Unlock all 13 AI launch engines on one monthly subscription. Answer 8 questions once and every tool builds in sequence.
               </p>
               <div className="mt-4 flex items-baseline gap-2 border-y border-sun/30 py-3">
-                <span className="display text-5xl text-sun">{bundle ? money(bundle.price) : "$99"}</span>
+                <span className="display text-4xl sm:text-5xl text-sun">{bundle ? money(bundle.price) : "$99"}</span>
                 <span className="text-sm font-bold text-cream">/month · Cancel anytime</span>
               </div>
               <ul className="mt-4 space-y-2 text-xs font-bold text-cream">
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-mint" strokeWidth={3} /> All 13 AI Launch Engines unlocked</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-mint" strokeWidth={3} /> 500 AI generations every month</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-mint" strokeWidth={3} /> Free hosted live website &amp; CRM</li>
-                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-mint" strokeWidth={3} /> 14-Day 100% Money-Back Guarantee</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-mint shrink-0" strokeWidth={3} /> All 13 AI Launch Engines unlocked</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-mint shrink-0" strokeWidth={3} /> 500 AI generations every month</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-mint shrink-0" strokeWidth={3} /> Free hosted live website &amp; CRM</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-mint shrink-0" strokeWidth={3} /> 14-Day 100% Money-Back Guarantee</li>
               </ul>
               <button
                 type="button"
@@ -322,7 +487,7 @@ function CartDrawer() {
                   navigate("/subscribe");
                 }}
               >
-                <Zap className="h-4 w-4 fill-ink" /> Start All-Access Subscription
+                <Zap className="h-4 w-4 fill-ink shrink-0" /> Start All-Access Subscription
               </button>
             </div>
 
@@ -402,7 +567,7 @@ function CartDrawer() {
                   <div className="flex min-w-0 flex-1 flex-col">
                     <div className="flex items-start justify-between gap-2">
                       <p className="display text-base leading-tight">{l.name}</p>
-                      <button type="button" onClick={() => remove(l.key)} aria-label="Remove" className="shrink-0 p-1 hover:bg-sun">
+                      <button type="button" onClick={() => remove(l.key)} aria-label="Remove" className="shrink-0 p-2 hover:bg-sun">
                         <Trash2 className="h-4 w-4" strokeWidth={2.75} />
                       </button>
                     </div>
@@ -491,17 +656,18 @@ function CartDrawer() {
 
 function Footer() {
   return (
-    <footer className="border-t-[3px] border-ink bg-ink text-sun">
-      <div className="mx-auto grid max-w-[1400px] gap-10 px-4 py-14 md:grid-cols-4 md:px-8">
+    <footer className="border-t-[3px] border-ink bg-ink text-sun pb-20 md:pb-0">
+      <div className="mx-auto grid max-w-[1400px] gap-10 px-4 py-12 sm:py-14 md:grid-cols-4 md:px-8">
         <div className="md:col-span-2">
-          <p className="display text-3xl md:text-4xl">Idea to open for business. Automatically.</p>
-          <Link to="/start" className="btn btn-yellow mt-6 border-sun" style={{ boxShadow: "6px 6px 0 #79e784" }}>
+          <p className="display text-2xl sm:text-3xl md:text-4xl">Idea to open for business. Automatically.</p>
+          <Link to="/start" className="btn btn-yellow mt-6 border-sun w-full sm:w-auto" style={{ boxShadow: "6px 6px 0 #79e784" }}>
             Start your business
           </Link>
         </div>
         <div>
           <p className="mb-3 text-xs font-extrabold uppercase tracking-widest text-mint">Platform &amp; Plans</p>
-          <ul className="space-y-2 font-bold">
+          <ul className="space-y-2.5 font-bold text-sm sm:text-base">
+            <li><Link to="/funnel" className="no-underline hover:underline">60s Automated Sales Funnel</Link></li>
             <li><Link to="/pricing" className="no-underline hover:underline">Subscription Plans</Link></li>
             <li><Link to="/product/phase-1-launch" className="no-underline hover:underline">All-Access Pass ($99/mo)</Link></li>
             <li><Link to="/shop" className="no-underline hover:underline">All 13 AI Launch Engines</Link></li>
@@ -511,7 +677,7 @@ function Footer() {
         </div>
         <div>
           <p className="mb-3 text-xs font-extrabold uppercase tracking-widest text-mint">Company</p>
-          <ul className="space-y-2 font-bold">
+          <ul className="space-y-2.5 font-bold text-sm sm:text-base">
             <li><Link to="/dashboard" className="no-underline hover:underline">Your dashboard</Link></li>
             <li><Link to="/account" className="no-underline hover:underline">Billing &amp; subscription</Link></li>
             <li>Monthly plans · cancel anytime</li>
@@ -545,7 +711,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   // Generated customer sites render without the store chrome.
   if (location.startsWith("/sites/")) return <>{children}</>;
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-x-clip">
       <Header />
       <main>{children}</main>
       <Footer />
@@ -554,9 +720,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <NotebookDrawer />
       <QuickStartModal />
       <ExitIntentNotice />
+      <MobileBottomNav />
 
-      {/* Floating Action Button (FAB) for users to trigger the 1-Click Business Generation Wizard from anywhere */}
-      <div className="fixed bottom-6 right-6 z-40">
+      {/* Desktop Floating Action Button (FAB) — hidden on mobile where MobileBottomNav provides instant 1-Click access */}
+      <div className="fixed bottom-6 right-6 z-40 hidden md:block">
         <button
           type="button"
           onClick={() => openQuickStart()}
@@ -567,7 +734,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <span className="grid h-6 w-6 place-items-center bg-ink text-sun border border-ink">
             <Zap className="h-4 w-4 fill-sun text-sun animate-pulse" />
           </span>
-          <span className="text-sm font-black hidden xs:inline">Quick Start</span>
+          <span className="text-sm font-black">Quick Start</span>
           <span className="bg-ink text-mint text-xs font-black px-1.5 py-0.5 border border-ink">1-CLICK</span>
         </button>
       </div>
