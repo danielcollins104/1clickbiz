@@ -1,89 +1,116 @@
 import { useState } from "react";
 import { Link, useSearch } from "wouter";
 import { authClient } from "../lib/auth";
+import {
+  confirmFirebasePasswordReset,
+  sendFirebasePasswordReset,
+} from "../lib/firebase";
 import { useLaunchConfig } from "../queries/launch";
+
 export default function ResetPasswordPage() {
-  const token = new URLSearchParams(useSearch()).get("token");
-  const { data: config, isLoading } = useLaunchConfig();
+  const searchParams = new URLSearchParams(useSearch());
+  const token = searchParams.get("token");
+  const oobCode = searchParams.get("oobCode");
+  const resetToken = oobCode || token;
+  const { data: config } = useLaunchConfig();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError("");
     try {
-      const res = token
-        ? await authClient.resetPassword({ token, newPassword: password })
-        : await authClient.requestPasswordReset({
-            email,
-            redirectTo: `${window.location.origin}/reset-password`,
-          });
-      if (res.error)
-        setError(res.error.message ?? "That did not work. Try again.");
-      else setDone(true);
+      // 1. Try Firebase Auth password reset first
+      if (oobCode) {
+        await confirmFirebasePasswordReset(oobCode, password);
+        setDone(true);
+        return;
+      }
+      if (!resetToken) {
+        try {
+          await sendFirebasePasswordReset(email);
+          setDone(true);
+          return;
+        } catch (fbErr: any) {
+          // If Firebase password reset fails due to invalid email, surface it
+          if (fbErr?.code === "auth/invalid-email") {
+            setError("Please enter a valid email address.");
+            return;
+          }
+          // Otherwise fall back to backend resetPassword if configured
+        }
+      }
+
+      // 2. Fallback to backend authClient
+      if (config?.emailEnabled || token) {
+        const res = token
+          ? await authClient.resetPassword({ token, newPassword: password })
+          : await authClient.requestPasswordReset({
+              email,
+              redirectTo: `${window.location.origin}/reset-password`,
+            });
+        if (res.error) {
+          setError(res.error.message ?? "That did not work. Try again.");
+        } else {
+          setDone(true);
+        }
+        return;
+      }
+
+      // Even on static hosting, confirm request so we don't leak account existence
+      setDone(true);
     } catch {
       setError("Could not connect. Try again.");
     } finally {
       setBusy(false);
     }
   }
+
   return (
     <div className="mx-auto max-w-xl px-4 py-16">
       <h1 className="display text-5xl">
-        {token ? "New password." : "Forgot password?"}
+        {resetToken ? "New password." : "Forgot password?"}
       </h1>
       <div className="card bg-paper mt-8 p-6">
         {done ? (
           <output className="font-bold">
-            {token
+            {resetToken
               ? "Password changed. Sign in with your new password."
-              : "If this email has an account, you will receive a reset link shortly."}
+              : "If this email has an account, you will receive a password reset link shortly."}
           </output>
-        ) : isLoading ? (
-          <p>Checking email availability…</p>
-        ) : !token && !config?.emailEnabled ? (
-          <>
-            <p className="font-bold">
-              Password reset emails aren't enabled yet.
-            </p>
-            <p className="mt-3">
-              If you registered with Google, use Continue with Google. For email
-              accounts, contact support for help.
-            </p>
-            <a
-              className="ulink block mt-4 font-bold break-all"
-              href={`mailto:${config?.support}`}
-            >
-              {config?.support}
-            </a>
-          </>
         ) : (
           <form onSubmit={submit} className="space-y-4">
             <label className="block font-extrabold">
-              {token ? "New password" : "Account email"}
+              {resetToken ? "New password" : "Account email"}
               <input
-                aria-label={token ? "New password" : "Account email"}
+                aria-label={resetToken ? "New password" : "Account email"}
                 className="input mt-2"
-                type={token ? "password" : "email"}
+                type={resetToken ? "password" : "email"}
                 required
-                minLength={token ? 8 : undefined}
-                autoComplete={token ? "new-password" : "email"}
-                value={token ? password : email}
+                minLength={resetToken ? 8 : undefined}
+                autoComplete={resetToken ? "new-password" : "email"}
+                placeholder={resetToken ? "At least 8 characters" : "you@business.com"}
+                value={resetToken ? password : email}
                 onChange={(e) =>
-                  token ? setPassword(e.target.value) : setEmail(e.target.value)
+                  resetToken ? setPassword(e.target.value) : setEmail(e.target.value)
                 }
               />
             </label>
             {error && (
-              <p role="alert" className="font-bold">
+              <p role="alert" className="b3 bg-sun p-3 text-sm font-extrabold">
                 {error}
               </p>
             )}
             <button className="btn" disabled={busy}>
-              {busy ? "Working…" : token ? "Save password" : "Send reset link"}
+              {busy
+                ? "Working…"
+                : resetToken
+                  ? "Save password"
+                  : "Send reset link"}
             </button>
           </form>
         )}

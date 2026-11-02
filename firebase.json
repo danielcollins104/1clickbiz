@@ -1,4 +1,18 @@
 {
+  "auth": {
+    "providers": {
+      "anonymous": true,
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "1 Click Business",
+        "supportEmail": "danielcollins104@gmail.com",
+        "authorizedRedirectUris": [
+          "https://gen-lang-client-0205132430.firebaseapp.com/__/auth/handler",
+          "http://localhost"
+        ]
+      }
+    }
+  },
   "firestore": {
     "databaseId": "ai-studio-1clickbusinessst-80a824ff-29ea-4d08-b3cf-9cc89462c42b",
     "rules": "firestore.rules",

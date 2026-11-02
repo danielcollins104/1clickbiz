@@ -4,7 +4,7 @@ import { ArrowRight, Loader2, Zap } from "lucide-react";
 import { authClient, authenticateLocalEmail, captureToken, setLocalSession } from "../lib/auth";
 import { PageLoader } from "../components/protected-route";
 import { useFirebase } from "../context/FirebaseContext";
-import { syncGoogleSessionToBackend } from "../lib/firebase";
+import { formatFirebaseAuthError, syncGoogleSessionToBackend } from "../lib/firebase";
 import { useSession } from "../queries/business";
 
 function GoogleMark() {
@@ -24,7 +24,12 @@ export default function LoginPage() {
   const next = params.get("next") || "/dashboard";
   const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
   const { data: session, isPending } = useSession();
-  const { user: firebaseUser, signInWithGoogle: signInWithFirebase } = useFirebase();
+  const {
+    user: firebaseUser,
+    signInWithGoogle: signInWithFirebase,
+    signInWithEmail,
+    signUpWithEmail,
+  } = useFirebase();
   const [, setLocation] = useLocation();
   const [mode, setMode] = useState<"in" | "up">(params.get("mode") === "up" ? "up" : "in");
   const [name, setName] = useState("");
@@ -77,6 +82,29 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     setBusy("email");
+
+    // 1. Try Firebase Email/Password Authentication first
+    try {
+      const fbUser =
+        mode === "up"
+          ? await signUpWithEmail(email, password, name)
+          : await signInWithEmail(email, password);
+      if (fbUser) {
+        setBusy(null);
+        setLocation(safeNext);
+        return;
+      }
+    } catch (fbErr: any) {
+      const friendlyError = formatFirebaseAuthError(fbErr, mode);
+      if (friendlyError) {
+        setBusy(null);
+        setError(friendlyError);
+        return;
+      }
+      // If provider is not yet enabled in Firebase Console (e.g., auth/operation-not-allowed), fall through to backend/local auth
+    }
+
+    // 2. Try backend managed auth
     try {
       const opts = {
         onSuccess: (ctx: { response: Response }) => {
@@ -108,6 +136,7 @@ export default function LoginPage() {
       // Static hosting (GitHub Pages) fallback below
     }
 
+    // 3. Static hosting / local session fallback
     const localResult = authenticateLocalEmail({ mode, email, password, name });
     setBusy(null);
     if ("error" in localResult) {

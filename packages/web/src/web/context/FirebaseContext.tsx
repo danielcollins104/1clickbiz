@@ -13,6 +13,10 @@ import {
   auth,
   db,
   signInWithGoogle,
+  signInWithFirebaseEmail,
+  signUpWithFirebaseEmail,
+  signInGuest,
+  sendFirebasePasswordReset,
   signOutUser,
   syncGoogleSessionToBackend,
   handleFirestoreError,
@@ -44,6 +48,10 @@ interface FirebaseContextType {
   user: User | null;
   loading: boolean;
   signInWithGoogle: () => Promise<User | null>;
+  signInWithEmail: (email: string, password: string) => Promise<User | null>;
+  signUpWithEmail: (email: string, password: string, name?: string) => Promise<User | null>;
+  signInAsGuest: () => Promise<User | null>;
+  sendPasswordReset: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
   savedBusinesses: BusinessDoc[];
   saveBusiness: (business: Omit<BusinessDoc, "id" | "createdAt"> & { id?: string }) => Promise<void>;
@@ -188,6 +196,10 @@ export function FirebaseProvider({ children }: { children: ReactNode }) {
         user,
         loading,
         signInWithGoogle,
+        signInWithEmail: signInWithFirebaseEmail,
+        signUpWithEmail: signUpWithFirebaseEmail,
+        signInAsGuest: signInGuest,
+        sendPasswordReset: sendFirebasePasswordReset,
         signOut: signOutUser,
         savedBusinesses,
         saveBusiness,

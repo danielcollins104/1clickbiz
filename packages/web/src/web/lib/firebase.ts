@@ -3,7 +3,15 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  confirmPasswordReset,
+  signInAnonymously,
+  updateProfile,
+  connectAuthEmulator,
   signOut,
+  type User,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -21,6 +29,42 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore(app, (firebaseConfig as { firestoreDatabaseId?: string }).firestoreDatabaseId);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+
+// Connect to Firebase Auth Emulator if explicitly requested in local dev
+if (
+  typeof window !== "undefined" &&
+  window.location.hostname === "localhost" &&
+  import.meta.env.VITE_USE_FIREBASE_EMULATOR === "true"
+) {
+  try {
+    connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
+  } catch {
+    // Already connected
+  }
+}
+
+async function syncUserDocToFirestore(user: User, fallbackName?: string) {
+  try {
+    const userRef = doc(db, "users", user.uid);
+    const displayName = user.displayName || fallbackName || (user.email ? user.email.split("@")[0] : "Founder");
+    await setDoc(
+      userRef,
+      {
+        userId: user.uid,
+        email: user.email || "",
+        displayName,
+        photoURL: (user.photoURL || "").slice(0, 1024),
+        isAnonymous: user.isAnonymous,
+        emailVerified: user.emailVerified,
+        updatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+      },
+      { merge: true }
+    );
+  } catch (firestoreErr) {
+    console.warn("Could not sync profile to Firestore:", firestoreErr);
+  }
+}
 
 export async function syncGoogleSessionToBackend(userData: {
   email: string;
@@ -64,27 +108,8 @@ export async function signInWithGoogle() {
   try {
     googleProvider.setCustomParameters({ prompt: "select_account" });
     const result = await signInWithPopup(auth, googleProvider);
-    // Sync user profile to Firestore
     if (result.user) {
-      try {
-        const userRef = doc(db, "users", result.user.uid);
-        await setDoc(
-          userRef,
-          {
-            userId: result.user.uid,
-            email: result.user.email || "",
-            displayName: result.user.displayName || "Founder",
-            photoURL: (result.user.photoURL || "").slice(0, 1024),
-            updatedAt: new Date().toISOString(),
-            createdAt: new Date().toISOString(),
-          },
-          { merge: true }
-        );
-      } catch (firestoreErr) {
-        console.warn("Could not sync profile to Firestore:", firestoreErr);
-      }
-
-      // Sync backend / local session
+      await syncUserDocToFirestore(result.user);
       await syncGoogleSessionToBackend({
         email: result.user.email || "",
         name: result.user.displayName || undefined,
@@ -109,9 +134,100 @@ export async function signInWithGoogle() {
         email: "danielcollins104@gmail.com",
         displayName: "Daniel Collins",
         photoURL: null,
-      } as unknown) as import("firebase/auth").User;
+      } as unknown) as User;
     }
     throw error;
+  }
+}
+
+export async function signUpWithFirebaseEmail(
+  email: string,
+  password: string,
+  name?: string
+) {
+  const cleanEmail = email.trim().toLowerCase();
+  const displayName = name?.trim() || cleanEmail.split("@")[0] || "Founder";
+  const credential = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+  if (credential.user) {
+    try {
+      await updateProfile(credential.user, { displayName });
+    } catch {
+      // Non-fatal if profile update fails
+    }
+    await syncUserDocToFirestore(credential.user, displayName);
+    await syncGoogleSessionToBackend({
+      email: cleanEmail,
+      name: displayName,
+      uid: credential.user.uid,
+    });
+  }
+  return credential.user;
+}
+
+export async function signInWithFirebaseEmail(email: string, password: string) {
+  const cleanEmail = email.trim().toLowerCase();
+  const credential = await signInWithEmailAndPassword(auth, cleanEmail, password);
+  if (credential.user) {
+    const displayName =
+      credential.user.displayName || cleanEmail.split("@")[0] || "Founder";
+    await syncUserDocToFirestore(credential.user, displayName);
+    await syncGoogleSessionToBackend({
+      email: cleanEmail,
+      name: displayName,
+      image: credential.user.photoURL || undefined,
+      uid: credential.user.uid,
+    });
+  }
+  return credential.user;
+}
+
+export async function signInGuest() {
+  const credential = await signInAnonymously(auth);
+  if (credential.user) {
+    await syncUserDocToFirestore(credential.user, "Guest Founder");
+    await syncGoogleSessionToBackend({
+      email: `guest_${credential.user.uid.slice(0, 8)}@1click.business`,
+      name: "Guest Founder",
+      uid: credential.user.uid,
+    });
+  }
+  return credential.user;
+}
+
+export async function sendFirebasePasswordReset(email: string) {
+  const cleanEmail = email.trim().toLowerCase();
+  await sendPasswordResetEmail(auth, cleanEmail, {
+    url: `${window.location.origin}/login`,
+    handleCodeInApp: false,
+  });
+}
+
+export async function confirmFirebasePasswordReset(
+  oobCode: string,
+  newPassword: string
+) {
+  await confirmPasswordReset(auth, oobCode, newPassword);
+}
+
+export function formatFirebaseAuthError(error: unknown, mode: "in" | "up" = "in"): string | null {
+  const code = (error as { code?: string })?.code;
+  switch (code) {
+    case "auth/email-already-in-use":
+      return "An account with this email already exists. Try signing in instead.";
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+    case "auth/weak-password":
+      return "Password must be at least 6 characters.";
+    case "auth/user-not-found":
+    case "auth/wrong-password":
+    case "auth/invalid-credential":
+      return mode === "up"
+        ? "Could not create your account with those credentials."
+        : "Wrong email or password.";
+    case "auth/too-many-requests":
+      return "Too many attempts. Please wait a moment or reset your password.";
+    default:
+      return null;
   }
 }
 
