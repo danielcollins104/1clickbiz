@@ -113,11 +113,11 @@ export function QuickStartSection() {
             </p>
           </div>
 
-          <div className="flex border-[2.5px] border-ink bg-cream p-1 shrink-0">
+          <div className="flex w-full sm:w-auto border-[2.5px] border-ink bg-cream p-1 shrink-0">
             <button
               type="button"
               onClick={() => setActiveTab("presets")}
-              className={`py-2 px-4 text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-initial py-2 px-2.5 sm:px-4 text-[11px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === "presets"
                   ? "bg-ink text-sun shadow-[2px_2px_0px_#000]"
                   : "text-muted hover:text-ink"
@@ -128,7 +128,7 @@ export function QuickStartSection() {
             <button
               type="button"
               onClick={() => setActiveTab("custom")}
-              className={`py-2 px-4 text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-initial py-2 px-2.5 sm:px-4 text-[11px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === "custom"
                   ? "bg-ink text-sun shadow-[2px_2px_0px_#000]"
                   : "text-muted hover:text-ink"
@@ -182,7 +182,7 @@ export function QuickStartSection() {
                       }`}
                     >
                       {isSelected && (
-                        <span className="absolute -top-3.5 -right-2 bg-ink text-sun text-xs font-black px-2.5 py-0.5 border border-ink shadow-[2px_2px_0px_#000] flex items-center gap-1">
+                        <span className="absolute -top-3.5 right-2 bg-ink text-sun text-xs font-black px-2.5 py-0.5 border border-ink shadow-[2px_2px_0px_#000] flex items-center gap-1">
                           <Check className="h-3.5 w-3.5 stroke-[3]" /> SELECTED
                         </span>
                       )}

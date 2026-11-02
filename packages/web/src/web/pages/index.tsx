@@ -94,13 +94,13 @@ function Hero() {
           <div className="absolute left-1/2 top-16 hidden h-[480px] w-[480px] -translate-x-1/2 rounded-full border-[3px] border-ink lg:block" />
 
           {/* Center Hero Image */}
-          <div className="relative mx-auto h-[290px] sm:h-[400px] lg:absolute lg:bottom-0 lg:left-1/2 lg:z-20 lg:h-[580px] lg:-translate-x-1/2 pointer-events-none flex justify-center">
+          <div className="relative mx-auto h-[290px] max-w-full sm:h-[400px] lg:absolute lg:bottom-0 lg:left-1/2 lg:z-20 lg:h-[580px] lg:-translate-x-1/2 pointer-events-none flex justify-center">
             <img
               src="/images/hero-cutout.webp"
               alt="Founder holding a laptop"
               fetchPriority="high"
               decoding="async"
-              className="rise h-full w-auto max-w-none object-contain"
+              className="rise h-full w-auto max-w-full lg:max-w-none object-contain"
               style={{ animationDelay: "0.35s" }}
             />
           </div>
@@ -116,7 +116,7 @@ function Hero() {
                 <span className="bg-mint px-2 py-0.5 border border-ink text-[10px] font-black uppercase">13 AI Income Engines</span>
               </div>
               <p className="display mt-2.5 text-2xl md:text-3xl leading-[1.12]">
-                Build a business that pays you—not a boss.
+                Build a business that pays you — not a boss.
               </p>
               <p className="mt-2.5 text-xs sm:text-sm font-semibold text-muted leading-relaxed">
                 Ready for real financial independence? Pick a proven business model below or answer 8 quick questions. Our 13 AI engines build your business plan, brand, vector logo, free live website, ads, grants list, and customer CRM in 60 seconds.

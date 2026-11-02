@@ -343,10 +343,10 @@ export default function SalesFunnelPage() {
             </div>
 
             {/* Right Column: Hero Showcase Frame with Daniel Collins + AI Key Art */}
-            <div className="lg:col-span-5">
-              <div className="relative mx-auto max-w-md lg:max-w-none">
-                <div className="absolute -bottom-3 -right-3 h-full w-full bg-mint border-[3px] border-sun" />
-                <div className="relative b3 border-[3px] border-sun bg-[#141416] overflow-hidden shadow-[8px_8px_0px_#fde047]">
+            <div className="min-w-0 lg:col-span-5">
+              <div className="relative mx-auto max-w-md pr-2.5 pb-2.5 sm:pr-3 sm:pb-3 lg:max-w-none">
+                <div className="absolute bottom-0 right-0 left-2.5 top-2.5 sm:left-3 sm:top-3 bg-mint border-[3px] border-sun" />
+                <div className="relative b3 border-[3px] border-sun bg-[#141416] overflow-hidden shadow-[4px_4px_0px_#fde047] sm:shadow-[8px_8px_0px_#fde047]">
                   {/* Dual Visual Header: AI Key Art + Founder Portrait */}
                   <div className="grid grid-cols-12 border-b-[3px] border-sun">
                     <div className="col-span-5 relative aspect-[3/4] overflow-hidden border-r-[3px] border-sun bg-ink">
@@ -1158,15 +1158,15 @@ export default function SalesFunnelPage() {
       {/* 4. SHORT ABOUT ME — DANIEL COLLINS FOUNDER SPOTLIGHT WITH REAL PHOTO */}
       <section
         id="founder-spotlight"
-        className="border-b-[3px] border-ink bg-paper py-16 px-4 md:px-8"
+        className="border-b-[3px] border-ink bg-paper py-16 px-4 md:px-8 overflow-hidden"
       >
         <div className="mx-auto max-w-[1200px]">
-          <div className="b3 hard bg-cream p-6 md:p-10">
-            <div className="grid gap-8 md:grid-cols-12 md:items-center">
+          <div className="b3 hard bg-cream p-4 sm:p-6 md:p-10">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:items-center">
               {/* Founder Dual Photo Card: 1 Portrait + 1 By the Fire */}
-              <div className="md:col-span-5">
-                <div className="relative mx-auto max-w-[440px]">
-                  <div className="absolute -bottom-2.5 -right-2.5 h-full w-full bg-sun border-[3px] border-ink" />
+              <div className="min-w-0 md:col-span-5">
+                <div className="relative mx-auto max-w-[440px] pr-2.5 pb-2.5">
+                  <div className="absolute bottom-0 right-0 left-2.5 top-2.5 bg-sun border-[3px] border-ink" />
                   <div className="relative b3 border-[3px] border-ink bg-ink overflow-hidden">
                     <div className="grid grid-cols-2">
                       <div className="relative aspect-[3/4] overflow-hidden border-r-[3px] border-ink">
@@ -1216,12 +1216,12 @@ export default function SalesFunnelPage() {
               </div>
 
               {/* Short About Me Copy */}
-              <div className="md:col-span-7 space-y-4">
-                <div className="inline-flex items-center gap-2 bg-ink text-sun px-3 py-1 text-xs font-black uppercase tracking-widest">
-                  <Star className="h-3.5 w-3.5 text-sun fill-sun" /> About Me · A Personal Note From Daniel Collins
+              <div className="min-w-0 md:col-span-7 space-y-4">
+                <div className="inline-flex items-center gap-2 bg-ink text-sun px-3 py-1 text-xs font-black uppercase tracking-widest max-w-full">
+                  <Star className="h-3.5 w-3.5 shrink-0 text-sun fill-sun" /> <span>About Me · A Personal Note From Daniel Collins</span>
                 </div>
-                <h2 className="display text-3xl sm:text-5xl leading-tight">
-                  "I Built This Automated Launch System So You Can Own Your Income—Starting Today."
+                <h2 className="display text-2xl sm:text-4xl md:text-5xl leading-tight">
+                  "I Built This Automated Launch System So You Can Own Your Income — Starting Today."
                 </h2>
                 <p className="text-sm sm:text-base font-semibold text-ink/90 leading-relaxed">
                   Hi, I'm <strong>Daniel Collins</strong>. I saw too many smart, driven people stuck working for someone else because launching a business felt like a maze of expensive web developers, branding agencies, and disconnected AI tools.

@@ -174,7 +174,7 @@ function Header() {
           <button
             type="button"
             onClick={() => openNotebook()}
-            className="btn btn-sm btn-quiet relative !px-2.5 sm:!px-3 cursor-pointer"
+            className="hidden sm:inline-flex btn btn-sm btn-quiet relative !px-2.5 sm:!px-3 cursor-pointer"
             aria-label={`Open Founder Notebook, ${notes.length} notes`}
             title="Open Slide-Out Founder Notebook"
           >

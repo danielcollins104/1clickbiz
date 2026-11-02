@@ -6,36 +6,36 @@ export function AboutCreator() {
   const { openQuickStart } = useQuickStart();
 
   return (
-    <section className="border-b-[3px] border-ink bg-paper py-14 sm:py-20 px-4 md:px-8">
+    <section className="border-b-[3px] border-ink bg-paper py-14 sm:py-20 px-4 md:px-8 overflow-hidden">
       <div className="mx-auto max-w-[1400px]">
         {/* Section Header */}
         <div className="mb-8 sm:mb-12 flex flex-col items-start justify-between gap-4 border-b-[3px] border-ink pb-6 sm:pb-8 md:flex-row md:items-end">
-          <div>
+          <div className="min-w-0 max-w-full">
             <div className="inline-flex items-center gap-2 border-[2px] border-ink bg-sun px-3 py-1 text-xs font-black uppercase tracking-wider text-ink shadow-[2px_2px_0px_#000]">
-              <Sparkles className="h-3.5 w-3.5 fill-ink" />
+              <Sparkles className="h-3.5 w-3.5 shrink-0 fill-ink" />
               <span>Our Creator &amp; Vision</span>
             </div>
-            <h2 className="display mt-3 text-4xl sm:text-5xl md:text-7xl">Meet Daniel Collins.</h2>
+            <h2 className="display mt-3 text-3xl sm:text-5xl md:text-7xl">Meet Daniel Collins.</h2>
             <p className="mt-2 text-sm sm:text-base font-bold text-muted md:text-lg">
               Founder, architect, and developer behind the 1 Click Business ecosystem.
             </p>
           </div>
-          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-[11px] sm:text-xs font-black uppercase tracking-wider max-w-full">
             <span className="inline-block h-3 w-3 shrink-0 rounded-full bg-mint border border-ink animate-pulse" />
-            <span>Built for Financial Independence · 10,000+ Launches Target</span>
+            <span className="leading-snug">Built for Financial Independence · 10,000+ Launches Target</span>
           </div>
         </div>
 
         {/* Main Creator Showcase Grid */}
-        <div className="grid gap-10 sm:gap-12 lg:grid-cols-12 lg:items-center">
+        <div className="grid grid-cols-1 gap-8 sm:gap-12 lg:grid-cols-12 lg:items-center">
           {/* Creator Dual-Photo Column: 1 Portrait + 1 By the Fire */}
-          <div className="lg:col-span-5">
-            <div className="relative mx-auto max-w-lg lg:max-w-none">
-              {/* Backing decorative frame */}
-              <div className="absolute -bottom-2.5 -right-2.5 sm:-bottom-3 sm:-right-3 h-full w-full bg-sun border-[3px] border-ink" />
+          <div className="min-w-0 lg:col-span-5">
+            <div className="relative mx-auto max-w-lg pr-2.5 pb-2.5 sm:pr-3 sm:pb-3 lg:max-w-none">
+              {/* Backing decorative frame kept 100% inside container bounds */}
+              <div className="absolute bottom-0 right-0 left-2.5 top-2.5 sm:left-3 sm:top-3 bg-sun border-[3px] border-ink" />
 
               {/* Dual Portrait + Fireside Card */}
-              <div className="relative b3 border-[3px] border-ink bg-ink overflow-hidden shadow-[6px_6px_0px_#000] sm:shadow-[8px_8px_0px_#000]">
+              <div className="relative b3 border-[3px] border-ink bg-ink overflow-hidden shadow-[4px_4px_0px_#000] sm:shadow-[8px_8px_0px_#000]">
                 <div className="grid grid-cols-2">
                   {/* Photo 1: Outdoor Portrait */}
                   <div className="relative aspect-[3/4] overflow-hidden bg-ink border-r-[3px] border-ink">
@@ -45,11 +45,13 @@ export function AboutCreator() {
                         (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
                       }}
                       alt="Daniel Collins — Founder Portrait"
+                      width={825}
+                      height={1024}
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover object-[center_20%] hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute bottom-2 left-2 bg-ink/85 border border-sun/80 px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
+                    <div className="absolute bottom-2 left-2 bg-ink/85 border border-sun/80 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
                       Portrait
                     </div>
                   </div>
@@ -62,27 +64,29 @@ export function AboutCreator() {
                         (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins-fire.png";
                       }}
                       alt="Daniel Collins by the fire — Night Shift Builder Mode"
+                      width={896}
+                      height={1600}
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover object-[center_55%] hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute bottom-2 right-2 bg-ink/85 border border-sun/80 px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
+                    <div className="absolute bottom-2 right-2 bg-ink/85 border border-sun/80 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
                       By the Fire
                     </div>
                   </div>
                 </div>
 
                 {/* Founder Info Section Below Photos */}
-                <div className="border-t-[3px] border-ink bg-paper p-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="display text-2xl md:text-3xl">Daniel Collins</h3>
-                      <p className="text-xs font-black uppercase tracking-wider text-muted">
+                <div className="border-t-[3px] border-ink bg-paper p-3.5 sm:p-5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <h3 className="display text-xl sm:text-2xl md:text-3xl leading-tight">Daniel Collins</h3>
+                      <p className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-muted">
                         Creator &amp; Lead Architect
                       </p>
                     </div>
-                    <div className="flex items-center gap-1.5 border-2 border-ink bg-mint px-2.5 py-1 text-xs font-black uppercase text-ink shadow-[2px_2px_0px_#000]">
-                      <ShieldCheck className="h-4 w-4" />
+                    <div className="flex shrink-0 items-center gap-1.5 border-2 border-ink bg-mint px-2 sm:px-2.5 py-1 text-[10px] sm:text-xs font-black uppercase text-ink shadow-[2px_2px_0px_#000]">
+                      <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
                       <span>Verified Creator</span>
                     </div>
                   </div>
@@ -90,7 +94,7 @@ export function AboutCreator() {
               </div>
 
               {/* Floating Quote Stamp */}
-              <div className="absolute -top-4 -left-4 hidden sm:flex items-center gap-2 border-[2px] border-ink bg-sun p-3 text-xs font-black uppercase tracking-wider text-ink shadow-[4px_4px_0px_#000]">
+              <div className="absolute -top-4 left-2 hidden sm:flex items-center gap-2 border-[2px] border-ink bg-sun p-3 text-xs font-black uppercase tracking-wider text-ink shadow-[4px_4px_0px_#000]">
                 <Zap className="h-4 w-4 fill-ink" />
                 <span>13-in-1 Engine Creator</span>
               </div>
@@ -98,17 +102,17 @@ export function AboutCreator() {
           </div>
 
           {/* Creator Story & Bio Column */}
-          <div className="space-y-6 lg:col-span-7">
-            <div className="space-y-4">
-              <span className="text-xs font-black uppercase tracking-widest text-ink/70">
+          <div className="min-w-0 space-y-6 lg:col-span-7">
+            <div className="space-y-3 sm:space-y-4">
+              <span className="block text-xs font-black uppercase tracking-widest text-ink/70">
                 A Personal Message From The Founder
               </span>
-              <h3 className="display text-3xl md:text-4xl leading-tight">
-                "I built 1 Click Business so anyone can claim their financial independence and create their own income—without spending thousands first."
+              <h3 className="display text-2xl sm:text-3xl md:text-4xl leading-tight">
+                "I built 1 Click Business so anyone can claim their financial independence and create their own income — without spending thousands first."
               </h3>
             </div>
 
-            <div className="prose text-base md:text-lg font-semibold leading-relaxed text-ink/90 space-y-4">
+            <div className="prose max-w-none text-sm sm:text-base md:text-lg font-semibold leading-relaxed text-ink/90 space-y-4">
               <p>
                 Starting a business that generates real income for you and your family shouldn't require juggling twenty expensive SaaS subscriptions, paying
                 $5,000 agency retainers, or losing three months to decision fatigue over brand colors, legal models,
@@ -118,16 +122,16 @@ export function AboutCreator() {
                 I engineered <strong>1 Click Business</strong> with an obsessive standard:
                 give everyday people and visionary creators the unfair execution speed of a funded 10-person venture studio.
                 Instead of isolated chatbots that forget your context, every single one of our 13 AI engines communicates
-                with the rest—so your core answers flow seamlessly from market validation straight into logos,
+                with the rest — so your core answers flow seamlessly from market validation straight into logos,
                 free hosted websites &amp; interactive web apps, targeted ads, and customer revenue tracking.
               </p>
             </div>
 
             {/* Creator Guiding Principles */}
-            <div className="grid gap-3 pt-2 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
               <div className="b3 border-[2px] border-ink bg-cream/70 p-3.5 shadow-[3px_3px_0px_#000]">
                 <div className="flex items-center gap-2 mb-1">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-700" strokeWidth={3} />
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-700" strokeWidth={3} />
                   <span className="text-xs font-black uppercase tracking-wider">No Agency Markups</span>
                 </div>
                 <p className="text-xs font-bold text-muted">
@@ -137,7 +141,7 @@ export function AboutCreator() {
 
               <div className="b3 border-[2px] border-ink bg-cream/70 p-3.5 shadow-[3px_3px_0px_#000]">
                 <div className="flex items-center gap-2 mb-1">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-700" strokeWidth={3} />
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-700" strokeWidth={3} />
                   <span className="text-xs font-black uppercase tracking-wider">Connected Context</span>
                 </div>
                 <p className="text-xs font-bold text-muted">
@@ -147,7 +151,7 @@ export function AboutCreator() {
 
               <div className="b3 border-[2px] border-ink bg-cream/70 p-3.5 shadow-[3px_3px_0px_#000]">
                 <div className="flex items-center gap-2 mb-1">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-700" strokeWidth={3} />
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-700" strokeWidth={3} />
                   <span className="text-xs font-black uppercase tracking-wider">Solomon™ Sovereign AI</span>
                 </div>
                 <p className="text-xs font-bold text-muted">
@@ -157,7 +161,7 @@ export function AboutCreator() {
 
               <div className="b3 border-[2px] border-ink bg-cream/70 p-3.5 shadow-[3px_3px_0px_#000]">
                 <div className="flex items-center gap-2 mb-1">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-700" strokeWidth={3} />
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-700" strokeWidth={3} />
                   <span className="text-xs font-black uppercase tracking-wider">100% Income Ownership</span>
                 </div>
                 <p className="text-xs font-bold text-muted">
@@ -167,9 +171,9 @@ export function AboutCreator() {
             </div>
 
             {/* Quote Callout Box */}
-            <div className="relative b3 border-[3px] border-ink bg-sun/40 p-5 shadow-[4px_4px_0px_#000]">
-              <Quote className="absolute right-4 top-4 h-8 w-8 text-ink/20" />
-              <p className="font-extrabold text-sm md:text-base italic text-ink">
+            <div className="relative b3 border-[3px] border-ink bg-sun/40 p-4 sm:p-5 shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000]">
+              <Quote className="absolute right-3 top-3 h-7 w-7 sm:h-8 sm:w-8 text-ink/20" />
+              <p className="font-extrabold text-sm md:text-base italic text-ink pr-6">
                 "The ambition was never the issue. It was the friction of execution.
                 With 1 Click Business, you follow each step in order and walk away with a real business ready to generate your own income."
               </p>
@@ -179,16 +183,16 @@ export function AboutCreator() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => openQuickStart()}
-                className="btn btn-yellow cursor-pointer"
+                className="btn btn-yellow w-full sm:w-auto cursor-pointer"
               >
-                <Zap className="h-4 w-4" strokeWidth={3} /> Try Daniel's 1-Click Wizard
+                <Zap className="h-4 w-4 shrink-0" strokeWidth={3} /> <span>Try Daniel's 1-Click Wizard</span>
               </button>
-              <Link to="/advisor" className="btn btn-quiet">
-                Consult Solomon™ Advisor <ArrowRight className="h-4 w-4" strokeWidth={3} />
+              <Link to="/advisor" className="btn btn-quiet w-full sm:w-auto">
+                <span>Consult Solomon™ Advisor</span> <ArrowRight className="h-4 w-4 shrink-0" strokeWidth={3} />
               </Link>
             </div>
           </div>
