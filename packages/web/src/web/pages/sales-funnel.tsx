@@ -351,14 +351,14 @@ export default function SalesFunnelPage() {
                   <div className="grid grid-cols-12 border-b-[3px] border-sun">
                     <div className="col-span-5 relative aspect-[4/5] overflow-hidden border-r-[3px] border-sun bg-ink">
                       <img
-                        src="/images/creator-daniel-collins.webp"
+                        src="/images/creator-daniel-collins.webp?v=2"
                         onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
+                          (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg?v=2";
                         }}
-                        alt="Daniel Collins — Creator of 1 Click Business"
+                        alt="Daniel Collins and his daughter — Creator of 1 Click Business"
                         fetchPriority="high"
                         decoding="async"
-                        className="h-full w-full object-cover object-[center_18%]"
+                        className="h-full w-full object-cover object-center"
                       />
                       <span className="absolute bottom-2 left-2 bg-ink/90 border border-sun px-2 py-0.5 text-[10px] font-black uppercase text-sun">
                         Daniel Collins
@@ -1171,14 +1171,14 @@ export default function SalesFunnelPage() {
                     <div className="grid grid-cols-2">
                       <div className="relative aspect-[4/5] overflow-hidden border-r-[3px] border-ink">
                         <img
-                          src="/images/creator-daniel-collins.webp"
+                          src="/images/creator-daniel-collins.webp?v=2"
                           onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
+                            (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg?v=2";
                           }}
-                          alt="Daniel Collins — Founder Portrait"
+                          alt="Daniel Collins and his daughter — Founder Portrait"
                           loading="lazy"
                           decoding="async"
-                          className="h-full w-full object-cover object-[center_18%]"
+                          className="h-full w-full object-cover object-center"
                         />
                         <span className="absolute bottom-2 left-2 bg-ink/85 border border-sun px-2 py-0.5 text-[9px] font-black uppercase text-sun">
                           Portrait

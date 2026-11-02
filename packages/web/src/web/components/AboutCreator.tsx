@@ -37,19 +37,19 @@ export function AboutCreator() {
               {/* Dual Portrait + Fireside Card */}
               <div className="relative w-full max-w-full b3 border-[3px] border-ink bg-ink overflow-hidden shadow-[2px_2px_0px_#000] sm:shadow-[8px_8px_0px_#000]">
                 <div className="grid grid-cols-2">
-                  {/* Photo 1: Outdoor Portrait (825x1024 = 4:5 aspect ratio so neither left nor right side is cropped) */}
+                  {/* Photo 1: Outdoor Portrait (584x720 = 4:5 aspect ratio so neither left nor right side is cropped) */}
                   <div className="relative aspect-[4/5] overflow-hidden bg-ink border-r-[3px] border-ink">
                     <img
-                      src="/images/creator-daniel-collins.webp"
+                      src="/images/creator-daniel-collins.webp?v=2"
                       onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
+                        (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg?v=2";
                       }}
-                      alt="Daniel Collins — Founder Portrait"
-                      width={825}
-                      height={1024}
+                      alt="Daniel Collins and his daughter — Founder Portrait"
+                      width={584}
+                      height={720}
                       loading="lazy"
                       decoding="async"
-                      className="w-full h-full object-cover object-[center_18%] hover:scale-105 transition-transform duration-700"
+                      className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
                     />
                     <div className="absolute bottom-2 left-2 bg-ink/85 border border-sun/80 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
                       Portrait
