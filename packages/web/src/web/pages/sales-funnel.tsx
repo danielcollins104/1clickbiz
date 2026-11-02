@@ -347,24 +347,38 @@ export default function SalesFunnelPage() {
               <div className="relative mx-auto max-w-md pr-2.5 pb-2.5 sm:pr-3 sm:pb-3 lg:max-w-none">
                 <div className="absolute bottom-0 right-0 left-2.5 top-2.5 sm:left-3 sm:top-3 bg-mint border-[3px] border-sun" />
                 <div className="relative b3 border-[3px] border-sun bg-[#141416] overflow-hidden shadow-[4px_4px_0px_#fde047] sm:shadow-[8px_8px_0px_#fde047]">
-                  {/* Main Founder Portrait Header: Daniel Collins & Daughter */}
-                  <div className="relative aspect-[4/5] w-full overflow-hidden border-b-[3px] border-sun bg-ink">
-                    <img
-                      src="/images/creator-daniel-collins.webp?v=3"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg?v=3";
-                      }}
-                      alt="Daniel Collins and his daughter — Creator of 1 Click Business"
-                      fetchPriority="high"
-                      decoding="async"
-                      className="h-full w-full object-cover object-center"
-                    />
-                    <span className="absolute bottom-3 left-3 bg-ink/90 border border-sun px-2.5 py-1 text-[10px] sm:text-xs font-black uppercase text-sun">
-                      Daniel Collins · Creator &amp; Founder
-                    </span>
-                    <span className="absolute top-3 right-3 bg-sun text-ink border border-ink px-2.5 py-1 text-[10px] font-black uppercase">
-                      13 AI Engines Live
-                    </span>
+                  {/* Dual Visual Header: AI Key Art + Founder Portrait */}
+                  <div className="grid grid-cols-12 border-b-[3px] border-sun">
+                    <div className="col-span-5 relative aspect-[4/5] overflow-hidden border-r-[3px] border-sun bg-ink">
+                      <img
+                        src="/images/creator-daniel-collins.webp"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
+                        }}
+                        alt="Daniel Collins — Creator of 1 Click Business"
+                        fetchPriority="high"
+                        decoding="async"
+                        className="h-full w-full object-cover object-[center_18%]"
+                      />
+                      <span className="absolute bottom-2 left-2 bg-ink/90 border border-sun px-2 py-0.5 text-[10px] font-black uppercase text-sun">
+                        Daniel Collins
+                      </span>
+                    </div>
+                    <div className="col-span-7 relative aspect-[4/3] sm:aspect-auto overflow-hidden bg-ink">
+                      <img
+                        src="/images/funnel-hero-keyart.webp"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src = "/images/bundle-kit.webp";
+                        }}
+                        alt="1-Click Business 13 AI Engines Command Center"
+                        fetchPriority="high"
+                        decoding="async"
+                        className="h-full w-full object-cover"
+                      />
+                      <span className="absolute top-2 right-2 bg-sun text-ink border border-ink px-2 py-0.5 text-[10px] font-black uppercase">
+                        13 AI Engines Live
+                      </span>
+                    </div>
                   </div>
 
                   {/* Embedded Short About Me with Daniel's Message */}
@@ -1149,25 +1163,42 @@ export default function SalesFunnelPage() {
         <div className="mx-auto max-w-[1200px]">
           <div className="b3 hard bg-cream p-4 sm:p-6 md:p-10">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:items-center">
-              {/* Founder Portrait Card: Daniel Collins & Daughter */}
+              {/* Founder Dual Photo Card: 1 Portrait + 1 By the Fire */}
               <div className="min-w-0 w-full max-w-full md:col-span-5">
                 <div className="relative mx-auto w-full max-w-[440px] pr-2 pb-2">
                   <div className="absolute bottom-0 right-0 left-2 top-2 bg-sun border-[3px] border-ink" />
                   <div className="relative w-full max-w-full b3 border-[3px] border-ink bg-ink overflow-hidden">
-                    <div className="relative aspect-[4/5] w-full overflow-hidden">
-                      <img
-                        src="/images/creator-daniel-collins.webp?v=3"
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg?v=3";
-                        }}
-                        alt="Daniel Collins and his daughter — Founder Portrait"
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover object-center"
-                      />
-                      <span className="absolute bottom-2.5 left-2.5 bg-ink/90 border border-sun px-2 py-0.5 text-[10px] font-black uppercase text-sun">
-                        Daniel Collins · Founder
-                      </span>
+                    <div className="grid grid-cols-2">
+                      <div className="relative aspect-[4/5] overflow-hidden border-r-[3px] border-ink">
+                        <img
+                          src="/images/creator-daniel-collins.webp"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
+                          }}
+                          alt="Daniel Collins — Founder Portrait"
+                          loading="lazy"
+                          decoding="async"
+                          className="h-full w-full object-cover object-[center_18%]"
+                        />
+                        <span className="absolute bottom-2 left-2 bg-ink/85 border border-sun px-2 py-0.5 text-[9px] font-black uppercase text-sun">
+                          Portrait
+                        </span>
+                      </div>
+                      <div className="relative aspect-[4/5] overflow-hidden">
+                        <img
+                          src="/images/creator-daniel-collins-fire.webp"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins-fire.png";
+                          }}
+                          alt="Daniel Collins by the fire"
+                          loading="lazy"
+                          decoding="async"
+                          className="h-full w-full object-cover object-[center_55%]"
+                        />
+                        <span className="absolute bottom-2 right-2 bg-ink/85 border border-sun px-2 py-0.5 text-[9px] font-black uppercase text-sun">
+                          By the Fire
+                        </span>
+                      </div>
                     </div>
                     <div className="bg-paper p-3.5 border-t-[3px] border-ink flex items-center justify-between">
                       <div>

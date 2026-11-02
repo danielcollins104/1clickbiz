@@ -34,23 +34,45 @@ export function AboutCreator() {
               {/* Backing decorative frame kept 100% inside container bounds */}
               <div className="absolute bottom-0 right-0 left-2 top-2 sm:left-3 sm:top-3 bg-sun border-[3px] border-ink" />
 
-              {/* Featured Creator Portrait Card */}
+              {/* Dual Portrait + Fireside Card */}
               <div className="relative w-full max-w-full b3 border-[3px] border-ink bg-ink overflow-hidden shadow-[2px_2px_0px_#000] sm:shadow-[8px_8px_0px_#000]">
-                <div className="relative aspect-[4/5] w-full overflow-hidden bg-ink">
-                  <img
-                    src="/images/creator-daniel-collins.webp?v=3"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg?v=3";
-                    }}
-                    alt="Daniel Collins and his daughter — Founder Portrait"
-                    width={584}
-                    height={720}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute bottom-3 left-3 bg-ink/90 border border-sun/80 px-2.5 py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider text-sun backdrop-blur">
-                    Daniel Collins · Creator &amp; Founder
+                <div className="grid grid-cols-2">
+                  {/* Photo 1: Outdoor Portrait (825x1024 = 4:5 aspect ratio so neither left nor right side is cropped) */}
+                  <div className="relative aspect-[4/5] overflow-hidden bg-ink border-r-[3px] border-ink">
+                    <img
+                      src="/images/creator-daniel-collins.webp"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
+                      }}
+                      alt="Daniel Collins — Founder Portrait"
+                      width={825}
+                      height={1024}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover object-[center_18%] hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute bottom-2 left-2 bg-ink/85 border border-sun/80 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
+                      Portrait
+                    </div>
+                  </div>
+
+                  {/* Photo 2: By the Fire */}
+                  <div className="relative aspect-[4/5] overflow-hidden bg-ink">
+                    <img
+                      src="/images/creator-daniel-collins-fire.webp"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins-fire.png";
+                      }}
+                      alt="Daniel Collins by the fire — Night Shift Builder Mode"
+                      width={896}
+                      height={1600}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover object-[center_55%] hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute bottom-2 right-2 bg-ink/85 border border-sun/80 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
+                      By the Fire
+                    </div>
                   </div>
                 </div>
 
