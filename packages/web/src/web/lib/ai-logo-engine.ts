@@ -207,12 +207,16 @@ export function buildCuttingEdgeVectorSvg(opts: {
   palette: LogoPalette;
   seed?: number;
 }): string {
-  const cleanName = escapeXml((opts.businessName || "1 Click Biz").trim());
-  const upperName = cleanName.toUpperCase();
-  const cleanTagline = escapeXml((opts.tagline || "AI LAUNCH STUDIO").trim().toUpperCase().slice(0, 34));
-  const initials = escapeXml(getInitials(opts.businessName || "1 Click Biz"));
+  const rawName = (opts.businessName || "1 Click Biz").trim();
+  const cleanName = escapeXml(rawName);
+  const upperName = escapeXml(rawName.toUpperCase());
+  const rawTagline = (opts.tagline || "AI LAUNCH STUDIO").trim().toUpperCase();
+  const cleanTagline = escapeXml(rawTagline.slice(0, 34));
+  const shortTagline22 = escapeXml(rawTagline.slice(0, 22));
+  const shortTagline20 = escapeXml(rawTagline.slice(0, 20));
+  const initials = escapeXml(getInitials(rawName));
   const { primary, secondary, accent, background } = opts.palette;
-  const fontSize = upperName.length > 18 ? 22 : upperName.length > 13 ? 26 : 32;
+  const fontSize = rawName.length > 18 ? 22 : rawName.length > 13 ? 26 : 32;
 
   switch (opts.styleId) {
     case "negative-space":
@@ -245,7 +249,7 @@ export function buildCuttingEdgeVectorSvg(opts: {
         <rect x="58" y="246" width="284" height="58" fill="${secondary}"/>
         <rect x="52" y="240" width="284" height="58" fill="${primary}" stroke="${secondary}" stroke-width="5"/>
         <text x="194" y="278" text-anchor="middle" font-family="'Space Grotesk', system-ui, sans-serif" font-weight="900" font-size="${Math.min(fontSize, 26)}" fill="${secondary}" letter-spacing="2">${upperName}</text>
-        <text x="200" y="336" text-anchor="middle" font-family="monospace" font-weight="800" font-size="11" fill="${secondary}" letter-spacing="3">EST. 2026 · ${cleanTagline.slice(0, 22)}</text>
+        <text x="200" y="336" text-anchor="middle" font-family="monospace" font-weight="800" font-size="11" fill="${secondary}" letter-spacing="3">EST. 2026 · ${shortTagline22}</text>
       </svg>`;
 
     case "isometric-3d":
@@ -310,7 +314,7 @@ export function buildCuttingEdgeVectorSvg(opts: {
         <path d="M188 122 L218 138 L188 154 Z" fill="${secondary}"/>
         <text x="200" y="268" text-anchor="middle" font-family="'Space Grotesk', system-ui, sans-serif" font-weight="900" font-size="${fontSize}" fill="${secondary}" letter-spacing="1">${cleanName}</text>
         <rect x="125" y="286" width="150" height="28" rx="14" fill="${accent}" stroke="${secondary}" stroke-width="2.5"/>
-        <text x="200" y="304" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="11" fill="${secondary}" letter-spacing="2.5">${cleanTagline.slice(0, 20)}</text>
+        <text x="200" y="304" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="11" fill="${secondary}" letter-spacing="2.5">${shortTagline20}</text>
       </svg>`;
   }
 }
