@@ -93,16 +93,26 @@ function Hero() {
           <div className="dots absolute right-6 top-10 hidden h-48 w-48 opacity-30 lg:block" />
           <div className="absolute left-1/2 top-16 hidden h-[480px] w-[480px] -translate-x-1/2 rounded-full border-[3px] border-ink lg:block" />
 
-          {/* Center Hero Image */}
-          <div className="relative mx-auto h-[290px] max-w-full sm:h-[400px] lg:absolute lg:bottom-0 lg:left-1/2 lg:z-20 lg:h-[580px] lg:-translate-x-1/2 pointer-events-none flex justify-center">
-            <img
-              src="/images/hero-cutout.webp"
-              alt="Founder holding a laptop"
-              fetchPriority="high"
-              decoding="async"
-              className="rise h-full w-auto max-w-full lg:max-w-none object-contain"
+          {/* Center Hero Image — Daniel Collins & Daughter */}
+          <div className="relative mx-auto h-[320px] max-w-full sm:h-[420px] lg:absolute lg:bottom-6 lg:left-1/2 lg:z-20 lg:h-[520px] lg:-translate-x-1/2 pointer-events-none flex justify-center items-end">
+            <div
+              className="rise relative h-full aspect-[4/5] max-w-full b3 hard border-[3px] border-ink bg-paper p-2 shadow-[6px_6px_0px_#131313] overflow-hidden"
               style={{ animationDelay: "0.35s" }}
-            />
+            >
+              <img
+                src="/images/creator-daniel-collins.webp?v=3"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg?v=3";
+                }}
+                alt="Daniel Collins and his daughter — Creator of 1 Click Business"
+                fetchPriority="high"
+                decoding="async"
+                className="h-full w-full object-cover object-center border-2 border-ink"
+              />
+              <span className="absolute bottom-4 left-4 bg-ink/90 border border-sun px-2.5 py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider text-sun shadow-[2px_2px_0px_#000]">
+                Daniel Collins · Creator &amp; Founder
+              </span>
+            </div>
           </div>
 
           {/* Left Copy Card */}
