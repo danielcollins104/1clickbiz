@@ -29,16 +29,16 @@ export function AboutCreator() {
         {/* Main Creator Showcase Grid */}
         <div className="grid grid-cols-1 gap-8 sm:gap-12 lg:grid-cols-12 lg:items-center">
           {/* Creator Dual-Photo Column: 1 Portrait + 1 By the Fire */}
-          <div className="min-w-0 lg:col-span-5">
-            <div className="relative mx-auto max-w-lg pr-2.5 pb-2.5 sm:pr-3 sm:pb-3 lg:max-w-none">
+          <div className="min-w-0 w-full max-w-full lg:col-span-5">
+            <div className="relative mx-auto w-full max-w-lg pr-2 pb-2 sm:pr-3 sm:pb-3 lg:max-w-none">
               {/* Backing decorative frame kept 100% inside container bounds */}
-              <div className="absolute bottom-0 right-0 left-2.5 top-2.5 sm:left-3 sm:top-3 bg-sun border-[3px] border-ink" />
+              <div className="absolute bottom-0 right-0 left-2 top-2 sm:left-3 sm:top-3 bg-sun border-[3px] border-ink" />
 
               {/* Dual Portrait + Fireside Card */}
-              <div className="relative b3 border-[3px] border-ink bg-ink overflow-hidden shadow-[4px_4px_0px_#000] sm:shadow-[8px_8px_0px_#000]">
+              <div className="relative w-full max-w-full b3 border-[3px] border-ink bg-ink overflow-hidden shadow-[2px_2px_0px_#000] sm:shadow-[8px_8px_0px_#000]">
                 <div className="grid grid-cols-2">
-                  {/* Photo 1: Outdoor Portrait */}
-                  <div className="relative aspect-[3/4] overflow-hidden bg-ink border-r-[3px] border-ink">
+                  {/* Photo 1: Outdoor Portrait (825x1024 = 4:5 aspect ratio so neither left nor right side is cropped) */}
+                  <div className="relative aspect-[4/5] overflow-hidden bg-ink border-r-[3px] border-ink">
                     <img
                       src="/images/creator-daniel-collins.webp"
                       onError={(e) => {
@@ -49,7 +49,7 @@ export function AboutCreator() {
                       height={1024}
                       loading="lazy"
                       decoding="async"
-                      className="w-full h-full object-cover object-[center_20%] hover:scale-105 transition-transform duration-700"
+                      className="w-full h-full object-cover object-[center_18%] hover:scale-105 transition-transform duration-700"
                     />
                     <div className="absolute bottom-2 left-2 bg-ink/85 border border-sun/80 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-sun backdrop-blur">
                       Portrait
@@ -57,7 +57,7 @@ export function AboutCreator() {
                   </div>
 
                   {/* Photo 2: By the Fire */}
-                  <div className="relative aspect-[3/4] overflow-hidden bg-ink">
+                  <div className="relative aspect-[4/5] overflow-hidden bg-ink">
                     <img
                       src="/images/creator-daniel-collins-fire.webp"
                       onError={(e) => {

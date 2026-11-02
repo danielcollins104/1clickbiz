@@ -145,13 +145,13 @@ export function PlatformBenefitsHighlight({ compact = false }: { compact?: boole
 
         {/* Header */}
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 border-2 border-ink bg-ink px-3.5 py-1.5 text-xs font-black uppercase tracking-widest text-sun shadow-[3px_3px_0px_#79e784]">
-              <Sparkles className="h-4 w-4 text-mint" /> Why Founders Choose 1-Click Launch · 6 Signature Benefits
+          <div className="min-w-0 max-w-3xl">
+            <div className="inline-flex flex-wrap items-center gap-2 border-2 border-ink bg-ink px-3 py-1.5 text-[11px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest text-sun shadow-[3px_3px_0px_#79e784]">
+              <Sparkles className="h-4 w-4 shrink-0 text-mint" /> <span>Why Founders Choose 1-Click Launch · 6 Signature Benefits</span>
             </div>
-            <h2 className="display mt-4 text-4xl sm:text-5xl md:text-6xl leading-[1.15]">
+            <h2 className="display mt-4 text-3xl sm:text-5xl md:text-6xl leading-[1.15]">
               Everything Built to Launch Your{" "}
-              <span className="inline-block bg-mint px-2.5 py-0.5 text-ink border-2 border-ink mt-1">
+              <span className="inline bg-mint px-2 py-0.5 text-ink border-2 border-ink box-decoration-clone">
                 Financial Independence.
               </span>
             </h2>

@@ -349,7 +349,7 @@ export default function SalesFunnelPage() {
                 <div className="relative b3 border-[3px] border-sun bg-[#141416] overflow-hidden shadow-[4px_4px_0px_#fde047] sm:shadow-[8px_8px_0px_#fde047]">
                   {/* Dual Visual Header: AI Key Art + Founder Portrait */}
                   <div className="grid grid-cols-12 border-b-[3px] border-sun">
-                    <div className="col-span-5 relative aspect-[3/4] overflow-hidden border-r-[3px] border-sun bg-ink">
+                    <div className="col-span-5 relative aspect-[4/5] overflow-hidden border-r-[3px] border-sun bg-ink">
                       <img
                         src="/images/creator-daniel-collins.webp"
                         onError={(e) => {
@@ -358,7 +358,7 @@ export default function SalesFunnelPage() {
                         alt="Daniel Collins — Creator of 1 Click Business"
                         fetchPriority="high"
                         decoding="async"
-                        className="h-full w-full object-cover object-[center_20%]"
+                        className="h-full w-full object-cover object-[center_18%]"
                       />
                       <span className="absolute bottom-2 left-2 bg-ink/90 border border-sun px-2 py-0.5 text-[10px] font-black uppercase text-sun">
                         Daniel Collins
@@ -1164,12 +1164,12 @@ export default function SalesFunnelPage() {
           <div className="b3 hard bg-cream p-4 sm:p-6 md:p-10">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:items-center">
               {/* Founder Dual Photo Card: 1 Portrait + 1 By the Fire */}
-              <div className="min-w-0 md:col-span-5">
-                <div className="relative mx-auto max-w-[440px] pr-2.5 pb-2.5">
-                  <div className="absolute bottom-0 right-0 left-2.5 top-2.5 bg-sun border-[3px] border-ink" />
-                  <div className="relative b3 border-[3px] border-ink bg-ink overflow-hidden">
+              <div className="min-w-0 w-full max-w-full md:col-span-5">
+                <div className="relative mx-auto w-full max-w-[440px] pr-2 pb-2">
+                  <div className="absolute bottom-0 right-0 left-2 top-2 bg-sun border-[3px] border-ink" />
+                  <div className="relative w-full max-w-full b3 border-[3px] border-ink bg-ink overflow-hidden">
                     <div className="grid grid-cols-2">
-                      <div className="relative aspect-[3/4] overflow-hidden border-r-[3px] border-ink">
+                      <div className="relative aspect-[4/5] overflow-hidden border-r-[3px] border-ink">
                         <img
                           src="/images/creator-daniel-collins.webp"
                           onError={(e) => {
@@ -1178,13 +1178,13 @@ export default function SalesFunnelPage() {
                           alt="Daniel Collins — Founder Portrait"
                           loading="lazy"
                           decoding="async"
-                          className="h-full w-full object-cover object-[center_20%]"
+                          className="h-full w-full object-cover object-[center_18%]"
                         />
                         <span className="absolute bottom-2 left-2 bg-ink/85 border border-sun px-2 py-0.5 text-[9px] font-black uppercase text-sun">
                           Portrait
                         </span>
                       </div>
-                      <div className="relative aspect-[3/4] overflow-hidden">
+                      <div className="relative aspect-[4/5] overflow-hidden">
                         <img
                           src="/images/creator-daniel-collins-fire.webp"
                           onError={(e) => {

@@ -43,9 +43,9 @@
 
   html {
     scroll-behavior: smooth;
-    overflow-x: clip;
+    overflow-x: hidden;
     width: 100%;
-    max-width: 100%;
+    max-width: 100vw;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
@@ -58,29 +58,11 @@
     font-size: 1.0625rem;
     font-weight: 500;
     line-height: 1.5;
-    overflow-x: clip;
+    overflow-x: hidden;
     width: 100%;
-    max-width: 100%;
+    max-width: 100vw;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Prevent CSS Grid implicit auto-tracks or min-content children from overflowing narrow mobile viewports (e.g. 360px Android S26) */
-  .grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .grid > * {
-    min-width: 0;
-    max-width: 100%;
-  }
-
-  main,
-  section,
-  header,
-  footer {
-    width: 100%;
-    max-width: 100%;
   }
 
   img,
@@ -88,6 +70,37 @@
   video,
   canvas,
   select {
+    max-width: 100%;
+  }
+}
+
+/* Unlayered strict viewport & track containment so narrow mobile screens (e.g. 360px Android S26) never clip ~1cm on the right */
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+main,
+section,
+header,
+footer {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.grid > *,
+.flex > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 639px) {
+  .inline-flex,
+  .inline-block {
     max-width: 100%;
   }
 }

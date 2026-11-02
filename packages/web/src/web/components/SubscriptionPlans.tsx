@@ -128,7 +128,7 @@ export function SubscriptionPlans({ compact = false }: { compact?: boolean }) {
             <p className="mb-2 flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.2em]">
               <Sparkles className="h-4 w-4" strokeWidth={3} /> Invest in Your Own Income Stream · Cancel Anytime
             </p>
-            <h2 className="display text-5xl md:text-7xl">
+            <h2 className="display text-3xl sm:text-5xl md:text-7xl">
               One subscription. <mark className="bg-mint px-2">Your own income.</mark>
             </h2>
             <p className="mt-3 max-w-2xl text-base font-bold text-muted md:text-lg">
@@ -137,7 +137,7 @@ export function SubscriptionPlans({ compact = false }: { compact?: boolean }) {
           </div>
 
           {/* Monthly / Annual Toggle */}
-          <div className="b3 hard flex items-center bg-paper p-1.5">
+          <div className="b3 hard flex flex-wrap items-center bg-paper p-1.5 max-w-full">
             <button
               type="button"
               onClick={() => setBillingCycle("monthly")}
@@ -317,9 +317,9 @@ export function SubscriptionPlans({ compact = false }: { compact?: boolean }) {
           </div>
 
           {/* Tier 2: Phase 1 All-Access Subscription (Featured Center) */}
-          <div className="b3 hard relative flex flex-col justify-between bg-ink p-6 text-sun md:p-8 lg:-translate-y-3 shadow-[10px_10px_0px_#79e784]">
-            <div className="absolute -top-4 left-6 flex items-center gap-1.5 border-[3px] border-ink bg-mint px-3 py-1 text-xs font-black uppercase tracking-wider text-ink shadow-[3px_3px_0px_#000]">
-              <Crown className="h-4 w-4 fill-ink" /> Most Popular · Fastest Path to Income
+          <div className="b3 hard relative flex flex-col justify-between bg-ink p-5 sm:p-6 text-sun md:p-8 lg:-translate-y-3 shadow-[4px_4px_0px_#79e784] sm:shadow-[10px_10px_0px_#79e784]">
+            <div className="absolute -top-4 left-3 right-3 sm:left-6 sm:right-auto flex items-center justify-center sm:justify-start gap-1.5 border-[3px] border-ink bg-mint px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider text-ink shadow-[3px_3px_0px_#000]">
+              <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 fill-ink" /> <span>Most Popular · Fastest Path to Income</span>
             </div>
 
             <div>

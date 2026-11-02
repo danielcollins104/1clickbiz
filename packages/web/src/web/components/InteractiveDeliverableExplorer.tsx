@@ -523,20 +523,20 @@ export function InteractiveDeliverableExplorer() {
           />
         </div>
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div>
-            <p className="mb-2 flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.2em]">
-              <Eye className="h-4 w-4" strokeWidth={3} /> Interactive Deliverable Explorer · Four Ideas, Made Real
+          <div className="min-w-0">
+            <p className="mb-2 flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.15em] sm:tracking-[0.2em]">
+              <Eye className="h-4 w-4 shrink-0" strokeWidth={3} /> <span>Interactive Deliverable Explorer · Four Ideas, Made Real</span>
             </p>
-            <h2 className="display text-4xl sm:text-5xl md:text-6xl leading-[1.15]">
+            <h2 className="display text-3xl sm:text-5xl md:text-6xl leading-[1.15]">
               Four ideas, <span className="inline-block bg-sun px-2.5 py-0.5 border-2 border-ink my-1">made real.</span>
             </h2>
-            <p className="mt-3 max-w-2xl text-base font-bold text-muted md:text-lg">
+            <p className="mt-3 max-w-2xl text-sm sm:text-base font-bold text-muted md:text-lg">
               Inspect a complete build before you subscribe. Pick any of the 4 real business builds below (or type your own brand name) to explore its custom vector logo, plan, brand identity, live website, and CRM.
             </p>
           </div>
 
           {/* Custom Brand Name Live Preview Input */}
-          <div className="b3 hard bg-cream p-3.5 sm:min-w-[340px]">
+          <div className="b3 hard bg-cream p-3.5 w-full sm:w-auto sm:min-w-[340px]">
             <label
               htmlFor="explorer-brand-override"
               className="block text-[11px] font-black uppercase tracking-wider text-ink"
@@ -642,7 +642,7 @@ export function InteractiveDeliverableExplorer() {
         </div>
 
         {/* Step 2: 4-Stage Interactive Pipeline Tabs */}
-        <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-4">
           {STAGES.map((st) => {
             const Icon = st.icon;
             const isActive = activeStage === st.id;
@@ -651,15 +651,15 @@ export function InteractiveDeliverableExplorer() {
                 key={st.id}
                 type="button"
                 onClick={() => setActiveStage(st.id)}
-                className={`b3 cursor-pointer p-4 text-left transition-all ${
+                className={`b3 cursor-pointer p-3.5 sm:p-4 text-left transition-all ${
                   isActive
-                    ? "bg-sun text-ink shadow-[5px_5px_0px_#000] -translate-y-0.5"
+                    ? "bg-sun text-ink shadow-[3px_3px_0px_#000] sm:shadow-[5px_5px_0px_#000] -translate-y-0.5"
                     : "bg-cream text-ink hover:bg-paper"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className="display text-2xl">{st.num}. {st.label}</span>
-                  <span className={`grid h-8 w-8 place-items-center b3 ${isActive ? "bg-ink text-sun" : "bg-paper text-ink"}`}>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="display text-xl sm:text-2xl">{st.num}. {st.label}</span>
+                  <span className={`grid h-8 w-8 shrink-0 place-items-center b3 ${isActive ? "bg-ink text-sun" : "bg-paper text-ink"}`}>
                     <Icon className="h-4 w-4" strokeWidth={2.5} />
                   </span>
                 </div>
@@ -670,7 +670,7 @@ export function InteractiveDeliverableExplorer() {
         </div>
 
         {/* Step 3: Live Deliverable Canvas */}
-        <div className="b3 hard mt-6 bg-cream p-6 md:p-8">
+        <div className="b3 hard mt-6 bg-cream p-4 sm:p-6 md:p-8">
           {/* Top Bar inside Canvas */}
           <div className="flex flex-wrap items-center justify-between gap-4 border-b-[3px] border-ink pb-5">
             <div className="flex items-center gap-4">

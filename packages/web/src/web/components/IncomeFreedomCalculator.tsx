@@ -213,14 +213,14 @@ export function IncomeFreedomCalculator() {
       <div className="mx-auto max-w-[1400px]">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-8 border-b-[3px] border-sun/30">
-          <div>
-            <span className="inline-flex items-center gap-2 bg-mint text-ink px-3 py-1 text-xs font-black uppercase tracking-widest border-2 border-ink shadow-[3px_3px_0px_#fde047]">
-              <Sparkles className="h-3.5 w-3.5 fill-ink" /> Interactive Financial Independence Simulator
+          <div className="min-w-0">
+            <span className="inline-flex flex-wrap items-center gap-2 bg-mint text-ink px-3 py-1 text-[11px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest border-2 border-ink shadow-[3px_3px_0px_#fde047]">
+              <Sparkles className="h-3.5 w-3.5 shrink-0 fill-ink" /> <span>Interactive Financial Independence Simulator</span>
             </span>
-            <h2 className="display mt-4 text-4xl sm:text-6xl md:text-7xl text-sun leading-[1.12]">
+            <h2 className="display mt-4 text-3xl sm:text-6xl md:text-7xl text-sun leading-[1.12]">
               See How Fast Your New Business Replaces Your Paycheck.
             </h2>
-            <p className="mt-3 max-w-3xl text-base sm:text-lg font-bold text-cream/85">
+            <p className="mt-3 max-w-3xl text-sm sm:text-lg font-bold text-cream/85">
               You don’t need hundreds of customers to change your life. Pick a business model below (or choose <strong>Custom</strong>) and slide the customer counter to see how few sales it takes to create <strong>your own independent income stream</strong>.
             </p>
           </div>
@@ -238,7 +238,7 @@ export function IncomeFreedomCalculator() {
         {/* Main Interactive Grid */}
         <div className="mt-10 grid gap-8 lg:grid-cols-12 items-stretch">
           {/* Left Column: Pick Business Path + Slider */}
-          <div className="lg:col-span-7 bg-paper text-ink border-[3px] border-sun p-6 md:p-8 shadow-[8px_8px_0px_#fde047] flex flex-col justify-between space-y-6">
+          <div className="min-w-0 lg:col-span-7 bg-paper text-ink border-[3px] border-sun p-4 sm:p-6 md:p-8 shadow-[4px_4px_0px_#fde047] sm:shadow-[8px_8px_0px_#fde047] flex flex-col justify-between space-y-6">
             <div>
               <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
                 <span className="text-xs font-black uppercase tracking-widest text-muted">
@@ -402,7 +402,7 @@ export function IncomeFreedomCalculator() {
           </div>
 
           {/* Right Column: Live Financial Independence Scoreboard */}
-          <div className="lg:col-span-5 bg-sun text-ink border-[3px] border-ink p-6 md:p-8 shadow-[8px_8px_0px_#79e784] flex flex-col justify-between space-y-6">
+          <div className="min-w-0 lg:col-span-5 bg-sun text-ink border-[3px] border-ink p-4 sm:p-6 md:p-8 shadow-[4px_4px_0px_#79e784] sm:shadow-[8px_8px_0px_#79e784] flex flex-col justify-between space-y-6">
             <div>
               <div className="flex items-center justify-between gap-2 border-b-[3px] border-ink pb-4">
                 <span className="bg-ink text-sun px-2.5 py-1 text-xs font-black uppercase tracking-wider">

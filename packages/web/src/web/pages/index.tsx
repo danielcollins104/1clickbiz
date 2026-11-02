@@ -81,10 +81,10 @@ function Hero() {
         </h1>
       </div>
 
-      <div className="relative">
+      <div className="relative overflow-hidden">
         {/* ticker behind model */}
         <Ticker
-          className="relative z-10 -rotate-1 my-2"
+          className="relative z-10 sm:-rotate-1 my-2"
           words={["Idea", "Plan", "Name", "Brand", "Logo", "Website", "Ads", "Social", "Funding", "Customers", "Launched"]}
         />
 
@@ -323,9 +323,9 @@ function Flow() {
         />
       </div>
       <div className="grid gap-8 md:grid-cols-12 md:items-end">
-        <div className="md:col-span-8">
+        <div className="min-w-0 md:col-span-8">
           <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.2em]">How Phase 1 builds itself</p>
-          <h2 className="display text-5xl sm:text-6xl md:text-7xl leading-[1.15]">
+          <h2 className="display text-3xl sm:text-6xl md:text-7xl leading-[1.15]">
             You answer. It{" "}
             <span className="inline-block bg-mint px-2.5 py-0.5 border-2 border-ink mt-1">
               builds.
@@ -405,9 +405,9 @@ function Editorial() {
             <img src="/images/advisor.webp" alt="Founder thinking at a laptop" className="h-full w-full object-cover" loading="lazy" />
           </div>
         </div>
-        <div className="md:col-span-7">
+        <div className="min-w-0 md:col-span-7">
           <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.2em]">Solomon™ Sovereign AI Advisor + Founder Notebook</p>
-          <h2 className="display text-4xl sm:text-5xl md:text-6xl leading-[1.12]">
+          <h2 className="display text-3xl sm:text-5xl md:text-6xl leading-[1.12]">
             An executive co-founder that already read your plan.
           </h2>
           <p className="mt-4 text-sm sm:text-base font-bold text-ink/80 max-w-xl">
@@ -452,21 +452,21 @@ function BundleBlock() {
       <div className="mx-auto max-w-[1400px] px-4 py-20 md:px-8">
         {/* Top Feature Split */}
         <div className="grid items-center gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-5">
+          <div className="min-w-0 lg:col-span-5">
             <span className="chip border-sun bg-mint text-ink font-black">
               All-Access Subscription{sum > 0 && bundle ? ` · save ${money(sum - bundle.price)}/mo` : ""}
             </span>
-            <h2 className="display mt-4 text-5xl sm:text-6xl md:text-7xl leading-[1.12]">
+            <h2 className="display mt-4 text-3xl sm:text-6xl md:text-7xl leading-[1.12]">
               13 Engines. One Plan.
             </h2>
-            <p className="mt-4 max-w-md text-lg font-semibold text-cream">
+            <p className="mt-4 max-w-md text-base sm:text-lg font-semibold text-cream">
               Subscribe once and unlock all 13 AI launch engines in one connected workspace. Your answers flow automatically from initial idea to live website and customer CRM.
             </p>
-            <div className="mt-8 flex items-end gap-4">
-              <span className="display text-7xl md:text-8xl">{bundle ? money(bundle.price) : "—"}</span>
-              <div className="pb-3">
-                <p className="font-bold text-lg">/month · cancel anytime</p>
-                {sum > 0 && <p className="font-bold text-mint line-through decoration-[3px] text-sm">{money(sum)}/mo if subscribed separately</p>}
+            <div className="mt-8 flex flex-wrap items-end gap-3 sm:gap-4">
+              <span className="display text-5xl sm:text-7xl md:text-8xl">{bundle ? money(bundle.price) : "—"}</span>
+              <div className="pb-2 sm:pb-3">
+                <p className="font-bold text-base sm:text-lg">/month · cancel anytime</p>
+                {sum > 0 && <p className="font-bold text-mint line-through decoration-[3px] text-xs sm:text-sm">{money(sum)}/mo if subscribed separately</p>}
               </div>
             </div>
             <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
@@ -480,19 +480,18 @@ function BundleBlock() {
                     navigate("/subscribe");
                   }
                 }}
-                className="btn btn-yellow border-sun w-full sm:w-auto cursor-pointer"
-                style={{ boxShadow: "6px 6px 0 #79e784" }}
+                className="btn btn-yellow border-sun w-full sm:w-auto cursor-pointer shadow-[3px_3px_0_#79e784] sm:shadow-[6px_6px_0_#79e784]"
               >
                 <Zap className="h-5 w-5 shrink-0" strokeWidth={3} /> Start All-Access Subscription ($99/mo)
               </button>
-              <Link to="/product/phase-1-launch" className="btn border-sun w-full sm:w-auto" style={{ boxShadow: "6px 6px 0 #3b74ff" }}>
+              <Link to="/product/phase-1-launch" className="btn border-sun w-full sm:w-auto shadow-[3px_3px_0_#3b74ff] sm:shadow-[6px_6px_0_#3b74ff]">
                 See Full Plan Specs
               </Link>
             </div>
           </div>
 
-          <div className="lg:col-span-7">
-            <div className="b3 relative aspect-[16/9] overflow-hidden border-sun shadow-[8px_8px_0px_#3b74ff]">
+          <div className="min-w-0 lg:col-span-7">
+            <div className="b3 relative aspect-[16/9] overflow-hidden border-sun shadow-[4px_4px_0px_#3b74ff] sm:shadow-[8px_8px_0px_#3b74ff]">
               <img
                 src="/images/bundle-kit.webp"
                 alt="Thirteen launch tools laid out on electric blue"

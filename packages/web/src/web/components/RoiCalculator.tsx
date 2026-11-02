@@ -86,7 +86,7 @@ export function RoiCalculator() {
 
   return (
     <section className="mx-auto max-w-[1400px] px-4 py-20 md:px-8">
-      <div className="b3 hard border-[3px] border-ink bg-paper p-6 md:p-12 shadow-[8px_8px_0px_#000]">
+      <div className="b3 hard border-[3px] border-ink bg-paper p-4 sm:p-6 md:p-12 shadow-[3px_3px_0px_#000] sm:shadow-[8px_8px_0px_#000]">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b-[3px] border-ink pb-6">
           <div>
             <div className="flex items-center gap-2">
@@ -97,7 +97,7 @@ export function RoiCalculator() {
                 Interactive Launch ROI Model
               </span>
             </div>
-            <h2 className="display text-4xl md:text-6xl mt-2 text-ink">
+            <h2 className="display text-2xl sm:text-4xl md:text-6xl mt-2 text-ink">
               Agency &amp; Freelancer Cost Comparison
             </h2>
             <p className="mt-2 text-base font-bold text-muted max-w-2xl">

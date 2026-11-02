@@ -194,7 +194,7 @@ export function SocialProof() {
               <Sparkles className="h-3.5 w-3.5 fill-ink" />
               <span>Verified Customer Social Proof</span>
             </div>
-            <h2 className="display mt-3 text-5xl md:text-7xl">
+            <h2 className="display mt-3 text-3xl sm:text-5xl md:text-7xl">
               Trusted by 10,000+ Founders.
             </h2>
             <p className="mt-2 text-base font-bold text-muted md:text-lg max-w-2xl">
@@ -275,7 +275,7 @@ export function SocialProof() {
 
         {/* Featured Testimonial Spotlight Card */}
         <div
-          className="mt-6 border-[3px] border-ink bg-ink text-sun p-6 md:p-10 b3 shadow-[8px_8px_0px_#000] relative"
+          className="mt-6 border-[3px] border-ink bg-ink text-sun p-4 sm:p-6 md:p-10 b3 shadow-[3px_3px_0px_#000] sm:shadow-[8px_8px_0px_#000] relative"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
