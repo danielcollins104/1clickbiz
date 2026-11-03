@@ -400,16 +400,26 @@ export function QuickStartModal() {
 
                   {/* Suggestion Chips */}
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-black uppercase text-muted mr-1">Quick ideas:</span>
+                    <span className="text-xs font-black uppercase text-muted mr-1">Quick ideas (click to add):</span>
                     {SUGGESTIONS.map((sug) => (
                       <button
                         key={sug}
                         type="button"
                         onClick={() =>
-                          setCustomForm({
-                            ...customForm,
-                            idea: `${sug} serving local and online clients with modern digital delivery`,
-                            skills: sug,
+                          setCustomForm((prev) => {
+                            const existingIdea = prev.idea.trim();
+                            const nextIdea = existingIdea
+                              ? `${existingIdea.replace(/[,;\s]+$/, "")}, ${sug}`
+                              : sug;
+                            const existingSkills = prev.skills.trim();
+                            const nextSkills = existingSkills
+                              ? `${existingSkills.replace(/[,;\s]+$/, "")}, ${sug}`
+                              : sug;
+                            return {
+                              ...prev,
+                              idea: nextIdea,
+                              skills: nextSkills,
+                            };
                           })
                         }
                         className="text-xs font-bold bg-white hover:bg-sun px-2.5 py-1.5 border border-ink transition-colors cursor-pointer"
