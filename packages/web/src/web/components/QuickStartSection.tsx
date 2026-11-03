@@ -92,10 +92,10 @@ export function QuickStartSection() {
   };
 
   return (
-    <section id="quick-start-section" className="border-b-[3px] border-ink bg-paper py-20 px-4 md:px-8">
+    <section id="quick-start-section" className="border-b-[3px] border-ink bg-paper py-12 sm:py-16 md:py-20 px-3.5 sm:px-4 md:px-8">
       <div className="mx-auto max-w-[1400px]">
         {/* Header Block */}
-        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b-[3px] border-ink">
+        <div className="mb-8 sm:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 sm:pb-8 border-b-[3px] border-ink">
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="grid h-7 w-7 place-items-center bg-ink text-sun border border-ink shadow-[2px_2px_0px_#000]">
@@ -105,11 +105,11 @@ export function QuickStartSection() {
                 Start Here · 1-Click Business Builder
               </p>
             </div>
-            <h2 className="display text-5xl sm:text-6xl md:text-8xl leading-none">
+            <h2 className="display text-4xl sm:text-6xl md:text-8xl leading-none">
               Quick Start Wizard.
             </h2>
-            <p className="mt-4 max-w-3xl text-base sm:text-lg font-bold text-muted">
-              <strong>Step 1:</strong> Click any ready-made business model below (or switch to <em>Custom Quick Builder</em> to type your own idea). <strong>Step 2:</strong> Click the yellow <strong>"Launch This Business in 1-Click"</strong> button to generate all 13 deliverables and open your live workspace.
+            <p className="mt-4 max-w-3xl text-sm sm:text-lg font-bold text-muted leading-relaxed">
+              <strong>Step 1:</strong> Tap any ready-made business model below (or switch to <em>Type Your Own Idea</em>). <strong>Step 2:</strong> Tap the yellow <strong>"Launch This Business in 1-Click"</strong> button to generate all 13 deliverables and open your live workspace.
             </p>
           </div>
 
@@ -117,7 +117,7 @@ export function QuickStartSection() {
             <button
               type="button"
               onClick={() => setActiveTab("presets")}
-              className={`flex-1 sm:flex-initial py-2 px-2.5 sm:px-4 text-[11px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-initial py-2.5 px-3 sm:px-4 text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === "presets"
                   ? "bg-ink text-sun shadow-[2px_2px_0px_#000]"
                   : "text-muted hover:text-ink"
@@ -128,7 +128,7 @@ export function QuickStartSection() {
             <button
               type="button"
               onClick={() => setActiveTab("custom")}
-              className={`flex-1 sm:flex-initial py-2 px-2.5 sm:px-4 text-[11px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-initial py-2.5 px-3 sm:px-4 text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === "custom"
                   ? "bg-ink text-sun shadow-[2px_2px_0px_#000]"
                   : "text-muted hover:text-ink"
@@ -153,9 +153,9 @@ export function QuickStartSection() {
           <div className="space-y-8">
             {/* BOX 1: Archetypes Selection Grid */}
             <div>
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black uppercase tracking-widest text-muted">
+                  <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-ink">
                     Step 1: Choose a Business Model
                   </span>
                   <span className="bg-sun px-2 py-0.5 text-xs font-black border border-ink">
@@ -171,13 +171,20 @@ export function QuickStartSection() {
                 {PRESETS.map((preset) => {
                   const isSelected = selectedPreset.id === preset.id;
                   return (
-                    <button
-                      type="button"
+                    <div
                       key={preset.id}
                       onClick={() => setSelectedPreset(preset)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelectedPreset(preset);
+                        }
+                      }}
                       className={`text-left p-5 border-[3px] border-ink transition-all cursor-pointer relative flex flex-col justify-between ${
                         isSelected
-                          ? "bg-sun shadow-[6px_6px_0px_#000] -translate-y-1"
+                          ? "bg-sun shadow-[6px_6px_0px_#000] -translate-y-0.5"
                           : "bg-white hover:bg-cream hover:shadow-[3px_3px_0px_#000]"
                       }`}
                     >
@@ -193,8 +200,8 @@ export function QuickStartSection() {
                             {preset.badge}
                           </span>
                         </div>
-                        <h3 className="font-black text-lg text-ink leading-snug">{preset.name}</h3>
-                        <p className="text-xs font-semibold text-ink/80 mt-1.5 line-clamp-2">
+                        <h3 className="font-black text-lg sm:text-xl text-ink leading-snug">{preset.name}</h3>
+                        <p className="text-xs sm:text-sm font-semibold text-ink/85 mt-1.5 leading-relaxed">
                           {preset.tagline}
                         </p>
                       </div>
@@ -209,19 +216,43 @@ export function QuickStartSection() {
                           </span>
                         ))}
                       </div>
-                    </button>
+
+                      {isSelected && (
+                        <div className="mt-4 pt-3 border-t-2 border-ink flex flex-wrap items-center justify-between gap-2 md:hidden">
+                          <a
+                            href="#home-step-2-review"
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-xs font-black underline text-ink"
+                          >
+                            See Step 2 Blueprint ↓
+                          </a>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleLaunch();
+                            }}
+                            disabled={isSubmitting}
+                            className="bg-ink text-sun px-3 py-1.5 text-xs font-black uppercase border border-ink flex items-center gap-1.5"
+                          >
+                            <Rocket className="h-3.5 w-3.5 fill-sun text-sun" />
+                            <span>Launch in 1-Click →</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
             </div>
 
             {/* BOX 2: Blueprint Breakdown Information */}
-            <div className="border-[3px] border-ink bg-white p-6 md:p-8 shadow-[8px_8px_0px_#000]">
+            <div id="home-step-2-review" className="border-[3px] border-ink bg-white p-5 sm:p-6 md:p-8 shadow-[6px_6px_0px_#000] sm:shadow-[8px_8px_0px_#000]">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b-[3px] border-ink pb-6 mb-6">
                 <div className="flex items-center gap-3">
                   <span className="text-4xl">{selectedPreset.icon}</span>
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="text-xs font-black uppercase tracking-widest text-muted">
                         Step 2: Review &amp; Launch Your Selected Model
                       </span>
@@ -235,7 +266,7 @@ export function QuickStartSection() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm font-extrabold text-ink bg-cream p-3 border-2 border-ink">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm font-extrabold text-ink bg-cream p-3 border-2 border-ink">
                   <span className="flex items-center gap-1.5">
                     <DollarSign className="h-4 w-4 text-ink" /> {selectedPreset.intake.budget}
                   </span>
@@ -299,7 +330,7 @@ export function QuickStartSection() {
               </div>
 
               {/* Action Bar */}
-              <div className="mt-8 pt-6 border-t-[3px] border-ink flex flex-col sm:flex-row items-center justify-between gap-4 bg-cream p-5">
+              <div className="mt-8 pt-6 border-t-[3px] border-ink flex flex-col sm:flex-row items-center justify-between gap-4 bg-cream p-4 sm:p-5">
                 <div className="flex items-center gap-3">
                   {!session && (
                     <button
@@ -311,7 +342,7 @@ export function QuickStartSection() {
                     </button>
                   )}
                   <span className="flex items-center gap-1.5 text-xs font-black text-ink">
-                    <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                    <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
                     Builds all 13 tools &amp; opens your live dashboard immediately
                   </span>
                 </div>
@@ -320,7 +351,7 @@ export function QuickStartSection() {
                   type="button"
                   onClick={handleLaunch}
                   disabled={isSubmitting}
-                  className="btn btn-yellow text-sm sm:text-base font-black px-8 py-3 border-[2.5px] border-ink shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer flex items-center gap-2 w-full sm:w-auto justify-center"
+                  className="btn btn-yellow text-sm sm:text-base font-black px-6 sm:px-8 py-3 border-[2.5px] border-ink shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer flex items-center gap-2 w-full sm:w-auto justify-center"
                 >
                   {isSubmitting ? (
                     <>
@@ -340,7 +371,7 @@ export function QuickStartSection() {
           </div>
         ) : (
           /* Custom Quick Builder Tab */
-          <div className="border-[3px] border-ink bg-white p-6 md:p-8 shadow-[8px_8px_0px_#000] space-y-6">
+          <div className="border-[3px] border-ink bg-white p-5 sm:p-6 md:p-8 shadow-[6px_6px_0px_#000] sm:shadow-[8px_8px_0px_#000] space-y-6">
             <div>
               <p className="text-xs font-black uppercase tracking-widest text-muted mb-1">
                 Custom Idea Input
@@ -351,7 +382,7 @@ export function QuickStartSection() {
               <textarea
                 id="home-custom-idea-input"
                 aria-label="What business do you want to launch, or what are your skills?"
-                rows={3}
+                rows={4}
                 value={customForm.idea}
                 onChange={(e) => setCustomForm({ ...customForm, idea: e.target.value, skills: e.target.value })}
                 placeholder="e.g. Specialty cold-brew coffee subscription for offices, or mobile bicycle maintenance..."
@@ -371,7 +402,7 @@ export function QuickStartSection() {
                         skills: sug,
                       })
                     }
-                    className="text-xs font-bold bg-cream hover:bg-sun px-3 py-1 border border-ink transition-colors cursor-pointer"
+                    className="text-xs font-bold bg-cream hover:bg-sun px-3 py-1.5 border border-ink transition-colors cursor-pointer"
                   >
                     + {sug}
                   </button>
@@ -439,7 +470,7 @@ export function QuickStartSection() {
                 type="button"
                 onClick={handleLaunch}
                 disabled={isSubmitting || !customForm.idea.trim()}
-                className="btn btn-yellow text-sm sm:text-base font-black px-8 py-3 border-[2.5px] border-ink shadow-[4px_4px_0px_#000] flex items-center gap-2 cursor-pointer"
+                className="btn btn-yellow text-sm sm:text-base font-black px-8 py-3 border-[2.5px] border-ink shadow-[4px_4px_0px_#000] flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
               >
                 {isSubmitting ? (
                   <>

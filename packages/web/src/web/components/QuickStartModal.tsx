@@ -246,7 +246,6 @@ export function QuickStartModal() {
 
       // 2. If user is signed in but has no tools unlocked:
       if (session && !hasUnlockedTools) {
-        // Save pending intake to localStorage for immediate auto-fill upon bundle purchase
         localStorage.setItem("1cb_pending_quick_start", JSON.stringify(currentIntake));
         setLaunchStepText("Preparing Phase 1 Launch Bundle...");
         setTimeout(() => {
@@ -258,7 +257,6 @@ export function QuickStartModal() {
       }
 
       // 3. User is not signed in:
-      // Store draft intake
       localStorage.setItem("1cb_pending_quick_start", JSON.stringify(currentIntake));
       setLaunchStepText("Redirecting to sign in & claim business...");
       setTimeout(() => {
@@ -277,14 +275,13 @@ export function QuickStartModal() {
       setError(null);
       localStorage.setItem("1cb_pending_quick_start", JSON.stringify(currentIntake));
       await signInWithGoogle();
-      // Auth state will trigger re-render
     } catch (e) {
       setError(errorMessage(e));
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6">
+    <div className="fixed inset-0 z-50 flex items-stretch justify-center p-0 sm:items-center sm:p-3 md:p-6">
       {/* Backdrop */}
       <button
         type="button"
@@ -293,23 +290,24 @@ export function QuickStartModal() {
         onClick={() => !isSubmitting && closeQuickStart()}
       />
 
-      {/* Modal Container */}
-      <div className="relative w-full max-w-5xl md:max-w-6xl max-h-[94vh] flex flex-col bg-paper border-[3px] border-ink shadow-[10px_10px_0px_#000] z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-        
-        {/* Header Bar */}
-        <header className="flex items-center justify-between border-b-[3px] border-ink bg-sun px-5 py-4">
-          <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center bg-ink text-sun border-2 border-ink shadow-[2px_2px_0px_#000]">
-              <Zap className="h-6 w-6 fill-sun text-sun" strokeWidth={2.5} />
+      {/* Modal Container — full-bleed 100dvh on mobile so Step 1 has maximum screen area, framed modal on sm/md+ */}
+      <div className="relative z-10 flex h-[100dvh] max-h-[100dvh] w-full max-w-5xl flex-col overflow-hidden bg-paper sm:h-auto sm:max-h-[94vh] sm:border-[3px] sm:border-ink sm:shadow-[10px_10px_0px_#000] md:max-w-6xl animate-in fade-in zoom-in-95 duration-150">
+        {/* Compact Sticky Header Bar */}
+        <header className="flex shrink-0 items-center justify-between border-b-[3px] border-ink bg-sun px-3.5 py-2.5 sm:px-5 sm:py-4">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <span className="grid h-8 w-8 sm:h-10 sm:w-10 shrink-0 place-items-center bg-ink text-sun border-2 border-ink shadow-[2px_2px_0px_#000]">
+              <Zap className="h-4 w-4 sm:h-6 sm:w-6 fill-sun text-sun" strokeWidth={2.5} />
             </span>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h2 className="display text-2xl md:text-3xl leading-tight">Quick Start Wizard</h2>
+                <h2 className="display text-xl sm:text-2xl md:text-3xl leading-tight truncate">
+                  Quick Start Wizard
+                </h2>
                 <span className="hidden sm:inline-block bg-mint text-ink text-xs font-black px-2 py-0.5 border border-ink shadow-[1px_1px_0px_#000]">
                   1-CLICK LAUNCH
                 </span>
               </div>
-              <p className="text-xs font-bold text-ink/80 mt-0.5">
+              <p className="hidden sm:block text-xs font-bold text-ink/80 mt-0.5">
                 Choose a validated archetype or customize in seconds. 13 AI engines build your launch blueprint.
               </p>
             </div>
@@ -318,289 +316,338 @@ export function QuickStartModal() {
             type="button"
             onClick={closeQuickStart}
             disabled={isSubmitting}
-            className="btn btn-sm btn-quiet !p-2 border-2 border-ink hover:bg-ink hover:text-sun transition-colors"
+            className="btn btn-sm btn-quiet !p-1.5 sm:!p-2 border-2 border-ink hover:bg-ink hover:text-sun transition-colors shrink-0"
             aria-label="Close Quick Start modal"
           >
             <X className="h-5 w-5" strokeWidth={3} />
           </button>
         </header>
 
-        {/* Tab Selection */}
-        <div className="flex border-b-[3px] border-ink bg-cream">
-          <button
-            type="button"
-            onClick={() => setActiveTab("presets")}
-            className={`flex-1 py-3 px-4 text-xs md:text-sm font-black uppercase tracking-wider transition-all border-r-[3px] border-ink flex items-center justify-center gap-2 ${
-              activeTab === "presets"
-                ? "bg-paper text-ink shadow-[inset_0_-3px_0_#000]"
-                : "bg-cream text-muted hover:text-ink hover:bg-paper/60"
-            }`}
-          >
-            <Sparkles className="h-4 w-4" />
-            <span>Curated Archetypes (Instant)</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("custom")}
-            className={`flex-1 py-3 px-4 text-xs md:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-              activeTab === "custom"
-                ? "bg-paper text-ink shadow-[inset_0_-3px_0_#000]"
-                : "bg-cream text-muted hover:text-ink hover:bg-paper/60"
-            }`}
-          >
-            <Lightbulb className="h-4 w-4" />
-            <span>Custom Quick Builder</span>
-          </button>
-        </div>
+        {/* Full-Height Scrollable Main Area (Tabs + Step 1 + Step 2 scroll together smoothly on mobile) */}
+        <div className="flex-1 overflow-y-auto overscroll-contain">
+          {/* Tab Selection */}
+          <div className="flex border-b-[3px] border-ink bg-cream">
+            <button
+              type="button"
+              onClick={() => setActiveTab("presets")}
+              className={`flex-1 py-2.5 px-2.5 sm:py-3 sm:px-4 text-[11px] sm:text-xs md:text-sm font-black uppercase tracking-wider transition-all border-r-[3px] border-ink flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
+                activeTab === "presets"
+                  ? "bg-paper text-ink shadow-[inset_0_-3px_0_#000]"
+                  : "bg-cream text-muted hover:text-ink hover:bg-paper/60"
+              }`}
+            >
+              <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+              <span>1. Pick Ready-Made Model</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("custom")}
+              className={`flex-1 py-2.5 px-2.5 sm:py-3 sm:px-4 text-[11px] sm:text-xs md:text-sm font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
+                activeTab === "custom"
+                  ? "bg-paper text-ink shadow-[inset_0_-3px_0_#000]"
+                  : "bg-cream text-muted hover:text-ink hover:bg-paper/60"
+              }`}
+            >
+              <Lightbulb className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+              <span>2. Type Your Own Idea</span>
+            </button>
+          </div>
 
-        {/* Body Content (Scrollable) */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
-          {error && (
-            <div className="border-[3px] border-rose-600 bg-rose-50 p-4 text-rose-900 font-bold text-sm flex items-start gap-3">
-              <span className="text-xl">⚠️</span>
-              <div className="flex-1">
-                <p className="font-black">Could not complete quick launch:</p>
-                <p className="mt-0.5">{error}</p>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "presets" ? (
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-black uppercase tracking-widest text-muted">
-                  Step 1: Pick a Business Model
-                </p>
-                <span className="text-xs font-extrabold text-ink bg-sun px-2 py-0.5 border border-ink">
-                  Fully pre-configured
-                </span>
-              </div>
-
-              {/* Grid of Archetypes */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {PRESETS.map((preset) => {
-                  const isSelected = selectedPreset.id === preset.id;
-                  return (
-                    <button
-                      type="button"
-                      key={preset.id}
-                      onClick={() => setSelectedPreset(preset)}
-                      className={`text-left p-4 border-[2.5px] border-ink transition-all cursor-pointer relative flex flex-col justify-between w-full ${
-                        isSelected
-                          ? "bg-sun shadow-[4px_4px_0px_#000] -translate-y-0.5"
-                          : "bg-white hover:bg-cream hover:shadow-[2px_2px_0px_#000]"
-                      }`}
-                    >
-                      {isSelected && (
-                        <span className="absolute -top-3 -right-2 bg-ink text-sun text-xs font-black px-2 py-0.5 border border-ink shadow-[1px_1px_0px_#000] flex items-center gap-1">
-                          <Check className="h-3.5 w-3.5 stroke-[3]" /> SELECTED
-                        </span>
-                      )}
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-2">
-                          <span className="text-2xl">{preset.icon}</span>
-                          <span className="text-xs font-black uppercase tracking-wider bg-paper px-2 py-0.5 border border-ink">
-                            {preset.badge}
-                          </span>
-                        </div>
-                        <h3 className="font-black text-base text-ink leading-snug">{preset.name}</h3>
-                        <p className="text-xs font-semibold text-ink/80 mt-1 line-clamp-2">
-                          {preset.tagline}
-                        </p>
-                      </div>
-
-                      <div className="mt-3 pt-3 border-t border-ink/20 flex flex-wrap gap-1.5">
-                        {preset.highlights.map((h) => (
-                          <span
-                            key={h}
-                            className="text-xs font-bold bg-ink/5 px-2 py-0.5 border border-ink/20"
-                          >
-                            ✓ {h}
-                          </span>
-                        ))}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Selected Preset Blueprint Breakdown - Box 2 clearly positioned below Box 1 */}
-              <div className="mt-6 border-[3px] border-ink bg-paper p-6 shadow-[5px_5px_0px_#000]">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b-[2px] border-ink pb-4 mb-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">{selectedPreset.icon}</span>
-                    <div>
-                      <span className="text-xs font-black uppercase tracking-wider text-muted">Ready to Initialize</span>
-                      <h4 className="font-black text-xl text-ink leading-tight">{selectedPreset.name}</h4>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 text-xs sm:text-sm font-extrabold text-muted">
-                    <span className="flex items-center gap-1">
-                      <DollarSign className="h-4 w-4 text-ink" /> {selectedPreset.intake.budget}
-                    </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-4 w-4 text-ink" /> {selectedPreset.intake.hours} hrs/wk
-                    </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4 text-ink" /> {selectedPreset.intake.location}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="font-black uppercase text-xs text-muted mb-1.5">Target Customer &amp; Market:</p>
-                    <p className="font-semibold bg-white p-3 border-2 border-ink leading-relaxed">
-                      {selectedPreset.intake.customer}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-black uppercase text-xs text-muted mb-1.5">Core Value Proposition:</p>
-                    <p className="font-semibold bg-white p-3 border-2 border-ink leading-relaxed">
-                      {selectedPreset.intake.idea}
-                    </p>
-                  </div>
-                </div>
-
-                {/* 13 Automated Tools Visualizer */}
-                <div className="mt-5 pt-4 border-t border-ink/20">
-                  <p className="text-xs font-black uppercase tracking-wider text-muted mb-2.5 flex items-center gap-1.5">
-                    <Layers className="h-4 w-4 text-ink" />
-                    <span>Automated Launch Pipeline (All 13 AI Engines Queue Instantly):</span>
-                  </p>
-                  <div className="flex flex-wrap gap-2 text-xs font-bold">
-                    {[
-                      "Idea Validation",
-                      "Company Name Generator",
-                      "5-Year Business Plan",
-                      "Magnetic Brand Voice",
-                      "Color & Font Palette",
-                      "Vector Logo Concepts",
-                      "Live Landing Page",
-                      "Ad Copy & Creatives",
-                      "Social Media Kickstart",
-                      "Funding & Grants Finder",
-                      "Local Licences & Permits",
-                      "Embedded CRM Pipeline",
-                      "Launch Day Checklist",
-                    ].map((tool, idx) => (
-                      <span
-                        key={tool}
-                        className="bg-sun px-2.5 py-1 border border-ink text-ink flex items-center gap-1.5"
-                      >
-                        <span className="text-[11px] font-black text-ink/70">#{idx + 1}</span>
-                        {tool}
-                      </span>
-                    ))}
-                  </div>
+          <div className="p-3.5 sm:p-5 md:p-6 space-y-6">
+            {error && (
+              <div className="border-[3px] border-rose-600 bg-rose-50 p-4 text-rose-900 font-bold text-sm flex items-start gap-3">
+                <span className="text-xl">⚠️</span>
+                <div className="flex-1">
+                  <p className="font-black">Could not complete quick launch:</p>
+                  <p className="mt-0.5">{error}</p>
                 </div>
               </div>
-            </div>
-          ) : (
-            /* Custom Quick Builder Tab */
-            <div className="space-y-5">
+            )}
+
+            {activeTab === "presets" ? (
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-muted mb-1">
-                  1-Question Custom Start
-                </p>
-                <label htmlFor="custom-idea-input" className="block text-sm font-black text-ink mb-1.5">
-                  What business do you want to launch, or what are you skilled at?
-                </label>
-                <textarea
-                  id="custom-idea-input"
-                  aria-label="What business do you want to launch, or what are you skilled at?"
-                  rows={3}
-                  value={customForm.idea}
-                  onChange={(e) => setCustomForm({ ...customForm, idea: e.target.value, skills: e.target.value })}
-                  placeholder="e.g. Specialty cold-brew coffee subscription for offices, or mobile bike repair..."
-                  className="w-full border-[3px] border-ink bg-white p-3 font-semibold text-sm outline-none focus:bg-sun/20 shadow-[2px_2px_0px_#000]"
-                />
-                
-                {/* Suggestion Chips */}
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-black uppercase text-muted mr-1">Quick ideas:</span>
-                  {SUGGESTIONS.map((sug) => (
-                    <button
-                      key={sug}
-                      type="button"
-                      onClick={() =>
-                        setCustomForm({
-                          ...customForm,
-                          idea: `${sug} serving local and online clients with modern digital delivery`,
-                          skills: sug,
-                        })
-                      }
-                      className="text-xs font-bold bg-white hover:bg-sun px-2.5 py-1 border border-ink transition-colors cursor-pointer"
-                    >
-                      + {sug}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label htmlFor="custom-location-input" className="block text-xs font-black uppercase text-ink mb-1">
-                    Your Location
-                  </label>
-                  <input
-                    id="custom-location-input"
-                    aria-label="Your Location"
-                    type="text"
-                    value={customForm.location}
-                    onChange={(e) => setCustomForm({ ...customForm, location: e.target.value })}
-                    placeholder="City, State, Country"
-                    className="w-full border-2 border-ink bg-white p-2 text-xs font-bold outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="custom-budget-select" className="block text-xs font-black uppercase text-ink mb-1">
-                    Starting Budget
-                  </label>
-                  <select
-                    id="custom-budget-select"
-                    aria-label="Starting Budget"
-                    value={customForm.budget}
-                    onChange={(e) => setCustomForm({ ...customForm, budget: e.target.value })}
-                    className="w-full border-2 border-ink bg-white p-2 text-xs font-bold outline-none"
-                  >
-                    <option value="Under $500">Under $500</option>
-                    <option value="$500–$2,000">$500–$2,000</option>
-                    <option value="$2,000–$10,000">$2,000–$10,000</option>
-                    <option value="$10,000+">$10,000+</option>
-                  </select>
-                </div>
-
-                <div>
-                  <span className="block text-xs font-black uppercase text-ink mb-1">
-                    Brand Vibe
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-3.5">
+                  <p className="text-xs sm:text-sm font-black uppercase tracking-wider text-ink">
+                    Step 1: Tap Any Business Model Below
+                  </p>
+                  <span className="text-[11px] sm:text-xs font-extrabold text-ink bg-sun px-2 py-0.5 border border-ink">
+                    6 Proven Models · Pre-Configured
                   </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["Bold", "Friendly", "Premium", "Calm", "Expert"].map((t) => (
-                      <button
-                        key={t}
-                        type="button"
-                        onClick={() => setCustomForm({ ...customForm, tone: t })}
-                        className={`text-xs font-black px-2.5 py-1.5 border border-ink transition-colors cursor-pointer ${
-                          customForm.tone === t ? "bg-ink text-sun shadow-[1px_1px_0px_#000]" : "bg-white text-ink hover:bg-cream"
+                </div>
+
+                {/* Expanded Grid of Archetypes */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+                  {PRESETS.map((preset) => {
+                    const isSelected = selectedPreset.id === preset.id;
+                    return (
+                      <div
+                        key={preset.id}
+                        onClick={() => setSelectedPreset(preset)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setSelectedPreset(preset);
+                          }
+                        }}
+                        className={`text-left p-4 sm:p-5 border-[2.5px] border-ink transition-all cursor-pointer relative flex flex-col justify-between w-full ${
+                          isSelected
+                            ? "bg-sun shadow-[4px_4px_0px_#000]"
+                            : "bg-white hover:bg-cream hover:shadow-[2px_2px_0px_#000]"
                         }`}
                       >
-                        {t}
+                        {isSelected && (
+                          <span className="absolute -top-3 right-2 bg-ink text-sun text-[11px] font-black px-2.5 py-0.5 border border-ink shadow-[1px_1px_0px_#000] flex items-center gap-1">
+                            <Check className="h-3.5 w-3.5 stroke-[3]" /> SELECTED
+                          </span>
+                        )}
+                        <div>
+                          <div className="flex items-center justify-between gap-2 mb-2">
+                            <span className="text-2xl sm:text-3xl">{preset.icon}</span>
+                            <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider bg-paper px-2 py-0.5 border border-ink">
+                              {preset.badge}
+                            </span>
+                          </div>
+                          <h3 className="font-black text-base sm:text-lg text-ink leading-snug">
+                            {preset.name}
+                          </h3>
+                          <p className="text-xs sm:text-sm font-semibold text-ink/85 mt-1.5 leading-relaxed">
+                            {preset.tagline}
+                          </p>
+                        </div>
+
+                        <div className="mt-3.5 pt-3 border-t border-ink/20 flex flex-wrap gap-1.5">
+                          {preset.highlights.map((h) => (
+                            <span
+                              key={h}
+                              className="text-[11px] sm:text-xs font-bold bg-ink/5 px-2 py-0.5 border border-ink/20"
+                            >
+                              ✓ {h}
+                            </span>
+                          ))}
+                        </div>
+
+                        {isSelected && (
+                          <div className="mt-3.5 pt-3 border-t-2 border-ink flex flex-wrap items-center justify-between gap-2 md:hidden">
+                            <a
+                              href="#modal-step-2-preview"
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-xs font-black underline text-ink"
+                            >
+                              Review Step 2 Details ↓
+                            </a>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleLaunch();
+                              }}
+                              disabled={isSubmitting}
+                              className="bg-ink text-sun px-3 py-1.5 text-xs font-black uppercase border border-ink flex items-center gap-1.5"
+                            >
+                              <Rocket className="h-3.5 w-3.5 fill-sun text-sun" />
+                              <span>Launch Model Now →</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Selected Preset Blueprint Breakdown - Step 2 */}
+                <div
+                  id="modal-step-2-preview"
+                  className="mt-6 border-[3px] border-ink bg-paper p-4 sm:p-6 shadow-[4px_4px_0px_#000] sm:shadow-[5px_5px_0px_#000]"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b-[2px] border-ink pb-4 mb-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl">{selectedPreset.icon}</span>
+                      <div>
+                        <span className="text-xs font-black uppercase tracking-wider text-muted">
+                          Step 2: Ready to Initialize
+                        </span>
+                        <h4 className="font-black text-lg sm:text-xl text-ink leading-tight">
+                          {selectedPreset.name}
+                        </h4>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 text-xs sm:text-sm font-extrabold text-muted">
+                      <span className="flex items-center gap-1">
+                        <DollarSign className="h-4 w-4 text-ink" /> {selectedPreset.intake.budget}
+                      </span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-4 w-4 text-ink" /> {selectedPreset.intake.hours} hrs/wk
+                      </span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-4 w-4 text-ink" /> {selectedPreset.intake.location}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="font-black uppercase text-xs text-muted mb-1.5">
+                        Target Customer &amp; Market:
+                      </p>
+                      <p className="font-semibold bg-white p-3 border-2 border-ink leading-relaxed">
+                        {selectedPreset.intake.customer}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="font-black uppercase text-xs text-muted mb-1.5">
+                        Core Value Proposition:
+                      </p>
+                      <p className="font-semibold bg-white p-3 border-2 border-ink leading-relaxed">
+                        {selectedPreset.intake.idea}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 13 Automated Tools Visualizer */}
+                  <div className="mt-5 pt-4 border-t border-ink/20">
+                    <p className="text-xs font-black uppercase tracking-wider text-muted mb-2.5 flex items-center gap-1.5">
+                      <Layers className="h-4 w-4 text-ink" />
+                      <span>Automated Launch Pipeline (All 13 AI Engines Queue Instantly):</span>
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2 text-xs font-bold">
+                      {[
+                        "Idea Validation",
+                        "Company Name Generator",
+                        "5-Year Business Plan",
+                        "Magnetic Brand Voice",
+                        "Color & Font Palette",
+                        "Vector Logo Concepts",
+                        "Live Landing Page",
+                        "Ad Copy & Creatives",
+                        "Social Media Kickstart",
+                        "Funding & Grants Finder",
+                        "Local Licences & Permits",
+                        "Embedded CRM Pipeline",
+                        "Launch Day Checklist",
+                      ].map((tool, idx) => (
+                        <span
+                          key={tool}
+                          className="bg-sun px-2.5 py-1 border border-ink text-ink flex items-center gap-1.5"
+                        >
+                          <span className="text-[11px] font-black text-ink/70">#{idx + 1}</span>
+                          {tool}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Custom Quick Builder Tab */
+              <div className="space-y-5">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-widest text-muted mb-1">
+                    1-Question Custom Start
+                  </p>
+                  <label htmlFor="custom-idea-input" className="block text-sm font-black text-ink mb-1.5">
+                    What business do you want to launch, or what are you skilled at?
+                  </label>
+                  <textarea
+                    id="custom-idea-input"
+                    aria-label="What business do you want to launch, or what are you skilled at?"
+                    rows={4}
+                    value={customForm.idea}
+                    onChange={(e) => setCustomForm({ ...customForm, idea: e.target.value, skills: e.target.value })}
+                    placeholder="e.g. Specialty cold-brew coffee subscription for offices, or mobile bike repair..."
+                    className="w-full border-[3px] border-ink bg-white p-3.5 font-semibold text-sm outline-none focus:bg-sun/20 shadow-[2px_2px_0px_#000]"
+                  />
+
+                  {/* Suggestion Chips */}
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-black uppercase text-muted mr-1">Quick ideas:</span>
+                    {SUGGESTIONS.map((sug) => (
+                      <button
+                        key={sug}
+                        type="button"
+                        onClick={() =>
+                          setCustomForm({
+                            ...customForm,
+                            idea: `${sug} serving local and online clients with modern digital delivery`,
+                            skills: sug,
+                          })
+                        }
+                        className="text-xs font-bold bg-white hover:bg-sun px-2.5 py-1.5 border border-ink transition-colors cursor-pointer"
+                      >
+                        + {sug}
                       </button>
                     ))}
                   </div>
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label htmlFor="custom-location-input" className="block text-xs font-black uppercase text-ink mb-1">
+                      Your Location
+                    </label>
+                    <input
+                      id="custom-location-input"
+                      aria-label="Your Location"
+                      type="text"
+                      value={customForm.location}
+                      onChange={(e) => setCustomForm({ ...customForm, location: e.target.value })}
+                      placeholder="City, State, Country"
+                      className="w-full border-2 border-ink bg-white p-2.5 text-xs font-bold outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="custom-budget-select" className="block text-xs font-black uppercase text-ink mb-1">
+                      Starting Budget
+                    </label>
+                    <select
+                      id="custom-budget-select"
+                      aria-label="Starting Budget"
+                      value={customForm.budget}
+                      onChange={(e) => setCustomForm({ ...customForm, budget: e.target.value })}
+                      className="w-full border-2 border-ink bg-white p-2.5 text-xs font-bold outline-none"
+                    >
+                      <option value="Under $500">Under $500</option>
+                      <option value="$500–$2,000">$500–$2,000</option>
+                      <option value="$2,000–$10,000">$2,000–$10,000</option>
+                      <option value="$10,000+">$10,000+</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <span className="block text-xs font-black uppercase text-ink mb-1">
+                      Brand Vibe
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {["Bold", "Friendly", "Premium", "Calm", "Expert"].map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setCustomForm({ ...customForm, tone: t })}
+                          className={`text-xs font-black px-2.5 py-1.5 border border-ink transition-colors cursor-pointer ${
+                            customForm.tone === t ? "bg-ink text-sun shadow-[1px_1px_0px_#000]" : "bg-white text-ink hover:bg-cream"
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
-        {/* Footer Actions & Launch Control */}
-        <footer className="border-t-[3px] border-ink bg-cream p-4 md:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 w-full sm:w-auto">
+        {/* Compact Sticky Footer Launch Bar */}
+        <footer
+          className="shrink-0 border-t-[3px] border-ink bg-cream px-3.5 py-2.5 sm:p-4 md:p-5 flex flex-row items-center justify-between gap-2.5 sm:gap-4"
+          style={{ paddingBottom: "max(0.65rem, env(safe-area-inset-bottom, 0px))" }}
+        >
+          <div className="hidden sm:flex items-center gap-3">
             {!session && (
               <div className="flex items-center gap-2">
                 <button
@@ -631,12 +678,12 @@ export function QuickStartModal() {
             )}
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+          <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
             <button
               type="button"
               onClick={closeQuickStart}
               disabled={isSubmitting}
-              className="btn btn-quiet text-xs font-bold px-3 py-2 border-2 border-ink"
+              className="hidden sm:inline-flex btn btn-quiet text-xs font-bold px-3 py-2 border-2 border-ink"
             >
               Cancel
             </button>
@@ -645,16 +692,16 @@ export function QuickStartModal() {
               type="button"
               onClick={handleLaunch}
               disabled={isSubmitting || (activeTab === "custom" && !customForm.idea.trim())}
-              className="btn btn-yellow text-sm md:text-base font-black px-6 py-2.5 border-[2.5px] border-ink shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
+              className="btn btn-yellow text-xs sm:text-sm md:text-base font-black px-4 sm:px-6 py-2.5 border-[2.5px] border-ink shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] flex items-center gap-2 cursor-pointer w-full sm:w-auto justify-center"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin shrink-0" />
                   <span>{launchStepText || "Generating..."}</span>
                 </>
               ) : (
                 <>
-                  <Rocket className="h-5 w-5 fill-ink" />
+                  <Rocket className="h-4 w-4 sm:h-5 sm:w-5 fill-ink shrink-0" />
                   <span>
                     {session && hasUnlockedTools
                       ? "Launch Business (1-Click)"
@@ -662,13 +709,12 @@ export function QuickStartModal() {
                       ? "Get Phase 1 Bundle & Launch"
                       : "Generate My Business Now"}
                   </span>
-                  <ArrowRight className="h-4 w-4 stroke-[3]" />
+                  <ArrowRight className="h-4 w-4 stroke-[3] shrink-0" />
                 </>
               )}
             </button>
           </div>
         </footer>
-
       </div>
     </div>
   );
