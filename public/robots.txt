@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://1clickbiz.com/sitemap.xml

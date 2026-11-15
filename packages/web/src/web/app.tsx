@@ -25,7 +25,7 @@ const SalesFunnelPage = lazy(() => import("./pages/sales-funnel"));
 function NotFound() {
   return (
     <div className="mx-auto grid max-w-5xl items-center gap-10 px-4 py-20 md:grid-cols-2">
-      <img src="/images/spot-404.webp" alt="A lost cardboard box with a question mark" className="b3 hard w-full bg-paper" />
+      <img src="/images/spot-404.svg" alt="A lost cardboard box with a question mark" className="b3 hard w-full bg-paper" />
       <div>
         <h1 className="display text-8xl">404.</h1>
         <p className="mt-4 text-lg font-bold">This page took one click too many.</p>

@@ -150,7 +150,7 @@ export default function LoginPage() {
     <div className="mx-auto grid max-w-[1400px] gap-10 px-4 py-10 md:grid-cols-2 md:px-8 md:py-16 lg:gap-16">
       <div className="relative hidden md:block">
         <div className="b3 hard sticky top-24 aspect-[4/5] overflow-hidden bg-sun">
-          <img src="/images/spot-login.webp" alt="Founder holding up a key" className="h-full w-full object-cover" />
+          <img src="/images/spot-login.svg" alt="Founder holding up a key" className="h-full w-full object-cover" />
           <div className="absolute inset-x-0 bottom-0 border-t-[3px] border-ink bg-paper p-5">
             <p className="display text-3xl">Your business is behind this door.</p>
             <p className="mt-1 text-sm font-bold">Sign in once. Every tool you own lives on one dashboard.</p>

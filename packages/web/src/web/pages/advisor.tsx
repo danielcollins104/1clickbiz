@@ -96,7 +96,7 @@ export default function AdvisorPage() {
             <MapPin className="h-5 w-5" />
           </div>
           <div>
-            <h4 className="font-black text-sm">Geospatial Commercial Telemetry</h4>
+            <h4 className="font-black text-sm">Local Market Radar</h4>
             <p className="text-xs font-medium text-muted mt-0.5">
               Pinpoints high-traffic commercial zones, local competitors, wholesale suppliers, and municipal licensing hubs with live map coordinates.
             </p>

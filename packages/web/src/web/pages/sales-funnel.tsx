@@ -351,9 +351,9 @@ export default function SalesFunnelPage() {
                   <div className="grid grid-cols-12 border-b-[3px] border-sun">
                     <div className="col-span-5 relative aspect-[4/5] overflow-hidden border-r-[3px] border-sun bg-ink">
                       <img
-                        src="/images/creator-daniel-collins.webp"
+                        src="/images/creator-daniel-collins.svg"
                         onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
+                          (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.svg";
                         }}
                         alt="Daniel Collins — Creator of 1 Click Business"
                         fetchPriority="high"
@@ -366,9 +366,9 @@ export default function SalesFunnelPage() {
                     </div>
                     <div className="col-span-7 relative aspect-[4/3] sm:aspect-auto overflow-hidden bg-ink">
                       <img
-                        src="/images/funnel-hero-keyart.webp"
+                        src="/images/funnel-hero-keyart.svg"
                         onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src = "/images/bundle-kit.webp";
+                          (e.currentTarget as HTMLImageElement).src = "/images/bundle-kit.svg";
                         }}
                         alt="1-Click Business 13 AI Engines Command Center"
                         fetchPriority="high"
@@ -917,9 +917,9 @@ export default function SalesFunnelPage() {
                   <div className="b3 border-[3px] border-sun bg-paper text-ink p-5 shadow-[8px_8px_0px_#79e784]">
                     <div className="aspect-[16/10] overflow-hidden border-2 border-ink bg-ink mb-4">
                       <img
-                        src="/images/funnel-vip-vault.webp"
+                        src="/images/funnel-vip-vault.svg"
                         onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src = "/images/bundle-kit.webp";
+                          (e.currentTarget as HTMLImageElement).src = "/images/bundle-kit.svg";
                         }}
                         alt="VIP Founder Business-in-a-Box Vault"
                         loading="lazy"
@@ -1171,9 +1171,9 @@ export default function SalesFunnelPage() {
                     <div className="grid grid-cols-2">
                       <div className="relative aspect-[4/5] overflow-hidden border-r-[3px] border-ink">
                         <img
-                          src="/images/creator-daniel-collins.webp"
+                          src="/images/creator-daniel-collins.svg"
                           onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
+                            (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.svg";
                           }}
                           alt="Daniel Collins — Founder Portrait"
                           loading="lazy"
@@ -1186,9 +1186,9 @@ export default function SalesFunnelPage() {
                       </div>
                       <div className="relative aspect-[4/5] overflow-hidden">
                         <img
-                          src="/images/creator-daniel-collins-fire.webp"
+                          src="/images/creator-daniel-collins-fire.svg"
                           onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins-fire.png";
+                            (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins-fire.svg";
                           }}
                           alt="Daniel Collins by the fire"
                           loading="lazy"

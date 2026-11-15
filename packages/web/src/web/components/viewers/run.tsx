@@ -356,7 +356,7 @@ export function CrmViewer({ bizId, bizSlug, bizName, statuses }: ViewerProps) {
           <p className="p-5 font-extrabold">{errorMessage(error)}</p>
         ) : !rows.length ? (
           <div className="grid items-center gap-6 p-6 md:grid-cols-[180px_1fr]">
-            <img src="/images/spot-empty.webp" alt="" className="b3 w-full bg-cream" loading="lazy" />
+            <img src="/images/spot-empty.svg" alt="" className="b3 w-full bg-cream" loading="lazy" />
             <div>
               <p className="display text-2xl">{leads?.length ? "No contacts match." : "No contacts yet."}</p>
               <p className="mt-2 font-semibold">
@@ -522,7 +522,7 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
             onClick={() => setActiveMode("vanguard")}
             className={`btn btn-sm cursor-pointer ${activeMode === "vanguard" ? "btn-yellow font-black" : "btn-quiet"}`}
           >
-            Solomon™ Executive Core (Live Web &amp; Geo Telemetry)
+            Solomon™ Executive Core (Live Web &amp; Local Market Radar)
           </button>
           <button
             type="button"
@@ -580,7 +580,7 @@ export function AdvisorViewer({ content: c, bizId }: ViewerProps) {
           <div className="card flex min-h-[560px] flex-col bg-paper">
             <div className="flex items-center justify-between gap-3 border-b-[3px] border-ink px-5 py-3">
               <div className="flex items-center gap-3">
-                <img src="/images/advisor.webp" alt="" className="b3 h-10 w-10 bg-sun object-cover" />
+                <img src="/images/advisor.svg" alt="" className="b3 h-10 w-10 bg-sun object-cover" />
                 <div>
                   <h3 className="display text-xl">Command Solomon™ Asset Copilot</h3>
                   <p className="text-xs font-bold">Click any paragraph in a reply to save it straight to your Slide-Out Notebook.</p>

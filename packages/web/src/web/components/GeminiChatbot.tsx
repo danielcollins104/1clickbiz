@@ -98,7 +98,7 @@ const STARTER_PROMPTS = [
   },
   {
     icon: MapPin,
-    text: "Run Geospatial Commercial Telemetry to analyze local competitors and partnership hubs near me.",
+    text: "Run Local Market Radar to analyze local competitors and partnership hubs near me.",
     role: "general" as RoleMode,
     grounding: "maps" as GroundingMode,
   },
@@ -193,7 +193,7 @@ export function synthesizeVanguardExecutiveReply(
   if (groundingMode === "maps" || q.includes("local") || q.includes("location") || q.includes("competitor")) {
     return {
       text: [
-        `### 📍 Solomon™ Geospatial & Competitive Telemetry for ${biz.name}`,
+        `### 📍 Solomon™ Local & Competitive Research for ${biz.name}`,
         `I have mapped the competitive landscape and local partnership corridors in **${biz.location}** for **${biz.name}**:`,
         `1. **Primary Competitor Vulnerability (Your Unfair Edge)**\n   - Traditional providers serving ${biz.customer} take **24–72 hours** just to return a phone call or quote.\n   - Because your live site (\`/sites/${biz.slug}\`) features an **Interactive Instant Quote & Booking Calculator**, you capture buyers the exact minute they have intent.`,
         `2. **3 High-Leverage Local Referral Partners to Contact This Week**\n   - **Complementary Specialists in ${biz.location}:** Partner with 3 non-competing businesses serving ${biz.customer} and offer a **15% referral commission** or co-branded VIP voucher.\n   - **Community & Local Hub Placement:** Share your interactive calculator link in local neighborhood and business groups.\n   - **Google Business Profile Fast-Track:** Link \`/sites/${biz.slug}\` to a verified Google Business Profile to rank in local 3-pack map searches within 14 days.`,
@@ -208,7 +208,7 @@ export function synthesizeVanguardExecutiveReply(
   if (roleMode === "complex" || roleMode === "investor" || q.includes("price") || q.includes("margin") || q.includes("break-even")) {
     return {
       text: [
-        `### 🧠 Solomon™ Omni-9 Unit-Economics & Pricing Breakdown for ${biz.name}`,
+        `### 🧠 Solomon™ Unit-Economics & Pricing Breakdown for ${biz.name}`,
         `Here is my executive financial stress-test for **"${userPrompt}"**:`,
         `1. **3-Tier Anchored Pricing Architecture (Target 82% Gross Margin)**\n   - **Tier 1 · Starter Sprint ($99 – $149):** Low-friction entry offer that eliminates buyer hesitation and covers 100% of your acquisition cost.\n   - **Tier 2 · Flagship Complete Package ($249 – $299 · Most Popular):** Your core profit engine where ~65% of customers land when anchored between Tier 1 and Tier 3.\n   - **Tier 3 · VIP Priority Retainer ($499+/mo):** White-glove recurring membership that compounds your monthly baseline revenue.`,
         `2. **12-Month Break-Even & Profit Velocity**\n   - With lean overhead (**under $350/mo**), winning just **2 Flagship clients** puts **${biz.name}** into net profit in **Week 1**.\n   - Scaling to **15 active retainer/repeat clients** at $299/mo generates **$4,485/mo ($53,820/yr annualized)** with zero full-time employees required.`,
@@ -258,7 +258,7 @@ export function GeminiChatbot({
       id: "welcome",
       role: "model",
       content:
-        "Greetings, Founder. I am Solomon™, your Sovereign Executive AI Co-Founder.\n\nUnlike standard chatbots, my Tri-Core Neural Architecture has indexed your entire business model, pricing matrix, and live website—and is wired directly into our Global Grant & Market Grid and Geospatial Telemetry Radar.\n\n💡 Tip: Click on any paragraph or bullet point I generate to instantly save it to your Slide-Out Founder Notebook on the right!",
+        "Greetings, Founder. I am Solomon™, your Sovereign Executive AI Co-Founder.\n\nUnlike standard chatbots, my founder-tuned reasoning engine has indexed your entire business model, pricing matrix, and live website—and is wired directly into our grant database and live market data.\n\n💡 Tip: Click on any paragraph or bullet point I generate to instantly save it to your Slide-Out Founder Notebook on the right!",
       modelUsed: "solomon-quantum-5",
       groundingType: "none",
     },
@@ -555,7 +555,7 @@ export function GeminiChatbot({
             className={`btn btn-sm !px-2.5 !py-1 text-xs flex items-center gap-1.5 cursor-pointer ${
               grounding === "maps" ? "bg-emerald-400 text-ink font-black ring-2 ring-ink" : "btn-quiet"
             }`}
-            title="Connect Solomon to Geospatial Commercial Telemetry"
+            title="Connect Solomon to Local Market Radar"
           >
             <MapPin className="h-3.5 w-3.5" strokeWidth={3} />
             <span>Geo Radar</span>
@@ -633,7 +633,7 @@ export function GeminiChatbot({
               <>
                 <MapPin className="h-3.5 w-3.5 text-emerald-600" />
                 <span>
-                  <strong>Solomon™ Geospatial Commercial Telemetry active:</strong> Scanning real locations, commercial corridors &amp; local competitors
+                  <strong>Solomon™ Local Market Radar active:</strong> Scanning real locations, commercial corridors &amp; local competitors
                   {location ? " (using your coordinates)" : ""}.
                 </span>
               </>
@@ -696,7 +696,7 @@ export function GeminiChatbot({
                     )}
                     {!isUser && m.groundingType === "maps" && (
                       <span className="text-[10px] font-extrabold text-emerald-700 flex items-center gap-0.5">
-                        <MapPin className="h-2.5 w-2.5" /> Geo Telemetry Grounded
+                        <MapPin className="h-2.5 w-2.5" /> Local Market Grounded
                       </span>
                     )}
                   </div>
@@ -801,7 +801,7 @@ export function GeminiChatbot({
                       {m.groundingType === "maps" ? (
                         <>
                           <MapPin className="h-3 w-3 text-emerald-600" />
-                          Solomon™ Geospatial Telemetry Coordinates ({m.sources.length})
+                          Solomon™ Local Market Sources ({m.sources.length})
                         </>
                       ) : (
                         <>
@@ -842,9 +842,9 @@ export function GeminiChatbot({
                 {grounding === "search"
                   ? "Solomon™ scanning live Global Web & Grant Grid…"
                   : grounding === "maps"
-                  ? "Solomon™ triangulating Geospatial Commercial Telemetry…"
+                  ? "Solomon™ triangulating Local Market Radar…"
                   : role === "complex"
-                  ? "Synthesizing with Solomon Omni-9 Deep Strategic Core…"
+                  ? "Synthesizing with Solomon Deep Strategic Core…"
                   : "Solomon™ formulating executive directive…"}
               </span>
             </div>
@@ -901,7 +901,7 @@ export function GeminiChatbot({
               : grounding === "maps"
               ? "Command Solomon™ Geo Radar (local competitors, suppliers, commercial zones)…"
               : role === "complex"
-              ? "Command Solomon™ Omni-9 (unit economics, pricing matrices, moat strategy)…"
+              ? "Ask Solomon™ (unit economics, pricing matrices, moat strategy)…"
               : "Ask Solomon™ anything about your business, pricing, customers, or next steps…"
           }
           value={input}

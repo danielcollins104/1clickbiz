@@ -296,7 +296,7 @@ export default function DashboardPage() {
     <div>
       {/* banner */}
       <section className="relative border-b-[3px] border-ink bg-ink">
-        <img src="/images/dashboard-banner.webp" alt="Three founders in black and yellow" className="h-56 w-full object-cover object-[center_20%] opacity-90 md:h-72" />
+        <img src="/images/dashboard-banner.svg" alt="Three founders in black and yellow" className="h-56 w-full object-cover object-[center_20%] opacity-90 md:h-72" />
         <div className="absolute inset-0 mx-auto flex max-w-[1400px] items-end justify-between gap-4 px-4 pb-6 md:px-8">
           <div className="b3 hard max-w-2xl bg-paper p-5">
             <p className="text-xs font-extrabold uppercase tracking-[0.2em]">
@@ -733,7 +733,7 @@ export default function DashboardPage() {
         {/* empty states */}
         {!list?.length && (
           <div className="b3 hard mt-10 grid items-center gap-8 bg-paper p-6 md:grid-cols-[280px_1fr] md:p-8">
-            <img src="/images/stage-1.webp" alt="Clipboard with an empty checklist" className="b3 aspect-square w-full object-cover" />
+            <img src="/images/stage-1.svg" alt="Clipboard with an empty checklist" className="b3 aspect-square w-full object-cover" />
             {owned.size ? (
               <div>
                 <h2 className="display text-4xl md:text-5xl">Answer 8 questions. Watch it build.</h2>

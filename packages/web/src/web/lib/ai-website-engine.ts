@@ -461,7 +461,7 @@ export function generateCreativeWebsite(opts: {
       body: "Submit your details below (your interactive calculator estimate is automatically attached!) and we'll reply within 1 business hour.",
       button: "Claim My Quote & Get Started →",
     },
-    heroImage: opts.existingSite?.heroImage ?? { key: "hero", url: "/images/hero.webp" },
+    heroImage: opts.existingSite?.heroImage ?? { key: "hero", url: "/images/hero-cutout.svg" },
   };
 
   const snapshot: SiteVersionSnapshot = {
