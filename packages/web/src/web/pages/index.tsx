@@ -119,7 +119,7 @@ function Hero() {
                 Build a business that pays you — not a boss.
               </p>
               <p className="mt-2.5 text-xs sm:text-sm font-semibold text-muted leading-relaxed">
-                Ready for real financial independence? Pick a proven business model below or answer 8 quick questions. Our 13 AI engines build your business plan, brand, vector logo, free live website, ads, grants list, and customer CRM in 60 seconds.
+                Ready for real financial independence? Pick a proven business model below or answer 8 quick questions. Our 13 AI engines build your business plan, brand, vector logo, free live website, ads, grants list, and customer CRM in 60 seconds — see a real output below, no signup needed.
               </p>
               <div className="mt-4 flex flex-col sm:flex-row flex-wrap gap-2.5">
                 <Link
@@ -135,6 +135,9 @@ function Hero() {
                   Calculate My Income ↓
                 </a>
               </div>
+              <p className="mt-3 text-[10px] sm:text-[11px] font-extrabold uppercase tracking-widest text-muted">
+                Free to start · Live website included · Cancel anytime
+              </p>
             </div>
           </div>
 
@@ -582,12 +585,12 @@ export default function Index() {
   return (
     <>
       <Hero />
+      <SocialProofTicker />
+      <InteractiveDeliverableExplorer />
       <StartHereRoadmap />
       <PlatformBenefitsHighlight />
       <QuickStartSection />
       <IncomeFreedomCalculator />
-      <SocialProofTicker />
-      <InteractiveDeliverableExplorer />
       <Flow />
       <SubscriptionPlans />
       <Editorial />
