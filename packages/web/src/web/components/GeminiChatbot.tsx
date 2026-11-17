@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useFirebase } from "../context/FirebaseContext";
 import { useNotebook } from "../context/NotebookContext";
+import { ReadAloudButton } from "./ReadAloudButton";
 
 export type RoleMode = "general" | "complex" | "fast" | "investor" | "marketing";
 export type GroundingMode = "none" | "search" | "maps";
@@ -703,9 +704,14 @@ export function GeminiChatbot({
                     )}
                   </div>
 
-                  {/* Quick Actions on every Advisor Reply: Save Full Reply to Notebook + Copy */}
+                  {/* Quick Actions on every Advisor Reply: Listen + Save Full Reply to Notebook + Copy */}
                   {!isUser && (
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <ReadAloudButton
+                        text={m.content}
+                        label="Listen"
+                        theme="light"
+                      />
                       <button
                         type="button"
                         onClick={() =>

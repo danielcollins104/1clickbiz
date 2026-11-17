@@ -14,6 +14,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useNotebook } from "../context/NotebookContext";
+import { ReadAloudButton } from "./ReadAloudButton";
 
 export function PlatformBenefitsHighlight({ compact = false }: { compact?: boolean }) {
   const { openNotebook, notes } = useNotebook();
@@ -211,9 +212,17 @@ export function PlatformBenefitsHighlight({ compact = false }: { compact?: boole
                     >
                       {b.num}
                     </span>
-                    <span className="bg-ink px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-sun">
-                      {b.badge}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="bg-ink px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-sun">
+                        {b.badge}
+                      </span>
+                      <ReadAloudButton
+                        text={`${b.num}: ${b.title}. ${b.subtitle}. ${b.description} Highlights: ${b.highlights.join(". ")}`}
+                        label={`Read ${b.title}`}
+                        variant="icon"
+                        theme="light"
+                      />
+                    </div>
                   </div>
 
                   {/* Icon + Title */}
@@ -234,7 +243,7 @@ export function PlatformBenefitsHighlight({ compact = false }: { compact?: boole
                   </div>
 
                   {/* Description */}
-                  <p className="mt-3.5 text-xs sm:text-sm font-semibold leading-relaxed text-ink/85">
+                  <p className="mt-3.5 text-sm sm:text-base font-medium leading-[1.7] text-ink">
                     {b.description}
                   </p>
 

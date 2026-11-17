@@ -14,6 +14,7 @@ import { SampleOutputModal } from "../components/SampleOutputModal";
 import { SocialProofTicker } from "../components/SocialProofTicker";
 import { FrequentlyBoughtTogether } from "../components/FrequentlyBoughtTogether";
 import { ProductReviews } from "../components/ProductReviews";
+import { ReadAloudButton } from "../components/ReadAloudButton";
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -146,7 +147,21 @@ export default function ProductPage() {
             </span>
           </div>
 
-          <p className="mt-6 font-semibold leading-relaxed">{p.description}</p>
+          <div className="mt-6 b3 bg-paper p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b-2 border-dashed border-ink/20">
+              <span className="text-xs font-black uppercase tracking-widest text-muted">
+                Tool Overview &amp; How It Works
+              </span>
+              <ReadAloudButton
+                text={`${p.name}. ${p.tagline}. ${p.description} You give: ${p.youGive}. It builds: ${p.youGet}. What's inside: ${p.features.join(". ")}`}
+                label="Listen to Overview"
+                theme="light"
+              />
+            </div>
+            <p className="mt-3 text-base sm:text-[17px] font-medium leading-[1.75] text-ink">
+              {p.description}
+            </p>
+          </div>
 
           {/* input -> output */}
           <div className="mt-6 grid gap-0 sm:grid-cols-[1fr_auto_1fr] sm:items-stretch">

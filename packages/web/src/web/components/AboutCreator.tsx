@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Sparkles, ShieldCheck, Zap, ArrowRight, Quote, CheckCircle2 } from "lucide-react";
 import { useQuickStart } from "../context/QuickStartContext";
+import { ReadAloudButton } from "./ReadAloudButton";
 
 export function AboutCreator() {
   const { openQuickStart } = useQuickStart();
@@ -104,15 +105,22 @@ export function AboutCreator() {
           {/* Creator Story & Bio Column */}
           <div className="min-w-0 space-y-6 lg:col-span-7">
             <div className="space-y-3 sm:space-y-4">
-              <span className="block text-xs font-black uppercase tracking-widest text-ink/70">
-                A Personal Message From The Founder
-              </span>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="block text-xs font-black uppercase tracking-widest text-ink/80">
+                  A Personal Message From The Founder
+                </span>
+                <ReadAloudButton
+                  text={`Meet Daniel Collins, founder and lead architect of 1 Click Business. I built 1 Click Business so anyone can claim their financial independence and create their own income, without spending thousands first. Starting a business that generates real income for you and your family shouldn't require juggling twenty expensive subscriptions, paying 5,000 dollar agency retainers, or losing three months to decision fatigue. I engineered 1 Click Business to give everyday people and visionary creators the unfair execution speed of a funded 10-person venture studio. Every single one of our 16 AI engines communicates with the rest, so your core answers flow seamlessly from market validation straight into logos, free hosted websites and interactive web apps, targeted ads, and customer revenue tracking.`}
+                  label="Listen to Founder Story"
+                  theme="light"
+                />
+              </div>
               <h3 className="display text-2xl sm:text-3xl md:text-4xl leading-tight">
                 "I built 1 Click Business so anyone can claim their financial independence and create their own income — without spending thousands first."
               </h3>
             </div>
 
-            <div className="prose max-w-none text-sm sm:text-base md:text-lg font-semibold leading-relaxed text-ink/90 space-y-4">
+            <div className="prose max-w-none text-base sm:text-[17px] md:text-lg font-medium leading-[1.75] text-ink space-y-4">
               <p>
                 Starting a business that generates real income for you and your family shouldn't require juggling twenty expensive SaaS subscriptions, paying
                 $5,000 agency retainers, or losing three months to decision fatigue over brand colors, legal models,
@@ -121,7 +129,7 @@ export function AboutCreator() {
               <p>
                 I engineered <strong>1 Click Business</strong> with an obsessive standard:
                 give everyday people and visionary creators the unfair execution speed of a funded 10-person venture studio.
-                Instead of isolated chatbots that forget your context, every single one of our 13 AI engines communicates
+                Instead of isolated chatbots that forget your context, every single one of our 16 AI engines communicates
                 with the rest — so your core answers flow seamlessly from market validation straight into logos,
                 free hosted websites &amp; interactive web apps, targeted ads, and customer revenue tracking.
               </p>

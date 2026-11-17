@@ -14,6 +14,7 @@ import {
   Eye,
 } from "lucide-react";
 import { useQuickStart } from "../context/QuickStartContext";
+import { ReadAloudButton } from "./ReadAloudButton";
 import {
   buildCuttingEdgeVectorSvg,
   LOGO_STYLE_DIRECTIONS,
@@ -697,6 +698,11 @@ export function InteractiveDeliverableExplorer() {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
+              <ReadAloudButton
+                text={`${activeBrandName}. ${biz.tagline}. Executive Summary: ${biz.plan.summary} Target Customer: ${biz.plan.targetCustomer}. Brand Mission: ${biz.brand.mission}. Website Headline: ${biz.market.heroHeadline}. ${biz.market.heroSubhead}. Solomon Advisor Recommendation: ${biz.run.advisorTip}`}
+                label="Listen to Blueprint"
+                theme="light"
+              />
               <button
                 type="button"
                 onClick={handleCopyBlueprint}
@@ -727,16 +733,24 @@ export function InteractiveDeliverableExplorer() {
             <div className="mt-6 grid gap-6 lg:grid-cols-12">
               <div className="space-y-5 lg:col-span-7">
                 <div className="b3 bg-paper p-5">
-                  <p className="text-xs font-black uppercase tracking-widest text-muted">
-                    Engine #01 &amp; #04 · Idea Wizard + Executive Business Plan
-                  </p>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs font-black uppercase tracking-widest text-muted">
+                      Engine #01 &amp; #04 · Idea Wizard + Executive Business Plan
+                    </p>
+                    <ReadAloudButton
+                      text={`Executive Summary for ${activeBrandName}. ${biz.plan.summary} Target Customer Profile: ${biz.plan.targetCustomer}`}
+                      label="Read Summary"
+                      variant="icon"
+                      theme="light"
+                    />
+                  </div>
                   <h4 className="display mt-2 text-2xl">Executive Summary</h4>
-                  <p className="mt-2 font-semibold leading-relaxed text-ink">
+                  <p className="mt-2 text-base font-medium leading-[1.75] text-ink">
                     {biz.plan.summary}
                   </p>
                   <div className="mt-4 border-t-2 border-dashed border-ink/20 pt-3">
                     <p className="text-xs font-black uppercase text-muted">Target Customer Profile</p>
-                    <p className="mt-1 text-sm font-bold">{biz.plan.targetCustomer}</p>
+                    <p className="mt-1 text-sm sm:text-base font-bold text-ink">{biz.plan.targetCustomer}</p>
                   </div>
                 </div>
 

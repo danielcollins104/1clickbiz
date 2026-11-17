@@ -15,6 +15,7 @@ import { AboutCreator } from "../components/AboutCreator";
 import { SubscriptionPlans } from "../components/SubscriptionPlans";
 import { InteractiveDeliverableExplorer } from "../components/InteractiveDeliverableExplorer";
 import { PlatformBenefitsHighlight } from "../components/PlatformBenefitsHighlight";
+import { ReadAloudButton } from "../components/ReadAloudButton";
 import { useSession } from "../queries/business";
 
 function Hero() {
@@ -113,13 +114,21 @@ function Hero() {
             <div className="b3 hard bg-paper p-4 sm:p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-xs font-extrabold uppercase tracking-[0.15em]">Own Your Income Today</p>
-                <span className="bg-mint px-2 py-0.5 border border-ink text-[10px] font-black uppercase">13 AI Income Engines</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="bg-mint px-2 py-0.5 border border-ink text-[10px] font-black uppercase">16 AI Income Engines</span>
+                  <ReadAloudButton
+                    text="Build a business that pays you, not a boss. Ready for real financial independence? Pick a proven business model below or answer 8 quick questions. Our 16 AI engines build your business plan, brand, vector logo, free live website, ads, grants list, and customer CRM in 60 seconds."
+                    label="Listen"
+                    variant="icon"
+                    theme="light"
+                  />
+                </div>
               </div>
               <p className="display mt-2.5 text-2xl md:text-3xl leading-[1.12]">
                 Build a business that pays you — not a boss.
               </p>
-              <p className="mt-2.5 text-xs sm:text-sm font-semibold text-muted leading-relaxed">
-                Ready for real financial independence? Pick a proven business model below or answer 8 quick questions. Our 13 AI engines build your business plan, brand, vector logo, free live website, ads, grants list, and customer CRM in 60 seconds — see a real output below, no signup needed.
+              <p className="mt-2.5 text-sm sm:text-base font-medium text-ink leading-[1.7]">
+                Ready for real financial independence? Pick a proven business model below or answer 8 quick questions. Our 16 AI engines build your business plan, brand, vector logo, free live website, ads, grants list, and customer CRM in 60 seconds — see a real output below, no signup needed.
               </p>
               <div className="mt-4 flex flex-col sm:flex-row flex-wrap gap-2.5">
                 <Link
@@ -556,17 +565,17 @@ function BundleBlock() {
                     </span>
                   </div>
 
-                  <h4 className="font-black text-sm uppercase tracking-wide text-sun group-hover:text-mint transition-colors">
+                  <h4 className="font-black text-base uppercase tracking-wide text-white group-hover:text-mint transition-colors">
                     {p.name.replace("1-Click ", "")}
                   </h4>
-                  <p className="mt-1 text-xs font-semibold text-cream/70 line-clamp-2">
+                  <p className="mt-1.5 text-xs sm:text-sm font-medium text-white/90 leading-relaxed line-clamp-2">
                     {p.tagline}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-sun/20 flex items-center justify-between text-xs">
-                  <span className="text-cream/60 font-bold">
-                    Single plan: <span className="text-cream/90">{money(p.price)}/mo</span>
+                <div className="mt-4 pt-3 border-t border-sun/30 flex items-center justify-between text-xs">
+                  <span className="text-white/85 font-bold">
+                    Single plan: <span className="text-sun font-black">{money(p.price)}/mo</span>
                   </span>
                   <span className="font-black uppercase text-mint flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                     <Check className="h-3 w-3" strokeWidth={3} /> In All-Access
