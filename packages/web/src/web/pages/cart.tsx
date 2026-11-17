@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { ArrowRight, Check, Loader2, Lock, ShieldCheck, Trash2, Zap, CreditCard, Star } from "lucide-react";
+import { ArrowRight, Check, Loader2, Lock, ShieldCheck, Trash2, Zap, CreditCard, Star, Rocket, LayoutDashboard, Sparkles } from "lucide-react";
 import { useCart } from "../lib/cart";
 import { money } from "../lib/format";
 import { ProductArt } from "../components/product-art";
 import { BUNDLE_SLUG, PRODUCTS } from "../../api/catalog";
-import { errorMessage, useAccess, useCheckout, useSession } from "../queries/business";
+import { errorMessage, useAccess, useBusinesses, useCheckout, useSession } from "../queries/business";
 import { SubscriptionPlans } from "../components/SubscriptionPlans";
+import { useQuickStart } from "../context/QuickStartContext";
 
 const BUNDLE = PRODUCTS.find((p) => p.slug === BUNDLE_SLUG)!;
 
@@ -14,6 +15,8 @@ export default function CartPage() {
   const { lines, remove, subtotal, add, hasBundle, clear } = useCart();
   const { data: session } = useSession();
   const { data: access } = useAccess();
+  const { data: businesses } = useBusinesses();
+  const { openQuickStart } = useQuickStart();
   const checkout = useCheckout();
   const [, navigate] = useLocation();
   const [error, setError] = useState<string | null>(null);
@@ -21,9 +24,24 @@ export default function CartPage() {
   const owned = new Set(access?.tools ?? []);
   const bundleOwned = access?.plans.some((p) => p.planId === "phase_1_launch" && p.status === "active");
   const bundleSaves = !hasBundle && subtotal > BUNDLE.price;
+  const hasExistingBusiness = (businesses?.length ?? 0) > 0;
+  const allAlreadyOwned =
+    lines.length > 0 &&
+    lines.every((l) => (l.slug === BUNDLE_SLUG ? Boolean(bundleOwned) : owned.has(l.slug)));
+  const anyAlreadyOwned =
+    lines.some((l) => (l.slug === BUNDLE_SLUG ? Boolean(bundleOwned) : owned.has(l.slug)));
+
+  const goToNextLogicalStep = () => {
+    clear();
+    navigate(hasExistingBusiness ? "/dashboard" : "/start");
+  };
 
   const subscribe = () => {
     setError(null);
+    if (allAlreadyOwned) {
+      goToNextLogicalStep();
+      return;
+    }
     if (!session) {
       navigate(`/login?next=${encodeURIComponent("/subscribe")}`);
       return;
@@ -36,7 +54,7 @@ export default function CartPage() {
             window.location.href = res.url;
           } else {
             clear();
-            navigate("/dashboard?checkout=success");
+            navigate(hasExistingBusiness ? "/dashboard?checkout=success" : "/start");
           }
         },
         onError: (e) => setError(errorMessage(e, "Subscription checkout couldn't start. Try again.")),
@@ -108,9 +126,27 @@ export default function CartPage() {
                         <Trash2 className="h-5 w-5" strokeWidth={2.75} />
                       </button>
                     </div>
-                    <div className="mt-auto flex flex-wrap items-end justify-between gap-2 pt-3">
+                    <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-3">
                       {already ? (
-                        <span className="chip bg-mint"><Check className="h-3.5 w-3.5" strokeWidth={4} /> Already in your plan</span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="chip bg-mint">
+                            <Check className="h-3.5 w-3.5" strokeWidth={4} /> Already in your plan
+                          </span>
+                          <Link
+                            to="/start"
+                            className="btn btn-sm btn-yellow text-xs font-black shadow-[2px_2px_0px_#000] inline-flex items-center gap-1.5"
+                          >
+                            <Rocket className="h-3.5 w-3.5 fill-ink" strokeWidth={2.5} />
+                            Next Step: Start Wizard <ArrowRight className="h-3.5 w-3.5" strokeWidth={3} />
+                          </Link>
+                          <Link
+                            to="/dashboard"
+                            className="btn btn-sm btn-quiet text-xs font-black inline-flex items-center gap-1.5"
+                          >
+                            <LayoutDashboard className="h-3.5 w-3.5" strokeWidth={2.5} />
+                            Open Dashboard
+                          </Link>
+                        </div>
                       ) : (
                         <span className="text-xs font-extrabold uppercase tracking-wide">Monthly · {l.slug === BUNDLE_SLUG ? "500" : "60"} AI generations</span>
                       )}
@@ -124,6 +160,52 @@ export default function CartPage() {
               );
             })}
           </ul>
+
+          {/* Guided Next-Step Banner when Plan is Already Active */}
+          {anyAlreadyOwned && (
+            <div className="b3 hard mt-6 bg-mint p-5 md:p-6 text-ink">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-ink pb-3">
+                <span className="inline-flex items-center gap-1.5 bg-ink text-sun px-2.5 py-1 text-xs font-black uppercase tracking-wider">
+                  <Sparkles className="h-3.5 w-3.5 text-mint" /> Step 1 Complete · Your Plan Is Active
+                </span>
+                <span className="text-xs font-black uppercase tracking-wider">
+                  Next Logical Step: Build Your Business ➔
+                </span>
+              </div>
+              <h2 className="display mt-3 text-2xl md:text-3xl leading-tight">
+                Ready for Step 2? Let Your AI Engines Build Your Business Now.
+              </h2>
+              <p className="mt-1.5 text-sm font-bold text-ink/90 max-w-2xl">
+                Since this plan is already unlocked in your account, you don't need to check out again. Jump straight into the 8-question Start Wizard (or open the 1-Click Quick Start) to generate your business plan, brand, logo, and free live website!
+              </p>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <Link
+                  to="/start"
+                  onClick={() => clear()}
+                  className="btn btn-yellow text-sm font-black shadow-[4px_4px_0px_#000] inline-flex items-center gap-2"
+                >
+                  <Rocket className="h-4 w-4 fill-ink" strokeWidth={2.5} />
+                  Start 8-Question Business Wizard <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => openQuickStart()}
+                  className="btn bg-ink text-sun text-sm font-black shadow-[4px_4px_0px_#000] inline-flex items-center gap-2 cursor-pointer hover:bg-neutral-800"
+                >
+                  <Zap className="h-4 w-4 fill-sun text-sun" strokeWidth={2.5} />
+                  1-Click Quick Start
+                </button>
+                <Link
+                  to="/dashboard"
+                  onClick={() => clear()}
+                  className="btn btn-quiet bg-paper text-sm font-black inline-flex items-center gap-2"
+                >
+                  <LayoutDashboard className="h-4 w-4" strokeWidth={2.5} />
+                  Go to My Dashboard
+                </Link>
+              </div>
+            </div>
+          )}
 
           {!hasBundle && subtotal < BUNDLE.price && (
             <div className="b3 hard mt-8 grid items-center gap-4 bg-sun p-5 text-ink sm:grid-cols-[120px_1fr_auto]">
@@ -201,20 +283,45 @@ export default function CartPage() {
 
               {error && <p role="alert" className="b3 bg-paper p-3 text-sm font-extrabold">{error}</p>}
 
-              <button
-                type="button"
-                className="btn btn-yellow w-full text-base font-black shadow-[4px_4px_0_#000] cursor-pointer"
-                onClick={subscribe}
-                disabled={checkout.isPending}
-              >
-                {checkout.isPending ? (
-                  <><Loader2 className="h-5 w-5 animate-spin" strokeWidth={3} /> Starting subscription…</>
-                ) : session ? (
-                  <><Zap className="h-5 w-5 fill-ink" strokeWidth={2.5} /> Start Subscription · {money(subtotal)}/mo</>
-                ) : (
-                  <><Lock className="h-5 w-5" strokeWidth={3} /> Sign in &amp; Start Subscription</>
-                )}
-              </button>
+              {allAlreadyOwned ? (
+                <div className="space-y-2.5 pt-1">
+                  <div className="b3 bg-mint p-3 text-xs font-black text-ink flex items-center gap-2">
+                    <Check className="h-4 w-4 shrink-0" strokeWidth={3.5} />
+                    <span>Already unlocked in your plan — no payment needed!</span>
+                  </div>
+                  <Link
+                    to="/start"
+                    onClick={() => clear()}
+                    className="btn btn-yellow w-full text-base font-black shadow-[4px_4px_0_#000] cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Rocket className="h-5 w-5 fill-ink" strokeWidth={2.5} />
+                    Next Step: Start Business Wizard <ArrowRight className="h-5 w-5" strokeWidth={3} />
+                  </Link>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => clear()}
+                    className="btn btn-quiet w-full text-sm font-black cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <LayoutDashboard className="h-4 w-4" strokeWidth={2.5} />
+                    Open My Business Dashboard
+                  </Link>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-yellow w-full text-base font-black shadow-[4px_4px_0_#000] cursor-pointer"
+                  onClick={subscribe}
+                  disabled={checkout.isPending}
+                >
+                  {checkout.isPending ? (
+                    <><Loader2 className="h-5 w-5 animate-spin" strokeWidth={3} /> Starting subscription…</>
+                  ) : session ? (
+                    <><Zap className="h-5 w-5 fill-ink" strokeWidth={2.5} /> Start Subscription · {money(subtotal)}/mo</>
+                  ) : (
+                    <><Lock className="h-5 w-5" strokeWidth={3} /> Sign in &amp; Start Subscription</>
+                  )}
+                </button>
+              )}
               <ul className="space-y-1.5 pt-2 text-sm font-bold">
                 <li className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-emerald-700" strokeWidth={3} /> 14-Day 100% Money-Back Guarantee</li>
                 <li className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" strokeWidth={3} /> Secure 256-bit Stripe payment</li>
