@@ -79,7 +79,7 @@ type Field = {
 const STEPS: { title: string; img: string; fields: Field[] }[] = [
   {
     title: "You",
-    img: "/images/stage-1.svg",
+    img: "/images/stage-1.webp",
     fields: [
       { key: "skills", label: "What are you good at?", hint: "Work experience, hobbies, anything people ask you for help with.", kind: "area", placeholder: "10 years in hospitality, great with people, can bake", required: true },
       { key: "interests", label: "What do you enjoy?", hint: "Topics or industries you'd happily work on every day.", kind: "area", placeholder: "Food, local events, sustainability" },
@@ -87,7 +87,7 @@ const STEPS: { title: string; img: string; fields: Field[] }[] = [
   },
   {
     title: "Resources",
-    img: "/images/stage-2.svg",
+    img: "/images/stage-2.webp",
     fields: [
       { key: "budget", label: "Starting budget", hint: "Roughly what you can put in.", kind: "chips", options: ["Under $500", "$500–$2,000", "$2,000–$10,000", "$10,000+"], required: true },
       { key: "hours", label: "Hours per week", hint: "Be honest. The plan is built around it.", kind: "chips", options: ["Under 10", "10–20", "20–40", "Full-time"], required: true },
@@ -95,7 +95,7 @@ const STEPS: { title: string; img: string; fields: Field[] }[] = [
   },
   {
     title: "Market",
-    img: "/images/stage-4.svg",
+    img: "/images/stage-4.webp",
     fields: [
       { key: "location", label: "Where are you based?", hint: "City and country. Used for licences, tax and funding.", kind: "text", placeholder: "Austin, Texas, USA", required: true },
       { key: "customer", label: "Who would you love to serve?", hint: "Leave blank if you're not sure yet.", kind: "area", placeholder: "Busy parents who want healthy weeknight meals" },
@@ -103,7 +103,7 @@ const STEPS: { title: string; img: string; fields: Field[] }[] = [
   },
   {
     title: "Idea + vibe",
-    img: "/images/stage-3.svg",
+    img: "/images/stage-3.webp",
     fields: [
       { key: "idea", label: "Got an idea already?", hint: "Optional. Leave blank and the Idea Wizard suggests three.", kind: "area", placeholder: "A meal-prep delivery service for my neighbourhood" },
       { key: "tone", label: "How should the brand feel?", hint: "Pick one, or type your own.", kind: "chips", options: ["Bold", "Friendly", "Premium", "Playful", "Calm", "Expert"] },
@@ -145,7 +145,7 @@ export default function StartPage() {
   if (!access?.tools.length) {
     return (
       <div className="mx-auto grid max-w-[1400px] items-center gap-10 px-4 py-16 md:grid-cols-2 md:px-8">
-        <img src="/images/spot-login.svg" alt="Founder holding up a key" className="b3 hard aspect-[4/5] w-full max-w-md object-cover" />
+        <img src="/images/spot-login.webp" alt="Founder holding up a key" className="b3 hard aspect-[4/5] w-full max-w-md object-cover" />
         <div>
           <span className="chip"><Lock className="h-3.5 w-3.5" strokeWidth={3} /> Subscription Required</span>
           <h1 className="display mt-4 text-6xl md:text-7xl">Subscribe to start building.</h1>

@@ -127,12 +127,12 @@ export default function CartPage() {
 
           {!hasBundle && subtotal < BUNDLE.price && (
             <div className="b3 hard mt-8 grid items-center gap-4 bg-sun p-5 text-ink sm:grid-cols-[120px_1fr_auto]">
-              <img src="/images/bundle-kit.svg" alt="The 13-piece launch kit laid out on blue" className="hidden aspect-square w-full border-[3px] border-ink object-cover sm:block" />
+              <img src="/images/bundle-kit.webp" alt="The 16-piece launch kit laid out on blue" className="hidden aspect-square w-full border-[3px] border-ink object-cover sm:block" />
               <div>
                 <span className="chip bg-mint text-ink text-xs font-black">All-Access Subscription Upgrade · Save $115/mo</span>
-                <p className="display mt-1.5 text-2xl">Upgrade to all 13 engines for {money(BUNDLE.price)}/mo</p>
+                <p className="display mt-1.5 text-2xl">Upgrade to all 16 engines for {money(BUNDLE.price)}/mo</p>
                 <p className="mt-1 text-sm font-semibold text-ink">
-                  You selected {lines.length} tool{lines.length === 1 ? "" : "s"} ({money(subtotal)}/mo). For just <strong>{money(BUNDLE.price - subtotal)}/mo</strong> more, unlock all 13 Phase 1 engines and 500 AI generations/mo.
+                  You selected {lines.length} tool{lines.length === 1 ? "" : "s"} ({money(subtotal)}/mo). For just <strong>{money(BUNDLE.price - subtotal)}/mo</strong> more, unlock all 16 Phase 1 engines and 500 AI generations/mo.
                 </p>
               </div>
               <button
@@ -150,7 +150,7 @@ export default function CartPage() {
 
           {bundleSaves && (
             <div className="b3 hard mt-8 grid items-center gap-4 bg-ink p-5 text-sun sm:grid-cols-[120px_1fr_auto]">
-              <img src="/images/bundle-kit.svg" alt="The 13-piece launch kit laid out on blue" className="hidden aspect-square w-full border-[3px] border-sun object-cover sm:block" />
+              <img src="/images/bundle-kit.webp" alt="The 16-piece launch kit laid out on blue" className="hidden aspect-square w-full border-[3px] border-sun object-cover sm:block" />
               <div>
                 <p className="text-xs font-extrabold uppercase tracking-widest text-mint">Save with All-Access Pass</p>
                 <p className="display mt-1 text-2xl">All 13 engines for {money(BUNDLE.price)}/mo</p>

@@ -40,9 +40,9 @@ export function AboutCreator() {
                   {/* Photo 1: Outdoor Portrait (825x1024 = 4:5 aspect ratio so neither left nor right side is cropped) */}
                   <div className="relative aspect-[4/5] overflow-hidden bg-ink border-r-[3px] border-ink">
                     <img
-                      src="/images/creator-daniel-collins.svg"
+                      src="/images/creator-daniel-collins.webp"
                       onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.svg";
+                        (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins.jpg";
                       }}
                       alt="Daniel Collins — Founder Portrait"
                       width={825}
@@ -59,9 +59,9 @@ export function AboutCreator() {
                   {/* Photo 2: By the Fire */}
                   <div className="relative aspect-[4/5] overflow-hidden bg-ink">
                     <img
-                      src="/images/creator-daniel-collins-fire.svg"
+                      src="/images/creator-daniel-collins-fire.webp"
                       onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins-fire.svg";
+                        (e.currentTarget as HTMLImageElement).src = "/images/creator-daniel-collins-fire.png";
                       }}
                       alt="Daniel Collins by the fire — Night Shift Builder Mode"
                       width={896}

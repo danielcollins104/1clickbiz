@@ -37,9 +37,9 @@ import { BUNDLE_SLUG, PRODUCTS } from "../../api/catalog";
 const NAV = [
   { to: "/funnel", label: "Sales Funnel" },
   { to: "/start", label: "Start Wizard" },
-  { to: "/dashboard", label: "My Dashboard" },
-  { to: "/shop", label: "13 AI Tools" },
-  { to: "/advisor", label: "Solomon Advisor" },
+  { to: "/dashboard", label: "Dashboard" },
+  { to: "/shop", label: "16 AI Tools" },
+  { to: "/advisor", label: "Solomon AI" },
   { to: "/pricing", label: "Pricing" },
 ];
 
@@ -64,7 +64,7 @@ function Header() {
   const { notes, openNotebook, bump: notebookBump } = useNotebook();
   const { openQuickStart } = useQuickStart();
   const { data: session, isPending } = useSession();
-  const { user: firebaseUser, signInWithGoogle, signOut: signOutFirebase } = useFirebase();
+  const { user: firebaseUser, signOut: signOutFirebase } = useFirebase();
   const { data: adminStatus } = useAdminStatus();
   const [menu, setMenu] = useState(false);
   const [location] = useLocation();
@@ -74,14 +74,14 @@ function Header() {
     <header className="sticky top-0 z-40 border-b-[3px] border-ink bg-sun pt-safe">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-2 px-3 sm:gap-4 sm:px-4 md:px-8">
         <Logo />
-        <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Main navigation">
+        <nav className="hidden items-center gap-0.5 lg:flex shrink-0" aria-label="Main navigation">
           {NAV.map((n) => {
             const active = location === n.to;
             return (
               <Link
                 key={n.label}
                 to={n.to}
-                className={`px-2.5 xl:px-3 py-1.5 text-xs xl:text-sm font-extrabold uppercase tracking-wide no-underline transition-colors ${
+                className={`whitespace-nowrap px-2 xl:px-2.5 py-1.5 text-xs font-extrabold uppercase tracking-wide no-underline transition-colors ${
                   active ? "bg-ink text-sun" : "hover:bg-ink hover:text-sun"
                 }`}
               >
@@ -90,39 +90,39 @@ function Header() {
             );
           })}
         </nav>
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Quick Start 1-Click Wizard Action Button in Header */}
           <button
             type="button"
             onClick={() => openQuickStart()}
-            className="group relative flex min-h-[42px] items-center gap-1.5 bg-ink text-sun px-2.5 sm:px-3 py-1.5 b3 border-2 border-ink shadow-[2.5px_2.5px_0px_#000] hover:bg-mint hover:text-ink hover:border-ink hover:shadow-[1px_1px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] transition-all cursor-pointer"
+            className="group relative flex min-h-[38px] shrink-0 whitespace-nowrap items-center gap-1.5 bg-ink text-sun px-2.5 py-1.5 b3 border-2 border-ink shadow-[2.5px_2.5px_0px_#000] hover:bg-mint hover:text-ink hover:border-ink hover:shadow-[1px_1px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] transition-all cursor-pointer"
             title="Open Quick Start 1-Click Business Generation Wizard"
             aria-label="Quick Start 1-Click Business Wizard"
           >
             <Zap className="h-4 w-4 fill-sun text-sun group-hover:fill-ink group-hover:text-ink animate-pulse shrink-0" strokeWidth={2.5} />
-            <span className="font-black text-[11px] sm:text-xs uppercase tracking-wider">1-Click</span>
-            <span className="hidden xl:inline-block bg-mint text-ink text-xs font-black px-1.5 py-0.5 border border-ink">
+            <span className="font-black text-[11px] sm:text-xs uppercase tracking-wider whitespace-nowrap">1-Click</span>
+            <span className="hidden 2xl:inline-block bg-mint text-ink text-[10px] font-black px-1.5 py-0.5 border border-ink whitespace-nowrap">
               START
             </span>
           </button>
 
           {adminStatus?.allowed && (
-            <Link to="/admin" className="ulink hidden md:inline font-extrabold text-xs">
+            <Link to="/admin" className="ulink hidden xl:inline font-extrabold text-xs whitespace-nowrap">
               Admin
             </Link>
           )}
 
           {/* Firebase / Account Status Controls */}
-          {firebaseUser || session?.user ? (
-            <div className="hidden md:flex items-center gap-2 bg-paper px-2 py-1 b3 border-2 border-ink">
+          {(firebaseUser || session?.user) && (
+            <div className="hidden xl:flex items-center gap-1.5 bg-paper px-2 py-1 b3 border-2 border-ink shrink-0">
               {firebaseUser?.photoURL || session?.user?.image ? (
                 <img
                   src={firebaseUser?.photoURL || session?.user?.image || ""}
                   alt=""
-                  className="h-6 w-6 rounded-full border border-ink object-cover"
+                  className="h-5 w-5 rounded-full border border-ink object-cover shrink-0"
                 />
               ) : (
-                <span className="grid h-6 w-6 place-items-center bg-sun text-ink text-xs font-bold b3">
+                <span className="grid h-5 w-5 shrink-0 place-items-center bg-sun text-ink text-[11px] font-bold b3">
                   {(
                     (firebaseUser?.displayName ||
                       session?.user?.name ||
@@ -132,7 +132,7 @@ function Header() {
                   ).toUpperCase()}
                 </span>
               )}
-              <span className="text-xs font-bold truncate max-w-[100px]">
+              <span className="text-xs font-bold truncate max-w-[84px]">
                 {firebaseUser?.displayName ||
                   session?.user?.name ||
                   (firebaseUser?.email || session?.user?.email)?.split("@")[0]}
@@ -140,33 +140,24 @@ function Header() {
               <button
                 type="button"
                 onClick={() => signOutFirebase()}
-                className="text-[11px] font-extrabold text-muted hover:text-ink underline ml-1 cursor-pointer"
+                className="text-[11px] font-extrabold text-muted hover:text-ink underline ml-0.5 cursor-pointer"
                 title="Sign out"
               >
                 Exit
               </button>
             </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => signInWithGoogle()}
-              className="hidden xl:inline-flex btn btn-sm btn-quiet !px-2.5 text-xs font-bold items-center gap-1.5 cursor-pointer"
-              title="Sign in with Google"
-            >
-              <span>Google Sign-in</span>
-            </button>
           )}
 
           {!isPending &&
             (session || firebaseUser ? (
-              <Link to="/dashboard" className="hidden sm:inline-flex btn btn-sm btn-yellow !px-3">
-                <LayoutDashboard className="h-5 w-5" strokeWidth={2.75} />
-                <span className="hidden md:inline">Dashboard</span>
+              <Link to="/dashboard" className="hidden sm:inline-flex btn btn-sm btn-yellow !px-2.5 whitespace-nowrap shrink-0">
+                <LayoutDashboard className="h-4 w-4 shrink-0" strokeWidth={2.75} />
+                <span className="hidden md:inline text-xs">Dashboard</span>
               </Link>
             ) : (
-              <Link to="/login" className="hidden sm:inline-flex btn btn-sm btn-yellow !px-3">
-                <UserRound className="h-5 w-5" strokeWidth={2.75} />
-                <span className="hidden md:inline">Sign in</span>
+              <Link to="/login" className="hidden sm:inline-flex btn btn-sm btn-yellow !px-2.5 whitespace-nowrap shrink-0">
+                <UserRound className="h-4 w-4 shrink-0" strokeWidth={2.75} />
+                <span className="hidden md:inline text-xs">Sign in</span>
               </Link>
             ))}
 
@@ -174,12 +165,12 @@ function Header() {
           <button
             type="button"
             onClick={() => openNotebook()}
-            className="hidden sm:inline-flex btn btn-sm btn-quiet relative !px-2.5 sm:!px-3 cursor-pointer"
+            className="hidden sm:inline-flex btn btn-sm btn-quiet relative !px-2.5 whitespace-nowrap shrink-0 cursor-pointer"
             aria-label={`Open Founder Notebook, ${notes.length} notes`}
             title="Open Slide-Out Founder Notebook"
           >
-            <BookOpen className="h-5 w-5" strokeWidth={2.75} />
-            <span className="hidden md:inline">Notebook</span>
+            <BookOpen className="h-4 w-4 shrink-0" strokeWidth={2.75} />
+            <span className="hidden xl:inline text-xs">Notebook</span>
             {notes.length > 0 && (
               <span
                 key={notebookBump}
@@ -193,15 +184,14 @@ function Header() {
           <button
             type="button"
             onClick={() => setWishlistOpen(true)}
-            className="hidden sm:inline-flex btn btn-sm btn-quiet relative !px-3"
+            className="hidden sm:inline-flex btn btn-sm btn-quiet relative !px-2.5 whitespace-nowrap shrink-0"
             aria-label={`Open wishlist, ${wishlistCount} items`}
             title="Saved Wishlist"
           >
             <Heart
-              className={`h-5 w-5 ${wishlistCount > 0 ? "fill-rose-500 text-rose-500" : ""}`}
+              className={`h-4 w-4 shrink-0 ${wishlistCount > 0 ? "fill-rose-500 text-rose-500" : ""}`}
               strokeWidth={2.75}
             />
-            <span className="hidden xl:inline">Wishlist</span>
             {wishlistCount > 0 && (
               <span
                 key={wishlistBump}
@@ -215,11 +205,11 @@ function Header() {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="btn btn-sm btn-quiet relative !px-2.5 sm:!px-3 cursor-pointer"
+            className="btn btn-sm btn-quiet relative !px-2.5 whitespace-nowrap shrink-0 cursor-pointer"
             aria-label={`Open subscription plan, ${count} selected`}
           >
-            <CreditCard className="h-5 w-5" strokeWidth={2.75} />
-            <span className="hidden sm:inline">{count > 0 ? "My Plan" : "Subscribe"}</span>
+            <CreditCard className="h-4 w-4 shrink-0" strokeWidth={2.75} />
+            <span className="hidden sm:inline text-xs">{count > 0 ? "My Plan" : "Subscribe"}</span>
             {count > 0 && (
               <span
                 key={bump}
@@ -712,7 +702,6 @@ function Footer() {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
-  const { openQuickStart } = useQuickStart();
 
   useEffect(() => {
     if (!window.location.hash) window.scrollTo(0, 0);
@@ -731,23 +720,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <QuickStartModal />
       <ExitIntentNotice />
       <MobileBottomNav />
-
-      {/* Desktop Floating Action Button (FAB) — hidden on mobile where MobileBottomNav provides instant 1-Click access */}
-      <div className="fixed bottom-6 right-6 z-40 hidden md:block">
-        <button
-          type="button"
-          onClick={() => openQuickStart()}
-          className="group flex items-center gap-2 bg-sun text-ink border-[3px] border-ink px-4 py-2.5 font-black uppercase text-xs tracking-wider shadow-[4px_4px_0px_#000] hover:bg-mint hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] active:translate-x-[4px] active:translate-y-[4px] transition-all cursor-pointer"
-          title="Open Quick Start 1-Click Business Generator"
-          aria-label="Open Quick Start 1-Click Business Generator"
-        >
-          <span className="grid h-6 w-6 place-items-center bg-ink text-sun border border-ink">
-            <Zap className="h-4 w-4 fill-sun text-sun animate-pulse" />
-          </span>
-          <span className="text-sm font-black">Quick Start</span>
-          <span className="bg-ink text-mint text-xs font-black px-1.5 py-0.5 border border-ink">1-CLICK</span>
-        </button>
-      </div>
     </div>
   );
 }

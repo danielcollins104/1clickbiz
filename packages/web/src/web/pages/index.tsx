@@ -96,7 +96,7 @@ function Hero() {
           {/* Center Hero Image */}
           <div className="relative mx-auto h-[290px] max-w-full sm:h-[400px] lg:absolute lg:bottom-0 lg:left-1/2 lg:z-20 lg:h-[580px] lg:-translate-x-1/2 pointer-events-none flex justify-center">
             <img
-              src="/images/hero-cutout.svg"
+              src="/images/hero-cutout.webp"
               alt="Founder holding a laptop"
               fetchPriority="high"
               decoding="async"
@@ -307,10 +307,10 @@ function StartHereRoadmap() {
 }
 
 const STAGES = [
-  { cat: "Plan", img: "/images/stage-2.svg", alt: "Notebook with growth charts", title: "Plan it", give: "8 questions about you", tools: ["idea-wizard", "business-plan", "launch-checklist", "funding-finder"] },
-  { cat: "Brand", img: "/images/stage-3.svg", alt: "Colour swatches, stamp and pattern cards", title: "Brand it", give: "Pick from shortlists", tools: ["name-generator", "brand-generator", "logo-generation", "color-font-system"] },
-  { cat: "Market", img: "/images/cat-market.svg", alt: "Blue megaphone on black", title: "Market it", give: "Review, tweak, publish", tools: ["website-generator", "ad-generator", "social-generator"] },
-  { cat: "Run", img: "/images/stage-4.svg", alt: "Founder hanging an open sign", title: "Run it", give: "Ask anything", tools: ["customer-crm", "ai-advisor"] },
+  { cat: "Plan", img: "/images/stage-2.webp", alt: "Notebook with growth charts", title: "Plan it", give: "8 questions about you", tools: ["idea-wizard", "business-plan", "launch-checklist", "funding-finder", "competitor-radar"] },
+  { cat: "Brand", img: "/images/stage-3.webp", alt: "Colour swatches, stamp and pattern cards", title: "Brand it", give: "Pick from shortlists", tools: ["name-generator", "brand-generator", "logo-generation", "color-font-system"] },
+  { cat: "Market", img: "/images/cat-market.webp", alt: "Blue megaphone on black", title: "Market it", give: "Review, tweak, publish", tools: ["website-generator", "ad-generator", "social-generator", "cold-outreach", "seo-engine"] },
+  { cat: "Run", img: "/images/stage-4.webp", alt: "Founder hanging an open sign", title: "Run it", give: "Ask anything", tools: ["customer-crm", "ai-advisor"] },
 ];
 
 function Flow() {
@@ -385,7 +385,7 @@ function Flow() {
 
       <div className="mt-10 sm:mt-12 grid max-w-3xl grid-cols-3 gap-2.5 sm:gap-4">
         {[
-          ["13", "AI tools"],
+          ["16", "AI tools"],
           ["8", "questions"],
           ["1", "brand, used everywhere"],
         ].map(([n, l]) => (
@@ -405,7 +405,7 @@ function Editorial() {
       <div className="mx-auto grid max-w-[1400px] items-center gap-12 px-4 py-20 md:grid-cols-12 md:px-8">
         <div className="relative md:col-span-5">
           <div className="b3 hard relative aspect-[4/5] overflow-hidden bg-ink">
-            <img src="/images/advisor.svg" alt="Founder thinking at a laptop" className="h-full w-full object-cover" loading="lazy" />
+            <img src="/images/advisor.webp" alt="Founder thinking at a laptop" className="h-full w-full object-cover" loading="lazy" />
           </div>
         </div>
         <div className="min-w-0 md:col-span-7">
@@ -496,8 +496,8 @@ function BundleBlock() {
           <div className="min-w-0 lg:col-span-7">
             <div className="b3 relative aspect-[16/9] overflow-hidden border-sun shadow-[4px_4px_0px_#3b74ff] sm:shadow-[8px_8px_0px_#3b74ff]">
               <img
-                src="/images/bundle-kit.svg"
-                alt="Thirteen launch tools laid out on electric blue"
+                src="/images/bundle-kit.webp"
+                alt="Sixteen launch tools laid out on electric blue"
                 loading="lazy"
                 className="h-full w-full object-cover"
               />
@@ -511,7 +511,7 @@ function BundleBlock() {
           </div>
         </div>
 
-        {/* Upgraded 13-Tool Launch Suite Showcase */}
+        {/* Upgraded 16-Tool Launch Suite Showcase */}
         <div className="mt-16 border-t-2 border-sun/30 pt-12">
           <div className="mb-5">
             <img
@@ -526,7 +526,7 @@ function BundleBlock() {
                 <Sparkles className="h-3.5 w-3.5 fill-mint" /> Complete Ecosystem Included in Your Membership
               </p>
               <h3 className="display text-3xl md:text-5xl text-sun mt-1 leading-[1.12]">
-                All 13 Integrated AI Launch Engines
+                All 16 Integrated AI Launch Engines
               </h3>
             </div>
             <p className="text-xs font-bold text-cream/80 max-w-md">

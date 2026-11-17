@@ -280,7 +280,7 @@ export default function ToolPage({ slug }: { slug: string }) {
         ) : !data ? (
           /* no business yet */
           <div className="card grid items-center gap-8 bg-paper p-6 md:grid-cols-[280px_1fr] md:p-8">
-            <img src="/images/stage-1.svg" alt="" className="b3 aspect-square w-full object-cover" />
+            <img src="/images/stage-1.webp" alt="" className="b3 aspect-square w-full object-cover" />
             <div>
               <h2 className="display text-4xl">{bizError ? "Couldn't load that business." : "Start with 8 questions."}</h2>
               <p className="mt-3 font-semibold">{bizError ? errorMessage(bizError) : `${tool.name} works from your intake answers. Answer them once and every tool you own builds.`}</p>

@@ -31,13 +31,13 @@ jobs:
 
       - name: Build web app
         env:
-          WEBSITE_URL: https://1clickbiz.run.place
-          VITE_WEBSITE_URL: https://1clickbiz.run.place
+          WEBSITE_URL: https://1clickbiz.app
+          VITE_WEBSITE_URL: https://1clickbiz.app
         run: |
           cd packages/web
           bun run build
           cp dist/index.html dist/404.html
-          echo "1clickbiz.run.place" > dist/CNAME
+          echo "1clickbiz.app" > dist/CNAME
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

@@ -278,12 +278,14 @@ export function GeminiChatbot({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, loading]);
+    if (messages.length > 1 || loading) {
+      scrollToBottom();
+    }
+  }, [messages.length, loading]);
 
   useEffect(() => {
     if (!user) return;

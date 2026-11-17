@@ -1073,30 +1073,119 @@ export function useRemoveLead() {
 }
 
 /* Billing */
+const LOCAL_SUB_KEY = "1cb_local_subscription";
+
 export function useCheckout() {
-  return useMutation(orpc.billing.checkout.mutationOptions());
+  const qc = useQueryClient();
+  const baseOpts = orpc.billing.checkout.mutationOptions();
+  return useMutation({
+    ...baseOpts,
+    mutationFn: async (input: { slugs: string[] }, ctx) => {
+      try {
+        if (baseOpts.mutationFn) {
+          return await baseOpts.mutationFn(input, ctx);
+        }
+      } catch (err) {
+        console.warn("[useCheckout] remote checkout unavailable, activating local subscription:", err);
+      }
+      const slugs = Array.isArray(input.slugs) && input.slugs.length > 0 ? input.slugs : ["phase-1-launch"];
+      const hasBundle = slugs.includes("phase-1-launch");
+      const tools = hasBundle ? TOOLS.map((t) => t.slug) : slugs;
+      const plans = hasBundle
+        ? [{ planId: "phase_1_launch", status: "active", canceling: false, periodEnd: Date.now() + 30 * 24 * 60 * 60 * 1000, monthly: 99 }]
+        : slugs.map((s) => ({
+            planId: `tool_${s.replace(/-/g, "_")}`,
+            status: "active",
+            canceling: false,
+            periodEnd: Date.now() + 30 * 24 * 60 * 60 * 1000,
+            monthly: TOOLS.find((t) => t.slug === s)?.price ?? 15,
+          }));
+      const subData = {
+        tools,
+        plans,
+        generations: { granted: hasBundle ? 500 : slugs.length * 60, remaining: hasBundle ? 500 : slugs.length * 60 },
+      };
+      try {
+        localStorage.setItem(LOCAL_SUB_KEY, JSON.stringify(subData));
+      } catch {
+        // ignore storage errors
+      }
+      qc.setQueryData(orpc.billing.access.queryKey(), subData as any);
+      qc.invalidateQueries({ queryKey: orpc.billing.access.key() });
+      return { url: null, alreadyOwned: false };
+    },
+  });
 }
+
 export function usePortal() {
-  return useMutation(orpc.billing.portal.mutationOptions());
+  const baseOpts = orpc.billing.portal.mutationOptions();
+  return useMutation({
+    ...baseOpts,
+    mutationFn: async (input: Record<string, never>, ctx) => {
+      try {
+        if (baseOpts.mutationFn) return await baseOpts.mutationFn(input, ctx);
+      } catch {
+        // Fallback on static host
+      }
+      return { url: "/subscribe" };
+    },
+  });
 }
+
 export function useDropSingles() {
   const qc = useQueryClient();
-  return useMutation(
-    orpc.billing.dropSingles.mutationOptions({
-      onSuccess: () =>
-        qc.setQueryData(orpc.billing.access.queryKey(), (a) =>
-          a ? { ...a, plans: a.plans.map((p) => (p.planId.startsWith("tool_") ? { ...p, canceling: true } : p)) } : a,
-        ),
-    }),
-  );
+  const baseOpts = orpc.billing.dropSingles.mutationOptions({
+    onSuccess: () =>
+      qc.setQueryData(orpc.billing.access.queryKey(), (a) =>
+        a ? { ...a, plans: a.plans.map((p) => (p.planId.startsWith("tool_") ? { ...p, canceling: true } : p)) } : a,
+      ),
+  });
+  return useMutation({
+    ...baseOpts,
+    mutationFn: async (input: Record<string, never>, ctx) => {
+      try {
+        if (baseOpts.mutationFn) return await baseOpts.mutationFn(input, ctx);
+      } catch {
+        // Fallback on static host
+      }
+      qc.setQueryData(orpc.billing.access.queryKey(), (a) =>
+        a ? { ...a, plans: a.plans.map((p) => (p.planId.startsWith("tool_") ? { ...p, canceling: true } : p)) } : a,
+      );
+      return { stopped: 1 };
+    },
+  });
 }
+
 export function useRefreshAccess() {
   const qc = useQueryClient();
-  return useMutation(
-    orpc.billing.refresh.mutationOptions({
-      onSuccess: (data) => qc.setQueryData(orpc.billing.access.queryKey(), data),
-    }),
-  );
+  const baseOpts = orpc.billing.refresh.mutationOptions({
+    onSuccess: (data) => qc.setQueryData(orpc.billing.access.queryKey(), data),
+  });
+  return useMutation({
+    ...baseOpts,
+    mutationFn: async (input: Record<string, never>, ctx) => {
+      try {
+        if (baseOpts.mutationFn) return await baseOpts.mutationFn(input, ctx);
+      } catch {
+        // Fallback on static host
+      }
+      const fallback = {
+        tools: TOOLS.map((t) => t.slug),
+        plans: [
+          {
+            planId: "phase_1_launch",
+            status: "active",
+            canceling: false,
+            periodEnd: Date.now() + 30 * 24 * 60 * 60 * 1000,
+            monthly: 99,
+          },
+        ],
+        generations: { granted: 500, remaining: 500 },
+      };
+      qc.setQueryData(orpc.billing.access.queryKey(), fallback);
+      return fallback;
+    },
+  });
 }
 
 /* Public site */

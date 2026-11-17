@@ -70,14 +70,14 @@ export const PRODUCTS: Product[] = [
       "Save $115/mo vs. buying separately"
     ],
     "integrations": [],
-    "image": "/images/bundle-kit-square.svg"
+    "image": "/images/bundle-kit-square.webp"
   },
   {
     "slug": "idea-wizard",
     "num": "01",
     "name": "Business Idea Wizard",
-    "tagline": "The time to start a business is now. If you haven't picked an idea yet, run the Idea Wizard — it builds three complete business ideas around your interests, each scored for demand, competition, startup cost and time to first sale. Choose the one that excites you. You can always start another later — but how long have you been at a standstill? Do it right now. See you in the next step.",
-    "description": "The time to start a business is now. If you haven't picked an idea yet, run the Idea Wizard — it builds three complete business ideas around your interests, each scored for demand, competition, startup cost and time to first sale. Choose the one that excites you. You can always start another later — but how long have you been at a standstill? Just enter your interests and a few possibilities below and we will build 3 complete business idea cards you can choose from—complete with market demand, competition, startup cost, revenue model, and time to first sale.",
+    "tagline": "Turn your interests into three validated, ready-to-launch business ideas scored for demand and profit.",
+    "description": "The time to start a business is now! If you still haven't decided on something, use our Idea Wizard. We'll make you a business based on your interests that we know will succeed. You can always start a different one later, but how long have you been at a standstill? Run the wizard and choose the project that excites you. Do it right now. See you in the next step. Just enter your interests and a few possibilities below and we will build 3 complete business idea cards you can choose from—complete with market demand, competition, startup cost, revenue model, and time to first sale.",
     "category": "Plan",
     "price": 12,
     "tone": "yellow",
@@ -94,14 +94,14 @@ export const PRODUCTS: Product[] = [
       "Choose your favorite card — it feeds every other tool"
     ],
     "integrations": [],
-    "image": "/images/tools/idea-wizard.svg"
+    "image": "/images/tools/idea-wizard.webp"
   },
   {
     "slug": "ai-advisor",
     "num": "02",
     "name": "Solomon™ Sovereign AI Advisor",
     "tagline": "Autonomous multi-agent executive intelligence that knows your entire business.",
-    "description": "Solomon™ is your always-on AI business advisor. It has read your entire business — plan, pricing, brand voice, website copy and CRM leads — so you can ask real questions like "what should I charge?", "write a follow-up for my hottest lead", or "rewrite my homepage headline", and get answers that already know your context. It also tracks grant and market opportunities matched to your business.",
+    "description": "Solomon™ is your always-on AI business advisor. It has read your entire business — plan, pricing, brand voice, website copy and CRM leads — so you can ask real questions like 'what should I charge?', 'write a follow-up for my hottest lead', or 'rewrite my homepage headline', and get answers that already know your context. It also tracks grant and market opportunities matched to your business.",
     "category": "Run",
     "price": 25,
     "tone": "green",
@@ -114,11 +114,11 @@ export const PRODUCTS: Product[] = [
       "A founder-tuned AI engine that knows your whole business",
       "Live Global Web & Non-Dilutive Grant Intelligence Grid",
       "Local market & competitor radar",
-      "Indexed across all 13 of your business deliverables",
+      "Indexed across all 16 of your business deliverables",
       "Rewrites any business asset on command"
     ],
     "integrations": [],
-    "image": "/images/tools/ai-advisor.svg"
+    "image": "/images/tools/ai-advisor.webp"
   },
   {
     "slug": "logo-generation",
@@ -142,7 +142,7 @@ export const PRODUCTS: Product[] = [
       "Re-run anytime"
     ],
     "integrations": [],
-    "image": "/images/tools/logo-generation.svg"
+    "image": "/images/tools/logo-generation.webp"
   },
   {
     "slug": "funding-finder",
@@ -166,7 +166,7 @@ export const PRODUCTS: Product[] = [
       "Re-run anytime for new matches"
     ],
     "integrations": [],
-    "image": "/images/tools/funding-finder.svg"
+    "image": "/images/tools/funding-finder.webp"
   },
   {
     "slug": "business-plan",
@@ -190,7 +190,7 @@ export const PRODUCTS: Product[] = [
       "Printable — save as PDF"
     ],
     "integrations": [],
-    "image": "/images/tools/business-plan.svg"
+    "image": "/images/tools/business-plan.webp"
   },
   {
     "slug": "ad-generator",
@@ -214,7 +214,7 @@ export const PRODUCTS: Product[] = [
       "Budget and audience suggestions"
     ],
     "integrations": [],
-    "image": "/images/tools/ad-generator.svg"
+    "image": "/images/tools/ad-generator.webp"
   },
   {
     "slug": "name-generator",
@@ -238,7 +238,7 @@ export const PRODUCTS: Product[] = [
       "Pick one — it's used everywhere"
     ],
     "integrations": [],
-    "image": "/images/tools/name-generator.svg"
+    "image": "/images/tools/name-generator.webp"
   },
   {
     "slug": "brand-generator",
@@ -262,7 +262,7 @@ export const PRODUCTS: Product[] = [
       "Feeds every other tool automatically"
     ],
     "integrations": [],
-    "image": "/images/tools/brand-generator.svg"
+    "image": "/images/tools/brand-generator.webp"
   },
   {
     "slug": "color-font-system",
@@ -286,7 +286,7 @@ export const PRODUCTS: Product[] = [
       "Applied to your site automatically"
     ],
     "integrations": [],
-    "image": "/images/tools/color-font-system.svg"
+    "image": "/images/tools/color-font-system.webp"
   },
   {
     "slug": "website-generator",
@@ -310,7 +310,7 @@ export const PRODUCTS: Product[] = [
       "1-click standalone HTML5 web app export"
     ],
     "integrations": [],
-    "image": "/images/tools/website-generator.svg"
+    "image": "/images/tools/website-generator.webp"
   },
   {
     "slug": "social-generator",
@@ -334,7 +334,7 @@ export const PRODUCTS: Product[] = [
       "Regenerate in one click"
     ],
     "integrations": [],
-    "image": "/images/tools/social-generator.svg"
+    "image": "/images/tools/social-generator.webp"
   },
   {
     "slug": "launch-checklist",
@@ -358,7 +358,7 @@ export const PRODUCTS: Product[] = [
       "Progress tracking"
     ],
     "integrations": [],
-    "image": "/images/tools/launch-checklist.svg"
+    "image": "/images/tools/launch-checklist.webp"
   },
   {
     "slug": "customer-crm",
@@ -382,7 +382,7 @@ export const PRODUCTS: Product[] = [
       "CSV export"
     ],
     "integrations": [],
-    "image": "/images/tools/customer-crm.svg"
+    "image": "/images/tools/customer-crm.webp"
   },
   {
     "slug": "cold-outreach",
@@ -405,7 +405,8 @@ export const PRODUCTS: Product[] = [
       "Objection rebuttals for top 3 customer pushbacks",
       "Export ready for Apollo, Instantly, or Gmail"
     ],
-    "integrations": []
+    "integrations": [],
+    "image": "/images/tools/cold-outreach.svg"
   },
   {
     "slug": "competitor-radar",
@@ -428,7 +429,8 @@ export const PRODUCTS: Product[] = [
       "Defensive moat & unfair advantage playbook",
       "Actionable positioning blueprint"
     ],
-    "integrations": []
+    "integrations": [],
+    "image": "/images/tools/competitor-radar.svg"
   },
   {
     "slug": "seo-engine",
@@ -451,6 +453,7 @@ export const PRODUCTS: Product[] = [
       "Optimized for Google & AI search (Perplexity, ChatGPT)",
       "Direct integration with your Generated Website"
     ],
-    "integrations": []
+    "integrations": [],
+    "image": "/images/tools/seo-engine.svg"
   }
 ];

@@ -61,8 +61,8 @@ export function NotebookDrawer() {
 
   return (
     <>
-      {/* Slide-out Edge Tab on Right Side of Screen (Desktop/Tablet — on narrow mobile phones the Notebook icon is in the top bar) */}
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 hidden sm:block">
+      {/* Slide-out Edge Tab on Right Side of Screen (Only on ultra-wide 2xl viewports so it never overlaps 1400px page content; on all other viewports the Notebook button is always in the sticky top header) */}
+      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 hidden 2xl:block">
         <button
           type="button"
           onClick={() => openNotebook()}
